@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tutorial 3 - Agents</title>
+  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="pygments.css">
+</head>
+<body>
+<div class="container-lg p-4">
+<div class="col-12">
+<div class="markdown-body border rounded-3 p-6">
+<h1 id="tutorial-3-agents">Tutorial 3 - Agents</h1>
+
+<p>This tutorial provides a brief introduction to implementing agents in Jason using its extension to the AgentSpeak language.</p>
+
+<ul>
+<li><a href="#hello-world-program">Hello, World! program</a>
+<ul>
+<li><a href="#step-1-create-a-new-jason-project">Step 1 - Create a new Jason project</a>
+<ul>
+<li><a href="#agentspeak-files">AgentSpeak file(s)</a></li>
+<li><a href="#jason-configuration-file">Jason configuration file</a></li>
+</ul></li>
+<li><a href="#step-2-run-the-jason-project">Step 2 - Run the Jason project</a></li>
+<li><a href="#step-3-terminate-the-jason-project">Step 3 - Terminate the Jason project</a></li>
+<li><a href="#step-4-create-a-new-agent">Step 4 - Create a new agent</a></li>
+</ul></li>
+<li><a href="#from-prolog-to-jason">From Prolog to Jason</a>
+<ul>
+<li><a href="#step-5-add-initial-beliefs-and-rules">Step 5 - Add initial beliefs and rules</a></li>
+</ul></li>
+<li><a href="#plans">Plans</a></li>
+<li><a href="#achievement-subgoals">Achievement (sub)goals</a></li>
+<li><a href="#test-subgoals">Test (sub)goals</a></li>
+<li><a href="#belief-change-actions">Belief change actions</a></li>
+<li><a href="#internal-actions">Internal actions</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<h2 id="hello-world-program">Hello, World! program</h2>
+
+<p>When introducing a new programing language, it is customary to start with a <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">Hello, World! program</a>. This was already included in <a href="iis-tutorials-1a.html">Tutorial 1a</a>, but we will now go through it in more detail.</p>
+
+<h3 id="step-1-create-a-new-jason-project">Step 1 - Create a new Jason project</h3>
+
+<p>Open Eclipse and select <strong>File &gt; New &gt; Other &gt; Jason &gt; Jason Project</strong> from the Eclipse menu.</p>
+
+<p><img src="figures/new-jason-project-1.png" alt="Figure" /></p>
+
+<p>Select <strong>Next</strong>.</p>
+
+<p><img src="figures/new-jason-project-2.png" alt="Figure" /></p>
+
+<p>Enter <code>hello_world</code> in the <strong>Project name</strong> field and select <strong>Finish</strong>.</p>
+
+<p><img src="figures/new-jason-project-3.png" alt="Figure" /></p>
+
+<p>If you are prompted to open the project in <strong>Jason pespective</strong>, select <strong>Open Pespective</strong>.</p>
+
+<p>A new Jason project will be created with a default directory structure and two auto-generated files:  <code>src/asl/sample_agent.asl</code> and <code>hello_world.mas2j</code>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> To see the new Jason project you may need to close the <strong>Welcome</strong> tab.</p>
+</blockquote>
+
+<h4 id="agentspeak-files">AgentSpeak file(s)</h4>
+
+<p>The file <code>src/asl/sample_agent.asl</code> is an agent program written in Jason's extension to the AgentSpeak language (hence the file extension <code>.asl</code>). All agent programs in a Jason project should be stored in the <code>src/asl</code> directory.</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="c1">// Agent sample_agent in project hello_world</span>
+
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hello world.&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>This examples demonstrates the following syntax:</p>
+
+<ul>
+<li><code>//</code> denotes the start of a <strong>line comment</strong></li>
+<li><code>/*</code> and <code>*/</code> denote the start and end of a <strong>block comment</strong></li>
+<li><code>!start</code> is an <strong>initial achievement goal</strong></li>
+<li><code>+!start : true &lt;- .print("hello world.")</code> is a <strong>plan</strong> where <code>&lt;-</code> is a separator
+<ul>
+<li><code>+!start : true</code> is the <strong>head</strong> where <code>:</code> is a separator
+<ul>
+<li><code>+!start</code> is the <strong>triggering event</strong></li>
+<li><code>true</code> is the <strong>context</strong></li>
+</ul></li>
+<li><code>.print("hello world.")</code> is the <strong>body</strong></li>
+</ul></li>
+<li><code>+!start</code> is an <strong>achievement goal addition</strong> triggering event</li>
+<li><code>true</code> is a <strong>logical constant</strong> that always evaluates to true</li>
+<li><code>.print("hello world.")</code> is an <strong>internal action</strong> that prints <code>hello world.</code> to the Jason console</li>
+<li><code>.</code> denotes the end of initial beliefs, rules, achievement goals, and plans</li>
+</ul>
+
+<p>When the agent is first run, the initial achievement goal <code>!start</code> is immediately transformed by the Jason interpreter into an <strong>external achievement goal addition event</strong>, denoted by its triggering event <code>+!start</code>.
+According to the definition of external events, the event will include the <strong>empty intention</strong>.
+This event is added to the agent's (initial) <strong>event set</strong>.
+The Jason interpreter cycle is then divided into two phases: the <strong>reasoning phase</strong>, and the <strong>acting phase</strong>.</p>
+
+<p>At the start of the reasoning phase the Jason interpreter will apply its <strong>event selection function</strong> to the event set.
+In this instance the event set only contains one event, so <code>+!start</code> will be selected.
+If the selected event unifies with the triggering event of a plan then that plan is called a <strong>relevant plan</strong>.
+If the context of a relevant plan is entailed by the agent's current belief base then that plan is called an <strong>applicable plan</strong>.
+The Jason interpreter will find the set of applicable plans and then apply its <strong>option selection function</strong> to choose one of those plans to add to the <strong>intention stack</strong> of the selected event.
+In this instance there is only one applicable plan <code>+!start : true &lt;- .print("hello world.")</code>, so it will be selected, pushed to the (empty) intention stack, and the intention will be added to the agent's <strong>intention set</strong>.</p>
+
+<p>At the start of the acting phase the Jason interpreter will apply its <strong>intention selection function</strong> to the intention set.
+In this instance there is only one intention, so it will be selected and the first element in the body of the plan at the top of stack will be <strong>progressed</strong>.
+In this instance that element is the internal action <code>.print("hello world.")</code>, which will print <code>hello world.</code> to the Jason console.
+Since that action was the last element to progress, the intention is now <strong>complete</strong>.
+The event set and intention set are both now <strong>empty</strong>, so the agent will <strong>wait silently</strong> for new events.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> It is important to emphasise that an agent program only specifies the <strong>initial</strong> beliefs, rules, goals, and plans of the agent. Jason allows each of these to change over time. As a rule of thumb, an agent program is <strong>trivial</strong> if beliefs and goals remain fixed over time, but it is reasonably common for rules and plans to remain fixed.</p>
+</blockquote>
+
+<h4 id="jason-configuration-file">Jason configuration file</h4>
+
+<p>The file <code>hello_world.mas2j</code> is a Jason configuration file. There should be exactly one configuration file in a Jason project and it should be stored in the base directory with the same name as the project and file extension <code>.mas2j</code>.</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">agent1</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>This example demonstrates the following syntax:</p>
+
+<ul>
+<li><code>MAS hello_world</code> tells Jason this is a Jason configuration file for a <strong>Jason project</strong> called <code>hello_world</code></li>
+<li><code>{</code> and <code>}</code> denote the start and end of the Jason <strong>configuration options</strong></li>
+<li><code>infrastructure</code> specifies <strong>how</strong> the Jason project should run
+<ul>
+<li><code>Centralised</code> is the default value and should be left <strong>unchanged</strong></li>
+</ul></li>
+<li><code>agents</code> specifies the list of agents where <code>;</code> is a separator
+<ul>
+<li><code>agent1 sample_agent</code> is an <strong>agent definition</strong>
+<ul>
+<li><code>agent1</code> is the (optional) <strong>agent name</strong></li>
+<li><code>sample_agent</code> is the (required) <strong>agent type</strong> as defined by <code>sample_agent.asl</code></li>
+</ul></li>
+</ul></li>
+<li><code>aslSourcePath</code> specifies the (relative) path of the <strong>directory</strong> where <code>.asl</code> files are stored
+<ul>
+<li><code>"src/asl"</code> is the default value and should be left <strong>unchanged</strong></li>
+</ul></li>
+</ul>
+
+<p>If our project in Eclipse is called <code>hello_world</code> then the Jason configuration file should be called <code>hello_world.mas2j</code> and the file should start with <code>MAS hello_world</code>.</p>
+
+<p>The agent definition format then demonstrates that an agent program (<code>.asl</code> file) actually specifies an <strong>agent type</strong>, so that an agent is an <strong>instantiation</strong> of an agent type identified by an agent name.
+This is analogous to the difference between a <strong>class</strong> and an <strong>object</strong> in object-oriented programming.
+For example, a second agent <code>agent2 sample_agent</code> could be added to <code>agents</code>, and this agent <code>agent2</code> would also be instantiated from <code>sample_agent.asl</code>.</p>
+
+<p>If the agent name is omitted from an agent definition then Jason will automatically use the agent type as the agent name. If multiple agents are defined in this way then Jason will automatically append an index to the agent name to distinguish agents of the same type.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> It is good practice to always include an explicit agent name in the agent definition.</p>
+</blockquote>
+
+<h3 id="step-2-run-the-jason-project">Step 2 - Run the Jason project</h3>
+
+<p>With the <code>hello_world</code> project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> There may be two identical buttons in the Eclipse toolbar; ensure that you select the button labelled <strong>Run Jason Application</strong> rather than the button labelled <strong>Run</strong>.</p>
+</blockquote>
+
+<p><img src="figures/run-hello-world.png" alt="Figure" /></p>
+
+<p>This window is the <strong>Jason console</strong>, which is shared by all agents in the Jason project.
+If an agent executes the internal <code>.print("hello world.")</code> action, the parameter text <code>hello world.</code> will be printed to the console and labelled with the agent's name.
+For example, the line <code>[agent1] hello world.</code> means that agent <code>agent1</code> has executed <code>.print("hello world.")</code>.</p>
+
+<p>Notice that the Jason project is still running; Jason agents persist until they are explicitly terminated.</p>
+
+<h3 id="step-3-terminate-the-jason-project">Step 3 - Terminate the Jason project</h3>
+
+<p>This will terminate the Jason project, including all running agents.</p>
+
+<h3 id="step-4-create-a-new-agent">Step 4 - Create a new agent</h3>
+
+<p>With the <code>hello_world</code> project highlighed in Eclipse, select <strong>File &gt; New &gt; Agent</strong>.</p>
+
+<p>Enter <code>my_agent</code> in the <strong>Agent name</strong> field and select <strong>Finish</strong>.</p>
+
+<p>A new file <code>my_agent.asl</code> should be created in <code>src/asl</code> and its content should be similar to the existing <code>sample_agent.asl</code> file.</p>
+
+<p>Open <code>hello_world.mas2j</code>. An new agent with agent type <code>my_agent</code> but no agent name should have been added to the list of agent. Call this agent <code>agent2</code>.</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">agent1</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
+        <span class="s s-Atom">agent2</span> <span class="s s-Atom">my_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>With the <code>hello_world</code> project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+
+<p><img src="figures/console-1.png" alt="Figure" /></p>
+
+<blockquote>
+  <p><strong>Note:</strong> Although <code>agent1</code> appears first in the Jason configuration file, Jason does not by default guarantee that <code>agent1</code> will always get to execute actions before <code>agent2</code>, hence why the latter's print messaage may appear before the former's in the Jason console.</p>
+</blockquote>
+
+<p>Terminate the Jason project.</p>
+
+<h2 id="from-prolog-to-jason">From Prolog to Jason</h2>
+
+<h3 id="step-5-add-initial-beliefs-and-rules">Step 5 - Add initial beliefs and rules</h3>
+
+<p>Update <code>my_agent.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="c1">// Agent my_agent in project hello_world</span>
+
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="c1">// Initial base beliefs</span>
+
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">).</span>
+<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">).</span>
+
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">).</span>
+<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">).</span>
+
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="s s-Atom">alice</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="s s-Atom">bob</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="s s-Atom">alice</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="s s-Atom">bob</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="s s-Atom">carol</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="s s-Atom">dave</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="s s-Atom">carol</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="s s-Atom">dave</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="s s-Atom">eve</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="s s-Atom">frank</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="s s-Atom">eve</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="s s-Atom">frank</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="s s-Atom">grace</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="s s-Atom">ivan</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="s s-Atom">grace</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="s s-Atom">ivan</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
+<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
+
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="mi">91</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">,</span> <span class="mi">92</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">,</span> <span class="mi">61</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="mi">62</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="mi">63</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">,</span> <span class="mi">64</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">,</span> <span class="mi">31</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="mi">32</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="mi">33</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="mi">34</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="mi">35</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">,</span> <span class="mi">36</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="mi">4</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
+
+<span class="c1">// Initial rules</span>
+
+<span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+
+<span class="nf">mother</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">female</span><span class="p">(</span><span class="nv">Y</span><span class="p">).</span>
+
+<span class="nf">father</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">male</span><span class="p">(</span><span class="nv">Y</span><span class="p">).</span>
+
+<span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">\==</span> <span class="nv">Y</span><span class="p">.</span>
+
+<span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">.</span>
+
+<span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
+
+<span class="nf">cousin</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span><span class="p">(</span><span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">))</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">\==</span> <span class="nv">Y</span><span class="p">.</span>
+
+<span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">|</span> <span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">|</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
+
+<span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
+<span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">ancestor</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+</code></pre>
+</div>
+
+<p>This Jason code is identical to the the Prolog code from <a href="iis-tutorials-2.html">Tutorial 2</a> except for a few minor syntactic differences:</p>
+
+<ul>
+<li><code>%</code> (percent) <strong>does not denote</strong> the start of a comment</li>
+<li><code>&amp;</code> (ampersand) rather than <code>,</code> (comma) denotes <strong>conjunction</strong></li>
+<li><code>|</code> (vertical bar) rather than <code>;</code> (semi-colon) denotes <strong>disjunction</strong></li>
+</ul>
+
+<p>What were called <strong>facts</strong> in Prolog are now called <strong>initial base beliefs</strong>, and what were called <strong>rules</strong> are now called <strong>initial rules</strong>.</p>
+
+<h2 id="plans">Plans</h2>
+
+<h2 id="achievement-subgoals">Achievement (sub)goals</h2>
+
+<h2 id="test-subgoals">Test (sub)goals</h2>
+
+<h2 id="belief-change-actions">Belief change actions</h2>
+
+<h2 id="internal-actions">Internal actions</h2>
+
+<h2 id="conclusion">Conclusion</h2>
+
+</div>
+<footer class="p-6 mt-4">
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+</footer>
+</div>
+</div>
+</body>
+</html>

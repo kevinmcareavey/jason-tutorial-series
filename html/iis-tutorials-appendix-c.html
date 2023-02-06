@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Appendix C - External files</title>
+  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="pygments.css">
+</head>
+<body>
+<div class="container-lg p-4">
+<div class="col-12">
+<div class="markdown-body border rounded-3 p-6">
+<h1 id="appendix-c-external-files">Appendix C - External files</h1>
+
+<ul>
+<li><a href="#external-files">External files</a>
+<ul>
+<li><a href="#step-x-create-a-new-jason-project-called-file_narrative">Step X: Create a new Jason project called <code>file_narrative</code></a></li>
+<li><a href="#step-x-update-the-configuration-file-file_narrativemas2j">Step X: Update the configuration file <code>file_narrative.mas2j</code></a></li>
+<li><a href="#step-x-create-new-agent-files-srcaslsimulator_agentasl-and-srcaslalice_agentasl">Step X: Create new agent files <code>src/asl/simulator_agent.asl</code> and <code>src/asl/alice_agent.asl</code></a></li>
+<li><a href="#step-x-create-a-new-text-file-narrativetsv">Step X: Create a new text file <code>narrative.tsv</code></a></li>
+<li><a href="#step-x-create-a-new-java-class-srcjavafile_narrativemyenvironmentjava-to-implement-a-jason-environment">Step X: Create a new Java class <code>src/java/file_narrative/MyEnvironment.java</code> to implement a Jason environment</a></li>
+<li><a href="#step-x-save-your-changes-and-select-emphrun-jason-application">Step X: Save your changes and select \emph{Run Jason Application}</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<p>In this section we will see how to read input from a text file as well as one possible method to simulate the occurrence of percepts in the environment.</p>
+
+<h2 id="external-files">External files</h2>
+
+<h3 id="step-x-create-a-new-jason-project-called-file_narrative">Step X: Create a new Jason project called <code>file_narrative</code></h3>
+
+<h3 id="step-x-update-the-configuration-file-file_narrativemas2j">Step X: Update the configuration file <code>file_narrative.mas2j</code></h3>
+
+<div class="codehilite">
+<pre><span></span><code><span class="s s-Atom">#</span> <span class="nb">file_narrative.mas2j</span>
+<span class="nv">MAS</span> <span class="s s-Atom">file_narrative</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">environment</span><span class="p">:</span> <span class="nb">file_narrative.MyEnvironment</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">simulator</span> <span class="s s-Atom">simulator_agent</span><span class="p">;</span>
+        <span class="s s-Atom">alice</span> <span class="s s-Atom">alice_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="step-x-create-new-agent-files-srcaslsimulator_agentasl-and-srcaslalice_agentasl">Step X: Create new agent files <code>src/asl/simulator_agent.asl</code> and <code>src/asl/alice_agent.asl</code></h3>
+
+<div class="codehilite">
+<pre><span></span><code><span class="s s-Atom">#</span> <span class="s s-Atom">src</span><span class="o">/</span><span class="s s-Atom">asl</span><span class="o">/</span><span class="nb">simulator_agent.asl</span>
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">timestep</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!update</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!update</span> <span class="p">:</span> <span class="nf">timestep</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">simulate</span><span class="p">(</span><span class="nv">X</span><span class="p">);</span> <span class="nf">-+timestep</span><span class="p">(</span><span class="nv">X</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> <span class="nc">!update</span><span class="p">.</span>
+</code></pre>
+</div>
+
+<p>Notice that <code>simulator</code> simply maintains a belief about the current timestep in the form <code>timestep(X)</code>, and executes an environment action <code>simulate(X)</code> each time that belief is updated.</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="s s-Atom">#</span> <span class="s s-Atom">src</span><span class="o">/</span><span class="s s-Atom">asl</span><span class="o">/</span><span class="nb">alice_agent.asl</span>
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+percept</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;observed to &quot;</span><span class="p">,</span> <span class="nf">percept</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="s2">&quot;.&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Notice that <code>alice</code> simply acknowledges the occurrence of a new percept.</p>
+
+<h3 id="step-x-create-a-new-text-file-narrativetsv">Step X: Create a new text file <code>narrative.tsv</code></h3>
+
+<pre><code># narrative.tsv
+2000    percept(a)
+11000   percept(b)
+11000   percept(c)
+33000   percept(d)
+</code></pre>
+
+<p>The file <code>narrative.tsv</code> is in tab-separated (TSV) format and should be located in the same directory as <code>file_narrative.mas2j</code>.
+Each line is comprised of a positive integer in the left column and a string in the right column, where the integer represents a timestep and the string represents a percept (in Jason syntax).</p>
+
+<h3 id="step-x-create-a-new-java-class-srcjavafile_narrativemyenvironmentjava-to-implement-a-jason-environment">Step X: Create a new Java class <code>src/java/file_narrative/MyEnvironment.java</code> to implement a Jason environment</h3>
+
+<div class="codehilite">
+<pre><span></span><code><span class="err">#</span><span class="w"> </span><span class="n">src</span><span class="o">/</span><span class="n">java</span><span class="o">/</span><span class="n">file_narrative</span><span class="o">/</span><span class="n">MyEnvironment</span><span class="p">.</span><span class="na">java</span>
+<span class="kn">package</span><span class="w"> </span><span class="nn">file_narrative</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.BufferedReader</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.FileReader</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.io.IOException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.ArrayList</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.HashMap</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.List</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Map</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Literal</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.TokenMgrError</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">narrative</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">        </span><span class="n">narrative</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">BufferedReader</span><span class="w"> </span><span class="n">tsvReader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BufferedReader</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileReader</span><span class="p">(</span><span class="s">&quot;narrative.tsv&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">            </span><span class="k">while</span><span class="p">((</span><span class="n">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tsvReader</span><span class="p">.</span><span class="na">readLine</span><span class="p">())</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">cells</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row</span><span class="p">.</span><span class="na">split</span><span class="p">(</span><span class="s">&quot;\t&quot;</span><span class="p">);</span>
+
+<span class="w">                </span><span class="n">Integer</span><span class="w"> </span><span class="n">timestep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Integer</span><span class="p">.</span><span class="na">parseInt</span><span class="p">(</span><span class="n">cells</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">);</span>
+<span class="w">                </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">percepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">narrative</span><span class="p">.</span><span class="na">getOrDefault</span><span class="p">(</span><span class="n">timestep</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="p">());</span>
+
+<span class="w">                </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">percepts</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">cells</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">));</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">TokenMgrError</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">                </span><span class="p">}</span>
+
+<span class="w">                </span><span class="n">narrative</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">timestep</span><span class="p">,</span><span class="w"> </span><span class="n">percepts</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">            </span><span class="n">tsvReader</span><span class="p">.</span><span class="na">close</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">NumberFormatException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">IOException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">act</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">agName</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;simulator&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">act</span><span class="p">.</span><span class="na">getFunctor</span><span class="p">().</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;simulate&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">act</span><span class="p">.</span><span class="na">getArity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Integer</span><span class="w"> </span><span class="n">timestep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Integer</span><span class="p">.</span><span class="na">parseInt</span><span class="p">(</span><span class="n">act</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="na">toString</span><span class="p">());</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">narrative</span><span class="p">.</span><span class="na">containsKey</span><span class="p">(</span><span class="n">timestep</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">clearPercepts</span><span class="p">();</span><span class="w"> </span><span class="c1">// you may or may not wish to perform this step</span>
+
+<span class="w">                </span><span class="k">for</span><span class="p">(</span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">narrative</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">timestep</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">percept</span><span class="p">);</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>The <code>init</code> method reads the text file <code>narrative.tsv</code> as input to construct a class variable <code>narrative</code> that is a mapping from timesteps to lists of percepts.
+The <code>executeAction</code> method then implements the behaviour of the <code>simulate(X)</code> environment action used by <code>simulator</code>, adding to the environment the list of percepts for timestep <code>X</code> as specified by the class variable <code>narrative</code>.</p>
+
+<h3 id="step-x-save-your-changes-and-select-emphrun-jason-application">Step X: Save your changes and select \emph{Run Jason Application}</h3>
+
+<p><img src="figures/narrative.png" alt="Figure" /></p>
+
+<p>The message <code>observed percept(a)</code> will be printed initially.
+After a short period the messages <code>observed percept(b)</code> and <code>observed percept(c)</code> will be printed.
+Finally, after another short period, the message <code>observed percept(d)</code> will be printed.
+This short delay between messages indicates that percepts from <code>narrative.tsv</code> are only generated in the environment when <code>simulator</code> believes the corresponding timestep has been reached.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+</div>
+<footer class="p-6 mt-4">
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+</footer>
+</div>
+</div>
+</body>
+</html>

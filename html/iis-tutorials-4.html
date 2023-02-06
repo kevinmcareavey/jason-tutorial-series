@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tutorial 4 - Multi-agent systems</title>
+  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="pygments.css">
+</head>
+<body>
+<div class="container-lg p-4">
+<div class="col-12">
+<div class="markdown-body border rounded-3 p-6">
+<h1 id="tutorial-4-multi-agent-systems">Tutorial 4 - Multi-agent systems</h1>
+
+<ul>
+<li><a href="#multiple-agents">Multiple agents</a>
+<ul>
+<li><a href="#step-4-update-the-configuration-file-hello_worldmas2j">Step 4 - Update the configuration file <code>hello_world.mas2j</code></a></li>
+<li><a href="#step-save-your-changes-and-select-run-jason-application">Step - Save your changes and select <strong>Run Jason Application</strong></a></li>
+<li><a href="#step-update-agent-file-srcaslsample_agentasl">Step - Update agent file <code>src/asl/sample_agent.asl</code></a></li>
+<li><a href="#step-5-update-the-configuration-file-hello_worldmas2j">Step 5 - Update the configuration file <code>hello_world.mas2j</code></a></li>
+<li><a href="#step-6-save-your-changes-and-select-run-jason-application">Step 6 - Save your changes and select <strong>Run Jason Application</strong></a></li>
+<li><a href="#step-7-create-new-agent-files-srcaslbuyer_agentasl-and-srcaslseller_agentasl">Step 7 - Create new agent files <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code></a></li>
+<li><a href="#step-8-update-the-configuration-file-hello_worldmas2j">Step 8 - Update the configuration file <code>hello_world.mas2j</code></a></li>
+<li><a href="#step-9-save-your-changes-and-select-run-jason-application">Step 9 - Save your changes and select <strong>Run Jason Application</strong></a></li>
+<li><a href="#step-10-select-stop-in-the-jason-console">Step 10 - Select <strong>Stop</strong> in the Jason console</a></li>
+</ul></li>
+<li><a href="#agent-communication">Agent communication</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<h2 id="multiple-agents">Multiple agents</h2>
+
+<h3 id="step-4-update-the-configuration-file-hello_worldmas2j">Step 4 - Update the configuration file <code>hello_world.mas2j</code></h3>
+
+<p>Edit <code>hello_world.mas2j</code> by removing <code>agent1</code> and adding two new agents called <code>alice</code> and <code>bob</code> as instances of <code>sample_agent</code>.</p>
+
+<p>The file <code>hello_world.mas2j</code> looks as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">alice</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
+        <span class="s s-Atom">bob</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="step-save-your-changes-and-select-run-jason-application">Step - Save your changes and select <strong>Run Jason Application</strong></h3>
+
+<p><img src="figures/update-mas2j-1.png" alt="Figure" /></p>
+
+<p>Notice that <code>alice</code> and <code>bob</code> are treated as different agents even though they were instantiated from the same agent file.
+This method serves to simplify and generalise code, but in order to achieve interesting functionality we typically need to pass parameters to the instantiations, such as differing initial base beliefs and/or initial achievement goals.
+One way this can be achieved is through the Jason configuration file.</p>
+
+<h3 id="step-update-agent-file-srcaslsample_agentasl">Step - Update agent file <code>src/asl/sample_agent.asl</code></h3>
+
+<p>Edit <code>sample_agent.asl</code> by removing the initial achievment goal <code>!start</code> and updating the corresponding plan as follows:</p>
+
+<p>The file <code>src/asl/sample_agent.asl</code> looks as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="c1">// Agent sample_agent in project hello_world</span>
+
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="nf">friend</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hello &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<h3 id="step-5-update-the-configuration-file-hello_worldmas2j">Step 5 - Update the configuration file <code>hello_world.mas2j</code></h3>
+
+<p>Edit <code>hello_world.mas2j</code> by adding options in square brackets labelled <code>beliefs</code> and <code>goals</code>, where the former is a string comprised of a comma-separated list of initial base beliefs and the latter is a string comprised of a comma-separated list of initial achievement goals (without the preceding <code>!</code> symbols).</p>
+
+<p>The file <code>hello_world.mas2j</code> looks as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code>    <span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+
+        <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+        <span class="s s-Atom">agents</span><span class="p">:</span>
+            <span class="s s-Atom">alice</span> <span class="s s-Atom">sample_agent</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(carol)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">];</span>
+            <span class="s s-Atom">bob</span> <span class="s s-Atom">sample_agent</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(dave)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">];</span>
+
+        <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+            <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="step-6-save-your-changes-and-select-run-jason-application">Step 6 - Save your changes and select <strong>Run Jason Application</strong></h3>
+
+<p><img src="figures/update-mas2j-2.png" alt="Figure" /></p>
+
+<p>Notice that <code>alice</code> and <code>bob</code> have different behaviour because they were initialised with differing initial base beliefs, even though they were instantiated from the sample agent file.
+We can now move on to more complex agent files.</p>
+
+<h3 id="step-7-create-new-agent-files-srcaslbuyer_agentasl-and-srcaslseller_agentasl">Step 7 - Create new agent files <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code></h3>
+
+<p>The file <code>src/asl/buyer_agent.asl</code> looks as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">seller</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!buy</span><span class="p">(</span><span class="s s-Atom">item1</span><span class="p">).</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nf">seller</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I would like to buy &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">want</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
+<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;it looks like &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot; is unavailable&quot;</span><span class="p">).</span>
+<span class="nf">+recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, thank you for &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+<span class="nf">+out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I will try to find &quot;</span><span class="p">,</span> <span class="nv">X</span> <span class="p">,</span> <span class="s2">&quot; elsewhere&quot;</span><span class="p">);</span> <span class="nc">!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>The file <code>src/asl/seller_agent.asl</code> looks as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">in_stock</span><span class="p">(</span><span class="s s-Atom">item1</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;ok &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, here is &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">));</span> <span class="nf">-in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="ow">not</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;sorry &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I do not have &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
+</code></pre>
+</div>
+
+<p>The files <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code> can be interpreted together as follows:</p>
+
+<ul>
+<li><code>alice</code> believes that <code>bob</code> is a seller.</li>
+<li><code>bob</code> believes that he has <code>item1</code> in stock.</li>
+<li><code>alice</code> wants to buy <code>item1</code>.</li>
+<li>If <code>alice</code> wants to buy item <code>X</code> and believes there is a seller <code>Y</code> who has not previously informed her that they do not have <code>X</code> in stock, she will attempt to achieve the goal by telling <code>Y</code> that she wants <code>X</code>.</li>
+<li>If <code>bob</code> is told by agent <code>Y</code> that they want to buy item <code>X</code>, then, if he believes <code>X</code> is in stock, he will tell <code>Y</code> that they will receive <code>X</code> and then revise his beliefs so that he now believes <code>X</code> is not in stock, otherwise he will tell <code>Y</code> that <code>X</code> is out of stock.</li>
+<li>If <code>alice</code> is told that item <code>X</code> is out of stock, she will simply make another attempt to buy <code>X</code>.</li>
+</ul>
+
+<p>These AgentSpeak programs make use of several important features of Jason, including:</p>
+
+<ul>
+<li>Initial beliefs, e.g. <code>seller(bob)</code>, <code>in_stock(item1)</code>.</li>
+<li>Initial achievement goals, e.g. <code>!buy(item1)</code>.</li>
+<li>Variables, e.g. <code>X</code>, <code>Y</code>.</li>
+<li>Annotations, e.g. <code>[source(Y)]</code>.</li>
+<li>Goal addition tiggering events, e.g. <code>+!buy(X)</code>.</li>
+<li>Belief change tiggering events, e.g. <code>+want(X)[source(Y)]</code>.</li>
+<li>Plan contexts with negation, e.g. <code>not in_stock(X)</code>.</li>
+<li>Plan contexts with conjunction, e.g. <code>seller(Y) &amp; not out_of_stock(X)[source(Y)]</code>.</li>
+<li>Internal actions, e.g. <code>.print</code>.</li>
+<li>Agent communication, e.g. <code>.send</code>.</li>
+<li>Belief change actions, e.g. <code>-in_stock(X)</code>.</li>
+</ul>
+
+<h3 id="step-8-update-the-configuration-file-hello_worldmas2j">Step 8 - Update the configuration file <code>hello_world.mas2j</code></h3>
+
+<p>Edit <code>hello_world.mas2j</code> by making <code>alice</code> an instance of <code>buyer_agent</code> and <code>bob</code> an instance of <code>seller_agent</code>.</p>
+
+<p>The file <code>hello_world.mas2j</code> looks as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">alice</span> <span class="s s-Atom">buyer_agent</span><span class="p">;</span>
+        <span class="s s-Atom">bob</span> <span class="s s-Atom">seller_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="step-9-save-your-changes-and-select-run-jason-application">Step 9 - Save your changes and select <strong>Run Jason Application</strong></h3>
+
+<p><img src="figures/run-buyer-seller.png" alt="Figure" /></p>
+
+<p>Notice that <code>bob</code> had no initial goal(s) and simply reacted to an event triggered by <code>alice</code>.
+Conversely, notice that <code>alice</code> exhibits both reactive and goal-directed behaviour.</p>
+
+<h3 id="step-10-select-stop-in-the-jason-console">Step 10 - Select <strong>Stop</strong> in the Jason console</h3>
+
+<h2 id="agent-communication">Agent communication</h2>
+
+<h2 id="conclusion">Conclusion</h2>
+
+</div>
+<footer class="p-6 mt-4">
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+</footer>
+</div>
+</div>
+</body>
+</html>

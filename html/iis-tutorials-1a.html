@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tutorial 1a - Installing Jason</title>
+  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="pygments.css">
+</head>
+<body>
+<div class="container-lg p-4">
+<div class="col-12">
+<div class="markdown-body border rounded-3 p-6">
+<h1 id="tutorial-1a-installing-jason">Tutorial 1a - Installing Jason</h1>
+
+<p>This tutorial describes how to install everything needed for Jason development, including Java SE, Jason, Eclipse, and the Jason plugin for Eclipse.</p>
+
+<ul>
+<li><a href="#java">Java</a>
+<ul>
+<li><a href="#step-1-download-and-install-java-se">Step 1 - Download and install Java SE</a></li>
+</ul></li>
+<li><a href="#jason">Jason</a>
+<ul>
+<li><a href="#step-2-download-and-install-jason">Step 2 - Download and install Jason</a></li>
+<li><a href="#step-3-run-the-jason-configuration-tool">Step 3 - Run the Jason configuration tool</a></li>
+</ul></li>
+<li><a href="#eclipse">Eclipse</a>
+<ul>
+<li><a href="#step-4-download-and-install-eclipse">Step 4 - Download and install Eclipse</a></li>
+<li><a href="#step-5-install-the-jason-plugin-for-eclipse">Step 5 - Install the Jason plugin for Eclipse</a></li>
+</ul></li>
+<li><a href="#test-that-it-works">Test that it works</a>
+<ul>
+<li><a href="#step-6-create-a-new-jason-project">Step 6 - Create a new Jason project</a></li>
+<li><a href="#step-7-run-the-jason-project">Step 7 - Run the Jason project</a></li>
+<li><a href="#step-8-terminate-the-jason-project">Step 8 - Terminate the Jason project</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<h2 id="java">Java</h2>
+
+<h3 id="step-1-download-and-install-java-se">Step 1 - Download and install Java SE</h3>
+
+<p>Java Platform, Standard Edition (Java SE) is available to download from <a href="https://www.oracle.com/java/technologies/java-se-glance.html">Oracle</a>.</p>
+
+<p>As of January 2023, the latest version is <strong>Java SE 19</strong>.</p>
+
+<p>Select <strong>Download</strong> and then choose the most appropriate package for your platform: typical options are <strong>x64 Installer</strong> for Windows and <strong>x64 DMG Installer</strong> for macOS.</p>
+
+<p>Download and install the selected package.</p>
+
+<h2 id="jason">Jason</h2>
+
+<h3 id="step-2-download-and-install-jason">Step 2 - Download and install Jason</h3>
+
+<p>Jason is available to download from <a href="https://sourceforge.net/projects/jason/files/jason/">SourceForge</a>.</p>
+
+<p>As of January 2023, the latest version is Jason 3.1. However, for this tutorial series we will use <strong>Jason 2.6.3</strong>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> Jason 3.0 introduced some changes to the language that are not well-documented and do not guarantee compatibility with this tutorial series so you <strong>must</strong> use Jason 2.6.3.</p>
+</blockquote>
+
+<p>Download and extract <code>jason-2.6.3.zip</code> as a directory called <code>jason-2.6.3</code> and remember its absolute path, e.g. <code>/path/to/jason-2.6.3/</code>.</p>
+
+<h3 id="step-3-run-the-jason-configuration-tool">Step 3 - Run the Jason configuration tool</h3>
+
+<p>Run the file <code>jason-2.6.3/libs/jason-2.6.3.jar</code>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> On macOS you may see an error message <em>"jason-2.6.3.jar" cannot be opened because it is from an unidentified developer</em>. If this occurs, you should navigate in macOS to <strong>System Preferences &gt; Security &amp; Privacy &gt; General</strong> and select <strong>Open Anyway</strong> beside the message <em>"jason-2.6.3.jar" was blocked from use because it is not from an identified developer</em>.</p>
+</blockquote>
+
+<p><img src="figures/jason-setup.png" alt="Figure" /></p>
+
+<p>Typically most fields are filled automatically, but in some cases you may be required to manually enter values.</p>
+
+<p>Ensure that the following fields are filled and correct:</p>
+
+<ul>
+<li><strong>Jason &gt; jason.jar location</strong>: <code>/path/to/jason-2.6.3/libs/jason-2.6.3.jar</code></li>
+<li><strong>Java Home &gt; Directory</strong>: path to your Java home directory (e.g. <code>/Library/Java/JavaVirtualMachines/jdk-19.jdk/Contents/Home/</code> on macOS)</li>
+<li><strong>Ant libs &gt; Directory</strong>: <code>/path/to/jason-2.6.3/libs/</code></li>
+<li><strong>JADE &gt; jade.jar location</strong>: <code>/path/to/jason-2.6.3/libs/jade-4.3.jar</code></li>
+</ul>
+
+<p>Select <strong>Save configuration and Exit</strong>.</p>
+
+<h2 id="eclipse">Eclipse</h2>
+
+<h3 id="step-4-download-and-install-eclipse">Step 4 - Download and install Eclipse</h3>
+
+<p>Eclipse is available to download from <a href="https://www.eclipse.org/downloads/packages/release/2021-12/r">Eclipse Foundation</a>.</p>
+
+<p>As of January 2023, the latest version is Eclipse 2022-12. However, for this tutorial series we will use <strong>Eclipse 2021-12</strong>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> The Jason plugin for Eclipse is not compatible with more recent versions of Eclipse due to a missing dependency, so you <strong>must</strong> use Eclipse 2021-12.</p>
+</blockquote>
+
+<p>Download the most appropriate package for your platform (e.g. <strong>x86_64</strong> for Windows and macOS) and then run the Eclipse installer.</p>
+
+<p><img src="figures/eclipse-install-standard.png" alt="Figure" /></p>
+
+<p>When prompted, choose <strong>Eclipse IDE for Eclipse Committers</strong> and complete the installation.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> The Jason plugin for Eclipse is not compatible with other variants of Eclipse 2021-12, including <strong>Eclipse IDE for Java Developers</strong> and <strong>Eclipse IDE for Enterprise Java and Web Developers</strong>.</p>
+</blockquote>
+
+<h3 id="step-5-install-the-jason-plugin-for-eclipse">Step 5 - Install the Jason plugin for Eclipse</h3>
+
+<p>Open Eclipse.</p>
+
+<p><img src="figures/jason-plugin-install-0.png" alt="Figure" /></p>
+
+<p>Choose a directory for your workspace and select <strong>Launch</strong>.</p>
+
+<p><img src="figures/jason-plugin-install-0b.png" alt="Figure" /></p>
+
+<p>Select <strong>Help &gt; Install New Software &gt; Add</strong>.</p>
+
+<p>Select <strong>Add...</strong> in the new window.</p>
+
+<p>In the <strong>Name</strong> field enter <code>jasonide</code> and in the <strong>Location</strong> field enter <code>http://jason.sourceforge.net/eclipseplugin/20x/</code>.</p>
+
+<p><img src="figures/jason-plugin-install-1.png" alt="Figure" /></p>
+
+<p>Select <strong>Add</strong>.</p>
+
+<p><img src="figures/jason-plugin-install-2.png" alt="Figure" /></p>
+
+<p>Mark the checkbox beside <strong>jasonide</strong> and select <strong>Next</strong>.</p>
+
+<p><img src="figures/jason-plugin-install-3.png" alt="Figure" /></p>
+
+<p>Select <strong>Next</strong> again.</p>
+
+<p><img src="figures/jason-plugin-install-4.png" alt="Figure" /></p>
+
+<p>Accept the terms and select <strong>Finish</strong>.</p>
+
+<p><img src="figures/jason-plugin-install-5.png" alt="Figure" /></p>
+
+<p>Select <strong>Install anyway</strong>.</p>
+
+<p><img src="figures/jason-plugin-install-6.png" alt="Figure" /></p>
+
+<p>Select <strong>Restart Now</strong>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> If you encountered issues installing the Jason plugin for Eclipse, please refer to the <a href="http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/">official installation instructions</a>.</p>
+</blockquote>
+
+<p>Eclipse should now be open and ready for Jason development.</p>
+
+<h2 id="test-that-it-works">Test that it works</h2>
+
+<h3 id="step-6-create-a-new-jason-project">Step 6 - Create a new Jason project</h3>
+
+<p>Select <strong>File &gt; New &gt; Other &gt; Jason &gt; Jason Project</strong> from the Eclipse menu.</p>
+
+<p><img src="figures/new-jason-project-1.png" alt="Figure" /></p>
+
+<p>Select <strong>Next</strong>.</p>
+
+<p><img src="figures/new-jason-project-2.png" alt="Figure" /></p>
+
+<p>Enter <code>hello_world</code> in the <strong>Project name</strong> field and select <strong>Finish</strong>.</p>
+
+<p><img src="figures/new-jason-project-3.png" alt="Figure" /></p>
+
+<p>If you are prompted to open the project in <strong>Jason pespective</strong>, select <strong>Open Pespective</strong>.</p>
+
+<p>A new Jason project will be created with a default directory structure and two auto-generated files: <code>src/asl/sample_agent.asl</code> and <code>hello_world.mas2j</code>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> To see the new Jason project you may need to close the <strong>Welcome</strong> tab.</p>
+</blockquote>
+
+<h3 id="step-7-run-the-jason-project">Step 7 - Run the Jason project</h3>
+
+<p>With the <strong>hello_world</strong> project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> There may be two identical buttons in the Eclipse toolbar; ensure that you select the button labelled <strong>Run Jason Application</strong> rather than the button labelled <strong>Run</strong>.</p>
+</blockquote>
+
+<p><img src="figures/run-hello-world.png" alt="Figure" /></p>
+
+<p>The above window should appear, which confirms that Jason is working correctly.</p>
+
+<h3 id="step-8-terminate-the-jason-project">Step 8 - Terminate the Jason project</h3>
+
+<p>Select <strong>Stop</strong> at the bottom of the window.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>You should now have a working installation of Jason ready to use for the rest of this <a href="iis-tutorials.html">tutorial series</a>.</p>
+
+<p>If you encountered issues during the installation and have been unable to resolve them yourself, please contact Kevin McAreavey via email or speak to a teaching assistant during one of the lab sessions.</p>
+
+</div>
+<footer class="p-6 mt-4">
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+</footer>
+</div>
+</div>
+</body>
+</html>

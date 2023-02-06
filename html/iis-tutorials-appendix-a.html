@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Appendix A - Virtual environments</title>
+  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="pygments.css">
+</head>
+<body>
+<div class="container-lg p-4">
+<div class="col-12">
+<div class="markdown-body border rounded-3 p-6">
+<h1 id="appendix-a-virtual-environments">Appendix A - Virtual environments</h1>
+
+<ul>
+<li><a href="#virtual-environments">Virtual environments</a>
+<ul>
+<li><a href="#step-x-extend-the-environment-class-from-jason">Step X - Extend the Environment class from Jason</a></li>
+<li><a href="#step-x-update-the-agent-files">Step X - Update the agent files</a></li>
+<li><a href="#step-x-update-the-configuration-file">Step X - Update the configuration file</a></li>
+<li><a href="#step-x-save-and-run-the-jason-project">Step X - Save and run the Jason project</a></li>
+<li><a href="#step-x-terminate-the-jason-project">Step X - Terminate the Jason Project</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+
+<h2 id="virtual-environments">Virtual environments</h2>
+
+<p>To implement a virtual environment in Jason you must implement a Java class that extends the default <code>jason.environment.Environment</code> Java class included in Jason and then override some of its methods.</p>
+
+<h3 id="step-x-extend-the-environment-class-from-jason">Step X - Extend the Environment class from Jason</h3>
+
+<div class="codehilite">
+<pre><span></span><code><span class="c1">// src/java/hello_world/MarketEnvironment.java</span>
+
+<span class="kn">package</span><span class="w"> </span><span class="nn">hello_world</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MarketEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(bob)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(dave)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;delivery(item1)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;dave&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;delivery(item1)&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">act</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Structure</span><span class="w"> </span><span class="n">leave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseStructure</span><span class="p">(</span><span class="s">&quot;leave&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">act</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">leave</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;leaving(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>The file <code>src/java/hello_world/MarketEnvironment.java</code> can be explained as follows:</p>
+
+<ul>
+<li>Lines 10-21 initialise the environment with some initial percepts <code>seller(bob)</code>, <code>seller(dave)</code>, and <code>delivery(item1)</code>.</li>
+<li>Lines 23-35 implement the behaviour of a single environment action <code>leave</code>.</li>
+</ul>
+
+<p>The percepts <code>seller(bob)</code> and <code>seller(dave)</code> are sensed by all agents whereas the percept <code>delivery(item1)</code> is sensed by <code>bob</code> and <code>dave</code> only.</p>
+
+<p>When executed by agent <code>X</code>, the environment action <code>leave</code> has the effect of adding a new percept <code>leaving(X)</code> to the environment.</p>
+
+<p>All percepts are automatically annotated by Jason with <code>source(percept)</code>, e.g.\ percept <code>delivery(item1)</code> also takes the form <code>delivery(item1)[source(percept)]</code>.</p>
+
+<p>Annotations can be freely omitted and ignored in agent files.</p>
+
+<h3 id="step-x-update-the-agent-files">Step X - Update the agent files</h3>
+
+<p>Remove the initial beliefs from <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code> and add two new plans to each file to handle the effect of environment action <code>leave</code>.</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="s s-Atom">#</span> <span class="s s-Atom">src</span><span class="o">/</span><span class="s s-Atom">asl</span><span class="o">/</span><span class="nb">buyer_agent.asl</span>
+
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!buy</span><span class="p">(</span><span class="s s-Atom">item1</span><span class="p">).</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nf">seller</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I would like to buy &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">want</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
+<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;it looks like &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot; is unavailable&quot;</span><span class="p">).</span>
+<span class="nf">+recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, thank you for &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I have found what I wanted, goodbye everyone!&quot;</span><span class="p">);</span> <span class="s s-Atom">leave</span><span class="p">.</span>
+<span class="nf">+out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I will try to find &quot;</span><span class="p">,</span> <span class="nv">X</span> <span class="p">,</span> <span class="s2">&quot; elsewhere&quot;</span><span class="p">);</span> <span class="nc">!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+
+<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.kill_agent</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;goodbye &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code><span class="s s-Atom">#</span> <span class="s s-Atom">src</span><span class="o">/</span><span class="s s-Atom">asl</span><span class="o">/</span><span class="nb">seller_agent.asl</span>
+
+<span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+delivery</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">percept</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I have received a delivery of &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nf">+in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+
+<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">);</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;ok &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, here is &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
+<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="ow">not</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;sorry &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I do not have &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
+
+<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.kill_agent</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;goodbye &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Lines 14-15 in <code>src/asl/buyer_agent.asl</code> and Lines 12-13 in <code>src/asl/seller_agent.asl</code> are identical.</p>
+
+<p>Semantically, the plans say that if the agent obtains a belief that some agent <code>X</code> is leaving the environment, then the agent should terminate its own run if <code>X</code> refers to itself, otherwise it should say goodbye to <code>X</code> (since <code>X</code> refers to some other agent).</p>
+
+<p>Notice that this implementation relies on the fact that plans are ordered in Jason according to the (top-to-bottom) order that they appear within the <code>.asl</code> file.</p>
+
+<p>Thus, the second plan is only selected if the context of the first plan does not hold.
+An alternative approach is to replace the context <code>true</code> with an independent check <code>.my_name(Y) &amp; X \== Y</code>.</p>
+
+<p>The latter approach is less efficient but is also less likely to introduce bugs into your implementation.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> The token <code>.my_name(X)</code> is another example of a Jason internal action. For completeness, it is worth mentioning that internal actions may appear in contexts and plan bodies whereas environment actions may only appear in plan bodies. A list of available internal actions within Jason can be found <a href="http://jason.sourceforge.net/api/jason/stdlib/package-summary.html">here</a>.</p>
+</blockquote>
+
+<h3 id="step-x-update-the-configuration-file">Step X - Update the configuration file</h3>
+
+<p>Set the <code>MarketEnvironment</code> class as the agents' environment and create two new agents <code>carol</code> and <code>dave</code> as instances of <code>buyer_agent</code> and <code>seller_agent</code>, respectively.</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="c1">// hello_world.mas2j</span>
+
+<span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">environment</span><span class="p">:</span> <span class="nb">hello_world.MarketEnvironment</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">alice</span> <span class="s s-Atom">buyer_agent</span><span class="p">;</span>
+        <span class="s s-Atom">bob</span> <span class="s s-Atom">seller_agent</span><span class="p">;</span>
+        <span class="s s-Atom">carol</span> <span class="s s-Atom">buyer_agent</span><span class="p">;</span>
+        <span class="s s-Atom">dave</span> <span class="s s-Atom">seller_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<h3 id="step-x-save-and-run-the-jason-project">Step X - Save and run the Jason project</h3>
+
+<p><img src="figures/run-multi-buyer-seller-1.png" alt="Figure" /></p>
+
+<p><img src="figures/run-multi-buyer-seller-2.png" alt="Figure" /></p>
+
+<p>These screenshots show two possible executions of the same Jason project.</p>
+
+<p>Notice that <code>bob</code> sells to <code>alice</code> in the first execution but sells to <code>carol</code> in the second execution.</p>
+
+<p>There are many reasons why the same Jason project may result in different executions, including the definition of selection functions, the ordering of belief bases, the ordering of plan libraries, and the scheduling of agents in each interpreter cycle.</p>
+
+<p>Most of these situations can be controlled and/or configured when necessary, but the topic is beyond the scope of this tutorial.</p>
+
+<h3 id="step-x-terminate-the-jason-project">Step X - Terminate the Jason Project</h3>
+
+<h2 id="conclusion">Conclusion</h2>
+
+</div>
+<footer class="p-6 mt-4">
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+</footer>
+</div>
+</div>
+</body>
+</html>
