@@ -55,7 +55,7 @@
 
 <h2 id="hello-world-program">Hello, World! program</h2>
 
-<p>When introducing a new programming language, it is customary to start with its <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">Hello, World! program</a>. This was already included in <a href="iis-tutorials-1a.html">Tutorial 1a</a>, but we will now go through it in more detail.</p>
+<p>When introducing a new programming language, it is customary to start with its <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">Hello, World! program</a>. This was already included in <a href="tutorial-1a.html">Tutorial 1a</a>, but we will now go through it in more detail.</p>
 
 <h3 id="step-1-create-a-new-jason-project">Step 1 - Create a new Jason project</h3>
 
@@ -130,7 +130,7 @@ In this instance the event set only contains one event, so <code>+!start</code> 
 If the selected event unifies with the triggering event of a plan then that plan is called a <strong>relevant plan</strong>.
 If the context of a relevant plan is entailed (as in a Prolog-style query) by the agent's current belief base then that plan is called an <strong>applicable plan</strong>.
 The Jason interpreter will find the set of applicable plans and then apply its <strong>option selection function</strong> to choose one of those plans to add to the <strong>intention stack</strong> of the selected event.
-Default option selection in Jason operates in a prioritised fashion, as is <a href="iis-tutorials-2.html#step-6-queries-with-variables">standard in Prolog</a>, based on the order that beliefs, plans, and rules appear in the AgentSpeak file.
+Default option selection in Jason operates in a prioritised fashion, as is <a href="tutorial-2.html#step-6-queries-with-variables">standard in Prolog</a>, based on the order that beliefs, plans, and rules appear in the AgentSpeak file.
 In this instance there is only one applicable plan <code>+!start : true &lt;- .print("hello world.")</code>, so it will be selected, pushed to the (empty) intention stack, and the intention will be added to the agent's <strong>intention set</strong>.</p>
 
 <p>At the start of the acting phase the Jason interpreter will apply its <strong>intention selection function</strong> to the intention set.
@@ -254,7 +254,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <h2 id="family-tree-cont">Family tree (cont.)</h2>
 
-<p>To illustrate the relationship between Prolog and Jason, let us translate the Prolog program from <a href="iis-tutorials-2.html">Tutorial 2</a> into Jason.</p>
+<p>To illustrate the relationship between Prolog and Jason, let us translate the Prolog program from <a href="tutorial-2.html">Tutorial 2</a> into Jason.</p>
 
 <h3 id="step-5-translate-prolog-to-jason-syntax">Step 5 - Translate Prolog to Jason syntax</h3>
 
@@ -352,7 +352,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </code></pre>
 </div>
 
-<p>Notice that this Jason code is identical to the the Prolog code from <a href="iis-tutorials-2.html">Tutorial 2</a>, with a few exceptions:</p>
+<p>Notice that this Jason code is identical to the the Prolog code from <a href="tutorial-2.html">Tutorial 2</a>, with a few exceptions:</p>
 
 <ul>
 <li><code>%</code> (percent) <strong>does not denote</strong> the start of a comment</li>
@@ -609,7 +609,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <p>This matches the original traversal logic.</p>
 
 <blockquote>
-  <p><strong>Note</strong>: Remember that the agent is moving in its own mind only, since it is executing <strong>belief change actions</strong> rather than <strong>environment actions</strong>. Implementing environment actions in Jason is covered in <a href="iis-tutorials-appendix-a">Appendix A</a>.</p>
+  <p><strong>Note</strong>: Remember that the agent is moving in its own mind only, since it is executing <strong>belief change actions</strong> rather than <strong>environment actions</strong>. Implementing environment actions in Jason is covered in <a href="tutorial-appendix-a">Appendix A</a>.</p>
 </blockquote>
 
 <h3 id="step-9-adapt-to-different-grids">Step 9 - Adapt to different grids</h3>

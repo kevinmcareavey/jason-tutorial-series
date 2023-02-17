@@ -6,7 +6,7 @@ This tutorial provides a brief introduction to implementing agents in Jason usin
 
 ## Hello, World! program
 
-When introducing a new programming language, it is customary to start with its [Hello, World! program](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program). This was already included in [Tutorial 1a](iis-tutorials-1a.html), but we will now go through it in more detail.
+When introducing a new programming language, it is customary to start with its [Hello, World! program](https://en.wikipedia.org/wiki/%22Hello,_World!%22_program). This was already included in [Tutorial 1a](tutorial-1a.html), but we will now go through it in more detail.
 
 ### Step 1 - Create a new Jason project
 
@@ -72,7 +72,7 @@ In this instance the event set only contains one event, so `+!start` will be sel
 If the selected event unifies with the triggering event of a plan then that plan is called a **relevant plan**.
 If the context of a relevant plan is entailed (as in a Prolog-style query) by the agent's current belief base then that plan is called an **applicable plan**.
 The Jason interpreter will find the set of applicable plans and then apply its **option selection function** to choose one of those plans to add to the **intention stack** of the selected event.
-Default option selection in Jason operates in a prioritised fashion, as is [standard in Prolog](iis-tutorials-2.html#step-6-queries-with-variables), based on the order that beliefs, plans, and rules appear in the AgentSpeak file.
+Default option selection in Jason operates in a prioritised fashion, as is [standard in Prolog](tutorial-2.html#step-6-queries-with-variables), based on the order that beliefs, plans, and rules appear in the AgentSpeak file.
 In this instance there is only one applicable plan `+!start : true <- .print("hello world.")`, so it will be selected, pushed to the (empty) intention stack, and the intention will be added to the agent's **intention set**.
 
 At the start of the acting phase the Jason interpreter will apply its **intention selection function** to the intention set.
@@ -176,7 +176,7 @@ Terminate the Jason project.
 
 ## Family tree (cont.)
 
-To illustrate the relationship between Prolog and Jason, let us translate the Prolog program from [Tutorial 2](iis-tutorials-2.html) into Jason.
+To illustrate the relationship between Prolog and Jason, let us translate the Prolog program from [Tutorial 2](tutorial-2.html) into Jason.
 
 ### Step 5 - Translate Prolog to Jason syntax
 
@@ -273,7 +273,7 @@ ancestor(X, Z) :- parent(X, Y) & ancestor(Y, Z).
 /* Plans */
 ```
 
-Notice that this Jason code is identical to the the Prolog code from [Tutorial 2](iis-tutorials-2.html), with a few exceptions:
+Notice that this Jason code is identical to the the Prolog code from [Tutorial 2](tutorial-2.html), with a few exceptions:
 
 - `%` (percent) **does not denote** the start of a comment
 - `&` (ampersand) rather than `,` (comma) denotes **conjunction**
@@ -470,7 +470,7 @@ The Jason console should appear and display the following text:
 
 This matches the original traversal logic.
 
-> **Note**: Remember that the agent is moving in its own mind only, since it is executing **belief change actions** rather than **environment actions**. Implementing environment actions in Jason is covered in [Appendix A](iis-tutorials-appendix-a).
+> **Note**: Remember that the agent is moving in its own mind only, since it is executing **belief change actions** rather than **environment actions**. Implementing environment actions in Jason is covered in [Appendix A](tutorial-appendix-a).
 
 ### Step 9 - Adapt to different grids
 

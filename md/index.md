@@ -17,9 +17,9 @@ This section describes how to get started with Jason development and should be c
 
 Where possible, students are strongly encouraged to use their own machines for Jason development. Students who are able bring a laptop to the lab sessions should follow Tutorial 1a and can safely ignore Tutorial 1b. Students who are unable to bring a laptop should follow Tutorial 1b to access Jason on a lab machine.
 
-- [Tutorial 1a - Installing Jason](iis-tutorials-1a.html)
+- [Tutorial 1a - Installing Jason](tutorial-1a.html)
 - Tutorial 1b - Jason on lab machines &#9940; &#128679;
-<!-- - [Tutorial 1b - Jason on lab machines](iis-tutorials-1b.html) -->
+<!-- - [Tutorial 1b - Jason on lab machines](tutorial-1b.html) -->
 
 ## Lab sessions
 
@@ -27,7 +27,7 @@ Where possible, students are strongly encouraged to use their own machines for J
 
 A basic understanding of logic programming is essential to Jason programming. This section provides a brief introduction to logic programming using the SWISH web interface for SWI-Prolog.
 
-- [Tutorial 2 - Logic programming](iis-tutorials-2.html)
+- [Tutorial 2 - Logic programming](tutorial-2.html)
 
 ### Tuesday 14 March 2023
 
@@ -36,7 +36,7 @@ This section provides a brief introduction to implementing `.asl` files.
 
 <!-- - Tutorial 3 - Agents &#9940; &#128679; -->
 
-- [Tutorial 3 - Agents](iis-tutorials-3.html)
+- [Tutorial 3 - Agents](tutorial-3.html)
 
 ### Tuesday 21 March 2023
 
@@ -44,7 +44,7 @@ Multi-agent systems are configured in Jason using a Jason configuration file, de
 Jason also provides a family of actions, available when implementing `.asl` files, that allow agents to communicate with each other. This section provides a brief introduction to the `.mas2j` file and to Jason communication actions.
 
 - Tutorial 4 - Multi-agent systems &#9940; &#128679;
-<!-- - [Tutorial 4 - Multi-agent systems](iis-tutorials-4.html) -->
+<!-- - [Tutorial 4 - Multi-agent systems](tutorial-4.html) -->
 
 ## Advanced material
 
@@ -53,11 +53,11 @@ Experience with Java programming is desirable but not essential to Jason program
 The material covered in this section is **not required** to achieve full marks in the assignment. However, experienced programmers (especially those with Java experience) should find them straightforward and they will allow you to implement more interesting applications in Jason.
 
 - Appendix A - Virtual environments, including environment actions &#9940; &#128679;
-<!-- - [Appendix A - Virtual environments, including environment actions](iis-tutorials-appendix-a.html) -->
+<!-- - [Appendix A - Virtual environments, including environment actions](appendix-a.html) -->
 - Appendix B - Interfaces, including graphical user interfaces &#9940; &#128679;
-<!-- - [Appendix B - Interfaces, including graphical user interfaces](iis-tutorials-appendix-b.html) -->
+<!-- - [Appendix B - Interfaces, including graphical user interfaces](appendix-b.html) -->
 - Appendix C - Custom internal actions &#9940; &#128679;
-<!-- - [Appendix C - Custom internal actions](iis-tutorials-appendix-c.html) -->
+<!-- - [Appendix C - Custom internal actions](appendix-c.html) -->
 
 ## Further resources
 
