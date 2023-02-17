@@ -5,8 +5,11 @@ import markdown2
 from bs4 import BeautifulSoup
 
 
+# <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+
+
 def translate(markdown_str):
-    html_body = markdown2.markdown(markdown_str, extras=["toc", "fenced-code-blocks"])
+    html_body = markdown2.markdown(markdown_str, extras=["toc", "fenced-code-blocks", "tables", "code-friendly"])
     soup = BeautifulSoup(html_body.toc_html, "html.parser")
     title = soup.find("a").text
     html_toc = str(soup.find("ul").find("ul"))
@@ -15,7 +18,7 @@ def translate(markdown_str):
 <html>
 <head>
   <title>{title}</title>
-  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="primer.css">
   <link rel="stylesheet" href="pygments.css">
 </head>
 <body>

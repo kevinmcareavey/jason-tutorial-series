@@ -125,7 +125,7 @@ Enter `hello_world` in the **Project name** field and select **Finish**.
 
 ![Figure](figures/new-jason-project-3.png)
 
-If you are prompted to open the project in **Jason pespective**, select **Open Pespective**.
+If you are prompted to open the project in **Jason perspective**, select **Open Perspective**.
 
 A new Jason project will be created with a default directory structure and two auto-generated files: `src/asl/sample_agent.asl` and `hello_world.mas2j`.
 
@@ -147,6 +147,6 @@ Select **Stop** at the bottom of the window.
 
 ## Conclusion
 
-You should now have a working installation of Jason ready to use for the rest of this [tutorial series](iis-tutorials.html).
+You should now have a working installation of Jason ready to use for the rest of this [tutorial series](index.html).
 
 If you encountered issues during the installation and have been unable to resolve them yourself, please contact Kevin McAreavey via email or speak to a teaching assistant during one of the lab sessions.

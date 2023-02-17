@@ -26,6 +26,10 @@ In the program panel ensure that **Empty** is checked and then select **Program*
 
 ### Step 3 - Add some code
 
+Suppose we want to use Prolog to reason about a family tree:
+
+![Figure](figures/family-tree.png)
+
 Add the following Prolog code to the program panel:
 
 ```prolog
@@ -86,7 +90,7 @@ The expression `parent(dave, alice)` is an example of a **fact**:
 
 The term `alice` is an example of an **atom**, and the symbol `parent` is an example of a **predicate**. A predicate describes a property or relation over zero or more **terms**, where an atom is one kind of term.
 
-The expected number of terms for a predicate is called its **arity**. When referencing a predicate it is common to include both the symbol and the arity separated by the `/` (backslash) symbol, e.g. `female/1`, `male/1`, and `parent/2`.
+The expected number of terms for a predicate is called its **arity**. When referencing a predicate it is common to include both the symbol and the arity separated by the `/` (forward slash) symbol, e.g. `female/1`, `male/1`, and `parent/2`.
 
 The symbol `%` denotes the start of a **comment**. Comments are ignored by the Prolog interpreter.
 
@@ -133,6 +137,8 @@ Variables always start with an **uppercase letter**.
 The query `parent(dave, X)` can thus be read as: **who is a parent of Dave?**
 
 The query results `X = alice` and `X = bob` can then be read as: **Alice and Bob are parents of Dave.**
+
+> **Note:** `X = alice` is returned before `X = bob` because the positioning of facts and rules in a Prolog program is significant; it determines the order in which facts and rules are evaluated when answering queries. For example, if `male(bob)` were to appear above `female(alice)` then `X = bob` would be returned before `X = alice`.
 
 Change the query to `parent(X, dave)` and select **Run!**.
 
@@ -210,7 +216,7 @@ In the query panel enter `sibling(dave, X)` and select **Run!**. The query resul
 
 Now enter `sibling(dave, dave)` and select **Run!**. The query result should again be `true`, which implies that Dave is a sibling of himself.
 
-This of course is not the result we want. The reason for the result is that, while Prolog prohibits **different instances of the same variable** within a rule (e.g. `Z`) from having **different instantiations**, it does not prohibit **different variables** (e.g. `X` and `Y`) from having the **same instantiantion**.
+This of course is not the result we want. The reason for the result is that, while Prolog prohibits **different instances of the same variable** within a rule (e.g. `Z`) from having **different instantiations**, it does not prohibit **different variables** (e.g. `X` and `Y`) from having the **same instantiation**.
 
 To achieve the desired result we must therefore explicitly enforce an inequality within the rule.
 
@@ -342,11 +348,11 @@ The definition of the `ancestor/2` implements disjunction using multiple rules w
 
 > **Note:** Much of the power of Prolog comes from recursion, but it can be tricky to use correctly. When using recursion it essential that you always account for the boundary case.
 
-## Summary
+## Conclusion
 
-In this tutorial we have has a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, and how to make use of core language features such as conjunction, disjunction, and negation.
+In this tutorial we have had a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, and how to make use of core language features such as conjunction, disjunction, and negation.
 
-In the [next tutorial](iis-tutorials-3.html) we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.
+In the next tutorial in the [series](index.html) we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.
 
 ### Complete listing
 

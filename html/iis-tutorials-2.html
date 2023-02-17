@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Tutorial 2 - Logic programming</title>
-  <link rel="stylesheet" href="https://unpkg.com/@primer/css@^20.2.4/dist/primer.css">
+  <link rel="stylesheet" href="primer.css">
   <link rel="stylesheet" href="pygments.css">
 </head>
 <body>
@@ -37,7 +37,7 @@
 <li><a href="#step-13-disjunction">Step 13 - Disjunction</a></li>
 <li><a href="#step-14-recursion">Step 14 - Recursion</a></li>
 </ul></li>
-<li><a href="#summary">Summary</a>
+<li><a href="#conclusion">Conclusion</a>
 <ul>
 <li><a href="#complete-listing">Complete listing</a></li>
 </ul></li>
@@ -66,6 +66,10 @@
 <p><img src="figures/swish-2.png" alt="Figure" /></p>
 
 <h3 id="step-3-add-some-code">Step 3 - Add some code</h3>
+
+<p>Suppose we want to use Prolog to reason about a family tree:</p>
+
+<p><img src="figures/family-tree.png" alt="Figure" /></p>
 
 <p>Add the following Prolog code to the program panel:</p>
 
@@ -132,7 +136,7 @@
 
 <p>The term <code>alice</code> is an example of an <strong>atom</strong>, and the symbol <code>parent</code> is an example of a <strong>predicate</strong>. A predicate describes a property or relation over zero or more <strong>terms</strong>, where an atom is one kind of term.</p>
 
-<p>The expected number of terms for a predicate is called its <strong>arity</strong>. When referencing a predicate it is common to include both the symbol and the arity separated by the <code>/</code> (backslash) symbol, e.g. <code>female/1</code>, <code>male/1</code>, and <code>parent/2</code>.</p>
+<p>The expected number of terms for a predicate is called its <strong>arity</strong>. When referencing a predicate it is common to include both the symbol and the arity separated by the <code>/</code> (forward slash) symbol, e.g. <code>female/1</code>, <code>male/1</code>, and <code>parent/2</code>.</p>
 
 <p>The symbol <code>%</code> denotes the start of a <strong>comment</strong>. Comments are ignored by the Prolog interpreter.</p>
 
@@ -181,6 +185,10 @@
 <p>The query <code>parent(dave, X)</code> can thus be read as: <strong>who is a parent of Dave?</strong></p>
 
 <p>The query results <code>X = alice</code> and <code>X = bob</code> can then be read as: <strong>Alice and Bob are parents of Dave.</strong></p>
+
+<blockquote>
+  <p><strong>Note:</strong> <code>X = alice</code> is returned before <code>X = bob</code> because the positioning of facts and rules in a Prolog program is significant; it determines the order in which facts and rules are evaluated when answering queries. For example, if <code>male(bob)</code> were to appear above <code>female(alice)</code> then <code>X = bob</code> would be returned before <code>X = alice</code>.</p>
+</blockquote>
 
 <p>Change the query to <code>parent(X, dave)</code> and select <strong>Run!</strong>.</p>
 
@@ -263,7 +271,7 @@
 
 <p>Now enter <code>sibling(dave, dave)</code> and select <strong>Run!</strong>. The query result should again be <code>true</code>, which implies that Dave is a sibling of himself.</p>
 
-<p>This of course is not the result we want. The reason for the result is that, while Prolog prohibits <strong>different instances of the same variable</strong> within a rule (e.g. <code>Z</code>) from having <strong>different instantiations</strong>, it does not prohibit <strong>different variables</strong> (e.g. <code>X</code> and <code>Y</code>) from having the <strong>same instantiantion</strong>.</p>
+<p>This of course is not the result we want. The reason for the result is that, while Prolog prohibits <strong>different instances of the same variable</strong> within a rule (e.g. <code>Z</code>) from having <strong>different instantiations</strong>, it does not prohibit <strong>different variables</strong> (e.g. <code>X</code> and <code>Y</code>) from having the <strong>same instantiation</strong>.</p>
 
 <p>To achieve the desired result we must therefore explicitly enforce an inequality within the rule.</p>
 
@@ -411,11 +419,11 @@
   <p><strong>Note:</strong> Much of the power of Prolog comes from recursion, but it can be tricky to use correctly. When using recursion it essential that you always account for the boundary case.</p>
 </blockquote>
 
-<h2 id="summary">Summary</h2>
+<h2 id="conclusion">Conclusion</h2>
 
-<p>In this tutorial we have has a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, and how to make use of core language features such as conjunction, disjunction, and negation.</p>
+<p>In this tutorial we have had a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, and how to make use of core language features such as conjunction, disjunction, and negation.</p>
 
-<p>In the <a href="iis-tutorials-3.html">next tutorial</a> we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.</p>
+<p>In the next tutorial in the <a href="index.html">series</a> we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.</p>
 
 <h3 id="complete-listing">Complete listing</h3>
 
