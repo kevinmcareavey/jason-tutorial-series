@@ -26,7 +26,7 @@ In the program panel ensure that **Empty** is checked and then select **Program*
 
 ### Step 3 - Add some code
 
-Suppose we want to use Prolog to reason about a family tree:
+Suppose we want to use Prolog to reason about the following family tree:
 
 ![Figure](figures/family-tree.png)
 
@@ -140,11 +140,7 @@ The query results `X = alice` and `X = bob` can then be read as: **Alice and Bob
 
 > **Note:** `X = alice` is returned before `X = bob` because the positioning of facts and rules in a Prolog program is significant; it determines the order in which facts and rules are evaluated when answering queries. For example, if `male(bob)` were to appear above `female(alice)` then `X = bob` would be returned before `X = alice`.
 
-Change the query to `parent(X, dave)` and select **Run!**.
-
-The first query result should be `X = ivan`. Select **Next** under the query result to cycle through the remaining results.
-
-![Figure](figures/swish-8.png)
+Change the query to `parent(X, dave)` and select **Run!**. The query results should be `X = ivan` and `X = heidi`.
 
 This example demonstrates that positioning of terms is significant and that consistent usage is required to correctly ascribe meaning to your Prolog program.
 
@@ -154,21 +150,17 @@ The query results `X = ivan` and `X = heidi` can then be read as: **Ivan and Hei
 
 ### Step 7 - Queries with the anonymous variable
 
-Change the query to `parent(_, alice)` and select **Run!**.
-
-![Figure](figures/swish-9.png)
+Change the query to `parent(_, alice)` and select **Run!**. The query result should be `true`.
 
 The term `_` (underscore) is called the **anonymous variable**. It can be used in place of a standard variable when you want to check if an instantiation **exists** but do not care about the instantiation itself.
 
 The query `parent(_, alice)` can thus be read as: **is Alice a parent?**
 
-Change the query to `parent(_, _)` and select **Run!**.
-
-![Figure](figures/swish-10.png)
+Change the query to `parent(_, _)` and select **Run!**. The query result should be `true`.
 
 The query `parent(_, _)` can be read as: **does a parent exist?**
 
-This query of course is not particularly informative, but is valid nonetheless.
+Not a particularly informative query of course, but valid nonetheless.
 
 ## Rules
 
@@ -188,7 +180,7 @@ In the query panel enter `child(dave, X)` and select **Run!**. The query results
 
 This matches the intuitive meaning of the previous query `parent(X, dave)` where the results said that Ivan and Heidi have Dave as a parent.
 
-> **Note:** It should be obvious that this rule is a simple rewrite of the `parent/2` predicate. In some instances this kind of rewriting may aid readability, but it many instances it has the opposite effect: cluttering your Prolog program with redundant rules. We are typically interested in rules that are more informative.
+> **Note:** It should be obvious that this rule is a simple rewrite of the `parent/2` predicate. In some instances this kind of rewriting may aid readability, but in others it may have the opposite effect: cluttering your Prolog program with redundant rules. We are typically interested in rules that are more informative.
 
 ### Step 9 - Conjunction
 
@@ -214,9 +206,9 @@ sibling(X, Y) :- parent(X, Z), parent(Y, Z).
 
 In the query panel enter `sibling(dave, X)` and select **Run!**. The query result should be `true`.
 
-Now enter `sibling(dave, dave)` and select **Run!**. The query result should again be `true`, which implies that Dave is a sibling of himself.
+Now enter `sibling(dave, dave)` and select **Run!**. The query result should again be `true`, which implies that Dave is a sibling of himself. This of course is not the result we want.
 
-This of course is not the result we want. The reason for the result is that, while Prolog prohibits **different instances of the same variable** within a rule (e.g. `Z`) from having **different instantiations**, it does not prohibit **different variables** (e.g. `X` and `Y`) from having the **same instantiation**.
+The reason for the result is that, while Prolog prohibits **different instances of the same variable** within a rule (e.g. `Z`) from having **different instantiations**, it does not prohibit **different variables** (e.g. `X` and `Y`) from having the **same instantiation**.
 
 To achieve the desired result we must therefore explicitly enforce an inequality within the rule.
 
@@ -235,51 +227,8 @@ The expression `X \== Y` is an example of a **relational expression**. Prolog su
 - `X == Y` evaluates to true if terms `X` and `Y` are **equal**
 - `X \== Y` evaluates to true if terms `X` and `Y` are **not equal**
 - `X = Y` evaluates to true if terms `X` and `Y` **unify**
-- `X \= Y` evaluates to true if terms `X` and `Y` **do not unify**
 
-### Step 11 - Arithmetic expressions
-
-Add the following facts below your existing facts:
-
-```prolog
-age(alice, 91).
-age(bob, 92).
-age(carol, 61).
-age(dave, 62).
-age(eve, 63).
-age(frank, 64).
-age(grace, 31).
-age(ivan, 32).
-age(heidi, 33).
-age(mike, 34).
-age(judy, 35).
-age(oscar, 36).
-age(peggy, 1).
-age(rupert, 2).
-age(ted, 3).
-age(victor, 4).
-age(wendy, 5).
-```
-
-Notice that the second term in `age/2` is always a **number**.
-
-In the query panel enter `age(oscar, X)` and select **Run!**. The query result should be `X = 36`.
-
-In the query panel enter `age(peggy, X)` and select **Run!**. The query result should be `X = 1`.
-
-Add the following rule below your existing rules:
-
-```prolog
-adult(X) :- age(X, Y), Y >= 18.
-```
-
-In the query panel enter `adult(oscar)` and select **Run!**. The query result should be `true`.
-
-In the query panel enter `adult(peggy)` and select **Run!**. The query result should be `false`.
-
-Most standard arithmetic expressions (e.g. `X > Y`, `X < Y`, `X <= Y`) can be used in a similar manner, assuming that `X` and `Y` are numbers.
-
-### Step 12 - Negation
+### Step 11 - Negation
 
 Add the following rule to the bottom of your Prolog program:
 
@@ -305,7 +254,7 @@ In the query panel enter `cousin(ivan, mike)` and select **Run!**. The query res
 
 In the query panel enter `cousin(ivan, heidi)` and select **Run!**. The query results should be `false`, which is the result we want.
 
-### Step 13 - Disjunction
+### Step 12 - Disjunction
 
 Add the following rule to the bottom of your Prolog program:
 
@@ -333,74 +282,13 @@ This example demonstrates that disjunction can be implemented both using a singl
 
 > **Note:** If in doubt, you should implement disjunction using multiple rules with the same head.
 
-### Step 14 - Recursion
+## Additional features
 
-Add the following rule to the bottom of your Prolog program:
+### Step 13 - Arithmetic expressions
 
-```prolog
-ancestor(X, Z) :- parent(X, Z).
-ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).
-```
-
-In the query panel enter `ancestor(peggy, X)` and select **Run!**. The query results should be `X = grace`, `X = ivan`, `X = carol`, `X = dave`, `X = alice`, and `X = bob`.
-
-The definition of the `ancestor/2` implements disjunction using multiple rules with the same head. The first rule is the **boundary** case and the second rule is the **recursive** case. This kind of recursive definition forces the Prolog interpreter to explore the space of solutions with the boundary case providing a terminating condition that avoids an infinite loop.
-
-> **Note:** Much of the power of Prolog comes from recursion, but it can be tricky to use correctly. When using recursion it essential that you always account for the boundary case.
-
-## Conclusion
-
-In this tutorial we have had a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, and how to make use of core language features such as conjunction, disjunction, and negation.
-
-In the next tutorial in the [series](index.html) we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.
-
-### Complete listing
+Add the following facts below your existing facts:
 
 ```prolog
-% Facts
-
-female(alice).
-female(carol).
-female(eve).
-female(grace).
-female(heidi).
-female(judy).
-female(peggy).
-female(wendy).
-
-male(bob).
-male(dave).
-male(frank).
-male(ivan).
-male(mike).
-male(oscar).
-male(rupert).
-male(ted).
-male(victor).
-
-parent(dave, alice).
-parent(dave, bob).
-parent(eve, alice).
-parent(eve, bob).
-parent(ivan, carol).
-parent(ivan, dave).
-parent(heidi, carol).
-parent(heidi, dave).
-parent(mike, eve).
-parent(mike, frank).
-parent(judy, eve).
-parent(judy, frank).
-parent(peggy, grace).
-parent(peggy, ivan).
-parent(rupert, grace).
-parent(rupert, ivan).
-parent(ted, judy).
-parent(ted, oscar).
-parent(victor, judy).
-parent(victor, oscar).
-parent(wendy, judy).
-parent(wendy, oscar).
-
 age(alice, 91).
 age(bob, 92).
 age(carol, 61).
@@ -418,26 +306,135 @@ age(rupert, 2).
 age(ted, 3).
 age(victor, 4).
 age(wendy, 5).
+```
 
-% Rules
+Notice that the second term in `age/2` is always a **number**.
 
-child(X, Y) :- parent(Y, X).
+In the query panel enter `age(oscar, X)` and select **Run!**. The query result should be `X = 36`.
 
-mother(X, Y) :- parent(X, Y), female(Y).
+In the query panel enter `age(X, 1)` and select **Run!**. The query result should be `X = peggy`.
 
-father(X, Y) :- parent(X, Y), male(Y).
+Add the following rule below your existing rules:
 
-sibling(X, Y) :- parent(X, Z), parent(Y, Z), X \== Y.
-
+```prolog
 adult(X) :- age(X, Y), Y >= 18.
+```
 
-grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
+In the query panel enter `adult(oscar)` and select **Run!**. The query result should be `true`.
 
-cousin(X, Y) :- grandparent(X, Z), grandparent(Y, Z), not(sibling(X, Y)), X \== Y.
-immediate_family(X, Y) :- parent(X, Y).
-immediate_family(X, Y) :- child(X, Y).
-immediate_family(X, Y) :- sibling(X, Y).
+In the query panel enter `adult(peggy)` and select **Run!**. The query result should be `false`.
 
+Most standard arithmetic expressions (e.g. `X > Y`, `X < Y`, `X <= Y`) can be used in a similar manner, assuming that `X` and `Y` are numbers.
+
+### Step 14 - Arithmetic operations
+
+Add the following rule to the bottom of your Prolog program:
+
+```prolog
+years_as_adult(X, Z) :- adult(X), age(X, Y), Z = Y - 18.
+```
+
+In the query panel enter `years_as_adult(alice, X)` and select **Run!**. The query result should be `X = 91-18` but this is not what we want.
+
+Update the rule as follows:
+
+```prolog
+years_as_adult(X, Z) :- adult(X), age(X, Y), Z is Y - 18.
+```
+
+The symbol `is` is a **built-in** operator that tells the Prolog interpreter to evaluate `Y - 18` as an arithmetic operation.
+
+In the query panel enter `years_as_adult(alice, X)` and select **Run!**. The query result should be `X = 73`.
+
+In the query panel enter `years_as_adult(X, 44)` and select **Run!**. The query result should be `X = dave`.
+
+In the query panel enter `years_as_adult(peggy, X)` and select **Run!**. The query result should be `false` (i.e. because `peggy` is not an adult).
+
+Most standard arithmetic operators (e.g. `X + Y`, `X * Y`, `X / Y`) can be used in a similar manner, assuming that `X` and `Y` are numbers.
+
+### Step 15 - Recursion
+
+Add the following rule to the bottom of your Prolog program:
+
+```prolog
 ancestor(X, Z) :- parent(X, Z).
 ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).
 ```
+
+In the query panel enter `ancestor(peggy, X)` and select **Run!**. The query results should be `X = grace`, `X = ivan`, `X = carol`, `X = dave`, `X = alice`, and `X = bob`.
+
+The definition of the `ancestor/2` implements disjunction using multiple rules with the same head. The first rule is the **boundary** case and the second rule is the **recursive** case. This kind of recursive definition forces the Prolog interpreter to explore the space of solutions with the boundary case providing a terminating condition that avoids an infinite loop.
+
+> **Note:** Much of the power of Prolog comes from recursion, but it can be tricky to use correctly. When using recursion it essential that you always account for the boundary case.
+
+### Step 16 - Lists
+
+Prolog denotes a **list** by a series of elements inside square brackets (`[` and `]`).
+
+Add the following rule to the bottom of your Prolog program:
+
+```prolog
+ages(List) :- findall(X, age(_, X), List).
+```
+
+The predicate `findall/3` is a **built-in** predicate that instantiates a list (e.g. `List`) of terms (e.g. `X`) matching a query (e.g. `age(_, X)`).
+
+In the query panel enter `ages(X)` and select **Run!**. The query result should be `X = [91, 92, 61, 62, 63, 64, 31, 32, 33, 34, 35, 36, 1, 2, 3, 4, 5]`.
+
+**List comprehension** in Prolog is achieved using the notation `[Head | Tail]`, which splits the list into in its first element (`Head`) and another list representing its remaining elements (`Tail`).
+
+In the query panel enter `ages([X | Rest])` and select **Run!**. The query results should be `X = 91` and `Rest = [92, 61, 62, 63, 64, 31, 32, 33, 34, 35, 36, 1, 2, 3, 4, 5]`.
+
+If multiple variables are specified to the left of `|` (vertical bar), separated by `,` (commas), then multiple elements will be split simultaneously.
+
+In the query panel enter `ages([X, Y | Rest])` and select **Run!**. The query results should be `X = 91`, `Y = 92`, and `Rest = [61, 62, 63, 64, 31, 32, 33, 34, 35, 36, 1, 2, 3, 4, 5]`.
+
+## Example - Bubble sort
+
+[Bubble sort](https://en.wikipedia.org/wiki/Bubble_sort) is generally regarded as the simplest sorting algorithm.
+
+The idea is to repeatedly **iterate** through a list while **swapping** successive pairs of elements as needed until a full pass is completed without the need for any swaps.
+
+![Figure](https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif)
+
+This can be implemented in Prolog by combining recursion, list comprehension, and relational/arithmetic expressions.
+
+### Step 17 - Algorithm
+
+Add the following rules to the bottom of your Prolog program:
+
+```prolog
+swap([X, Y | Rest], [Y, X | Rest]) :- X > Y.
+swap([Z | Rest], [Z | RestPrime]) :- swap(Rest, RestPrime).
+
+bubble_sort(List, Sorted) :- swap(List, ListPrime), bubble_sort(ListPrime, Sorted).
+bubble_sort(Sorted, Sorted).
+```
+
+The first rule uses list comprehension to split the list into its first two elements `X` and `Y` along with the remainder of the list `Rest`. If `X` is greater than `Y` (we are assuming here that `X` and `Y` are numbers so `X > Y` is just an arithmetic expression) then the elements are swapped by instantiating a new list as `[Y, X | Rest]`.
+
+If `X` is not greater than `Y` then the Prolog interpreter will proceed to the second rule, which skips the first element `Z` and applies the swap procedure to the remaining elements `Rest`.
+
+The third rule serves to recursively call the swap procedure until no more swaps are possible, meaning that when the Prolog interpreter proceeds to the fourth rule we can infer that the list is now sorted.
+
+> **Note:** More efficient implementations of bubble sort can be achieved in Prolog using a [special non-logical operator](https://en.wikipedia.org/wiki/Cut_(logic_programming)) but we do not recommend its use for this tutorial series.
+
+### Step 18 - Sorted list
+
+Add the following rule to the bottom of your Prolog program:
+
+```prolog
+ages_sorted(SortedList) :- ages(List), bubble_sort(List, SortedList).
+```
+
+In the query panel enter `ages_sorted(X)` and select **Run!**. The query result should be `X = [1, 2, 3, 4, 5, 31, 32, 33, 34, 35, 36, 61, 62, 63, 64, 91, 92]`.
+
+In the query panel enter `ages_sorted([X | Rest])` and select **Run!**. The query results should be `X = 1` and `Rest = [2, 3, 4, 5, 31, 32, 33, 34, 35, 36, 61, 62, 63, 64, 91, 92]`.
+
+This demonstrates that bubble sort is working correctly and that list comprehension can be applied to the resulting list as usual.
+
+## Conclusion
+
+In this tutorial we have had a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, how to use core language features such as conjunction, disjunction, and negation, and how to use additional language features such as arithmetic expressions, recursion, and lists. These were demonstrated using a family tree example and an implementation of the bubble sort algorithm.
+
+In the next tutorial we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.

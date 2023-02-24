@@ -32,15 +32,22 @@
 <li><a href="#step-8-simple-rules">Step 8 - Simple rules</a></li>
 <li><a href="#step-9-conjunction">Step 9 - Conjunction</a></li>
 <li><a href="#step-10-relational-expressions">Step 10 - Relational expressions</a></li>
-<li><a href="#step-11-arithmetic-expressions">Step 11 - Arithmetic expressions</a></li>
-<li><a href="#step-12-negation">Step 12 - Negation</a></li>
-<li><a href="#step-13-disjunction">Step 13 - Disjunction</a></li>
-<li><a href="#step-14-recursion">Step 14 - Recursion</a></li>
+<li><a href="#step-11-negation">Step 11 - Negation</a></li>
+<li><a href="#step-12-disjunction">Step 12 - Disjunction</a></li>
 </ul></li>
-<li><a href="#conclusion">Conclusion</a>
+<li><a href="#additional-features">Additional features</a>
 <ul>
-<li><a href="#complete-listing">Complete listing</a></li>
+<li><a href="#step-13-arithmetic-expressions">Step 13 - Arithmetic expressions</a></li>
+<li><a href="#step-14-arithmetic-operations">Step 14 - Arithmetic operations</a></li>
+<li><a href="#step-15-recursion">Step 15 - Recursion</a></li>
+<li><a href="#step-16-lists">Step 16 - Lists</a></li>
 </ul></li>
+<li><a href="#example-bubble-sort">Example - Bubble sort</a>
+<ul>
+<li><a href="#step-17-algorithm">Step 17 - Algorithm</a></li>
+<li><a href="#step-18-sorted-list">Step 18 - Sorted list</a></li>
+</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
 </ul>
 
 <h2 id="getting-started">Getting started</h2>
@@ -67,7 +74,7 @@
 
 <h3 id="step-3-add-some-code">Step 3 - Add some code</h3>
 
-<p>Suppose we want to use Prolog to reason about a family tree:</p>
+<p>Suppose we want to use Prolog to reason about the following family tree:</p>
 
 <p><img src="figures/family-tree.png" alt="Figure" /></p>
 
@@ -190,11 +197,7 @@
   <p><strong>Note:</strong> <code>X = alice</code> is returned before <code>X = bob</code> because the positioning of facts and rules in a Prolog program is significant; it determines the order in which facts and rules are evaluated when answering queries. For example, if <code>male(bob)</code> were to appear above <code>female(alice)</code> then <code>X = bob</code> would be returned before <code>X = alice</code>.</p>
 </blockquote>
 
-<p>Change the query to <code>parent(X, dave)</code> and select <strong>Run!</strong>.</p>
-
-<p>The first query result should be <code>X = ivan</code>. Select <strong>Next</strong> under the query result to cycle through the remaining results.</p>
-
-<p><img src="figures/swish-8.png" alt="Figure" /></p>
+<p>Change the query to <code>parent(X, dave)</code> and select <strong>Run!</strong>. The query results should be <code>X = ivan</code> and <code>X = heidi</code>.</p>
 
 <p>This example demonstrates that positioning of terms is significant and that consistent usage is required to correctly ascribe meaning to your Prolog program.</p>
 
@@ -204,21 +207,17 @@
 
 <h3 id="step-7-queries-with-the-anonymous-variable">Step 7 - Queries with the anonymous variable</h3>
 
-<p>Change the query to <code>parent(_, alice)</code> and select <strong>Run!</strong>.</p>
-
-<p><img src="figures/swish-9.png" alt="Figure" /></p>
+<p>Change the query to <code>parent(_, alice)</code> and select <strong>Run!</strong>. The query result should be <code>true</code>.</p>
 
 <p>The term <code>_</code> (underscore) is called the <strong>anonymous variable</strong>. It can be used in place of a standard variable when you want to check if an instantiation <strong>exists</strong> but do not care about the instantiation itself.</p>
 
 <p>The query <code>parent(_, alice)</code> can thus be read as: <strong>is Alice a parent?</strong></p>
 
-<p>Change the query to <code>parent(_, _)</code> and select <strong>Run!</strong>.</p>
-
-<p><img src="figures/swish-10.png" alt="Figure" /></p>
+<p>Change the query to <code>parent(_, _)</code> and select <strong>Run!</strong>. The query result should be <code>true</code>.</p>
 
 <p>The query <code>parent(_, _)</code> can be read as: <strong>does a parent exist?</strong></p>
 
-<p>This query of course is not particularly informative, but is valid nonetheless.</p>
+<p>Not a particularly informative query of course, but valid nonetheless.</p>
 
 <h2 id="rules">Rules</h2>
 
@@ -240,7 +239,7 @@
 <p>This matches the intuitive meaning of the previous query <code>parent(X, dave)</code> where the results said that Ivan and Heidi have Dave as a parent.</p>
 
 <blockquote>
-  <p><strong>Note:</strong> It should be obvious that this rule is a simple rewrite of the <code>parent/2</code> predicate. In some instances this kind of rewriting may aid readability, but it many instances it has the opposite effect: cluttering your Prolog program with redundant rules. We are typically interested in rules that are more informative.</p>
+  <p><strong>Note:</strong> It should be obvious that this rule is a simple rewrite of the <code>parent/2</code> predicate. In some instances this kind of rewriting may aid readability, but in others it may have the opposite effect: cluttering your Prolog program with redundant rules. We are typically interested in rules that are more informative.</p>
 </blockquote>
 
 <h3 id="step-9-conjunction">Step 9 - Conjunction</h3>
@@ -269,9 +268,9 @@
 
 <p>In the query panel enter <code>sibling(dave, X)</code> and select <strong>Run!</strong>. The query result should be <code>true</code>.</p>
 
-<p>Now enter <code>sibling(dave, dave)</code> and select <strong>Run!</strong>. The query result should again be <code>true</code>, which implies that Dave is a sibling of himself.</p>
+<p>Now enter <code>sibling(dave, dave)</code> and select <strong>Run!</strong>. The query result should again be <code>true</code>, which implies that Dave is a sibling of himself. This of course is not the result we want.</p>
 
-<p>This of course is not the result we want. The reason for the result is that, while Prolog prohibits <strong>different instances of the same variable</strong> within a rule (e.g. <code>Z</code>) from having <strong>different instantiations</strong>, it does not prohibit <strong>different variables</strong> (e.g. <code>X</code> and <code>Y</code>) from having the <strong>same instantiation</strong>.</p>
+<p>The reason for the result is that, while Prolog prohibits <strong>different instances of the same variable</strong> within a rule (e.g. <code>Z</code>) from having <strong>different instantiations</strong>, it does not prohibit <strong>different variables</strong> (e.g. <code>X</code> and <code>Y</code>) from having the <strong>same instantiation</strong>.</p>
 
 <p>To achieve the desired result we must therefore explicitly enforce an inequality within the rule.</p>
 
@@ -292,54 +291,9 @@
 <li><code>X == Y</code> evaluates to true if terms <code>X</code> and <code>Y</code> are <strong>equal</strong></li>
 <li><code>X \== Y</code> evaluates to true if terms <code>X</code> and <code>Y</code> are <strong>not equal</strong></li>
 <li><code>X = Y</code> evaluates to true if terms <code>X</code> and <code>Y</code> <strong>unify</strong></li>
-<li><code>X \= Y</code> evaluates to true if terms <code>X</code> and <code>Y</code> <strong>do not unify</strong></li>
 </ul>
 
-<h3 id="step-11-arithmetic-expressions">Step 11 - Arithmetic expressions</h3>
-
-<p>Add the following facts below your existing facts:</p>
-
-<div class="codehilite">
-<pre><span></span><code><span class="nf">age</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="mi">91</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">,</span> <span class="mi">92</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">,</span> <span class="mi">61</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="mi">62</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="mi">63</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">,</span> <span class="mi">64</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">,</span> <span class="mi">31</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="mi">32</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="mi">33</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="mi">34</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="mi">35</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">,</span> <span class="mi">36</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="mi">4</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
-</code></pre>
-</div>
-
-<p>Notice that the second term in <code>age/2</code> is always a <strong>number</strong>.</p>
-
-<p>In the query panel enter <code>age(oscar, X)</code> and select <strong>Run!</strong>. The query result should be <code>X = 36</code>.</p>
-
-<p>In the query panel enter <code>age(peggy, X)</code> and select <strong>Run!</strong>. The query result should be <code>X = 1</code>.</p>
-
-<p>Add the following rule below your existing rules:</p>
-
-<div class="codehilite">
-<pre><span></span><code><span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mf">18.</span>
-</code></pre>
-</div>
-
-<p>In the query panel enter <code>adult(oscar)</code> and select <strong>Run!</strong>. The query result should be <code>true</code>.</p>
-
-<p>In the query panel enter <code>adult(peggy)</code> and select <strong>Run!</strong>. The query result should be <code>false</code>.</p>
-
-<p>Most standard arithmetic expressions (e.g. <code>X &gt; Y</code>, <code>X &lt; Y</code>, <code>X &lt;= Y</code>) can be used in a similar manner, assuming that <code>X</code> and <code>Y</code> are numbers.</p>
-
-<h3 id="step-12-negation">Step 12 - Negation</h3>
+<h3 id="step-11-negation">Step 11 - Negation</h3>
 
 <p>Add the following rule to the bottom of your Prolog program:</p>
 
@@ -367,7 +321,7 @@
 
 <p>In the query panel enter <code>cousin(ivan, heidi)</code> and select <strong>Run!</strong>. The query results should be <code>false</code>, which is the result we want.</p>
 
-<h3 id="step-13-disjunction">Step 13 - Disjunction</h3>
+<h3 id="step-12-disjunction">Step 12 - Disjunction</h3>
 
 <p>Add the following rule to the bottom of your Prolog program:</p>
 
@@ -401,7 +355,81 @@
   <p><strong>Note:</strong> If in doubt, you should implement disjunction using multiple rules with the same head.</p>
 </blockquote>
 
-<h3 id="step-14-recursion">Step 14 - Recursion</h3>
+<h2 id="additional-features">Additional features</h2>
+
+<h3 id="step-13-arithmetic-expressions">Step 13 - Arithmetic expressions</h3>
+
+<p>Add the following facts below your existing facts:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">age</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="mi">91</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">,</span> <span class="mi">92</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">,</span> <span class="mi">61</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="mi">62</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="mi">63</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">,</span> <span class="mi">64</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">,</span> <span class="mi">31</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="mi">32</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="mi">33</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="mi">34</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="mi">35</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">,</span> <span class="mi">36</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="mi">4</span><span class="p">).</span>
+<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Notice that the second term in <code>age/2</code> is always a <strong>number</strong>.</p>
+
+<p>In the query panel enter <code>age(oscar, X)</code> and select <strong>Run!</strong>. The query result should be <code>X = 36</code>.</p>
+
+<p>In the query panel enter <code>age(X, 1)</code> and select <strong>Run!</strong>. The query result should be <code>X = peggy</code>.</p>
+
+<p>Add the following rule below your existing rules:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mf">18.</span>
+</code></pre>
+</div>
+
+<p>In the query panel enter <code>adult(oscar)</code> and select <strong>Run!</strong>. The query result should be <code>true</code>.</p>
+
+<p>In the query panel enter <code>adult(peggy)</code> and select <strong>Run!</strong>. The query result should be <code>false</code>.</p>
+
+<p>Most standard arithmetic expressions (e.g. <code>X &gt; Y</code>, <code>X &lt; Y</code>, <code>X &lt;= Y</code>) can be used in a similar manner, assuming that <code>X</code> and <code>Y</code> are numbers.</p>
+
+<h3 id="step-14-arithmetic-operations">Step 14 - Arithmetic operations</h3>
+
+<p>Add the following rule to the bottom of your Prolog program:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">years_as_adult</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nv">Z</span> <span class="o">=</span> <span class="nv">Y</span> <span class="o">-</span> <span class="mf">18.</span>
+</code></pre>
+</div>
+
+<p>In the query panel enter <code>years_as_adult(alice, X)</code> and select <strong>Run!</strong>. The query result should be <code>X = 91-18</code> but this is not what we want.</p>
+
+<p>Update the rule as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">years_as_adult</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">),</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nv">Z</span> <span class="o">is</span> <span class="nv">Y</span> <span class="o">-</span> <span class="mf">18.</span>
+</code></pre>
+</div>
+
+<p>The symbol <code>is</code> is a <strong>built-in</strong> operator that tells the Prolog interpreter to evaluate <code>Y - 18</code> as an arithmetic operation.</p>
+
+<p>In the query panel enter <code>years_as_adult(alice, X)</code> and select <strong>Run!</strong>. The query result should be <code>X = 73</code>.</p>
+
+<p>In the query panel enter <code>years_as_adult(X, 44)</code> and select <strong>Run!</strong>. The query result should be <code>X = dave</code>.</p>
+
+<p>In the query panel enter <code>years_as_adult(peggy, X)</code> and select <strong>Run!</strong>. The query result should be <code>false</code> (i.e. because <code>peggy</code> is not an adult).</p>
+
+<p>Most standard arithmetic operators (e.g. <code>X + Y</code>, <code>X * Y</code>, <code>X / Y</code>) can be used in a similar manner, assuming that <code>X</code> and <code>Y</code> are numbers.</p>
+
+<h3 id="step-15-recursion">Step 15 - Recursion</h3>
 
 <p>Add the following rule to the bottom of your Prolog program:</p>
 
@@ -419,100 +447,82 @@
   <p><strong>Note:</strong> Much of the power of Prolog comes from recursion, but it can be tricky to use correctly. When using recursion it essential that you always account for the boundary case.</p>
 </blockquote>
 
-<h2 id="conclusion">Conclusion</h2>
+<h3 id="step-16-lists">Step 16 - Lists</h3>
 
-<p>In this tutorial we have had a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, and how to make use of core language features such as conjunction, disjunction, and negation.</p>
+<p>Prolog denotes a <strong>list</strong> by a series of elements inside square brackets (<code>[</code> and <code>]</code>).</p>
 
-<p>In the next tutorial in the <a href="index.html">series</a> we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.</p>
-
-<h3 id="complete-listing">Complete listing</h3>
+<p>Add the following rule to the bottom of your Prolog program:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="c1">% Facts</span>
-
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">).</span>
-
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">).</span>
-
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="s s-Atom">alice</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="s s-Atom">bob</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="s s-Atom">alice</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="s s-Atom">bob</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="s s-Atom">carol</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="s s-Atom">dave</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="s s-Atom">carol</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="s s-Atom">dave</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="s s-Atom">frank</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="s s-Atom">frank</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="s s-Atom">grace</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="s s-Atom">grace</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
-
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="mi">91</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">,</span> <span class="mi">92</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">,</span> <span class="mi">61</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="mi">62</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="mi">63</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">,</span> <span class="mi">64</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">,</span> <span class="mi">31</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="mi">32</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="mi">33</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="mi">34</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="mi">35</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">,</span> <span class="mi">36</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="mi">4</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
-
-<span class="c1">% Rules</span>
-
-<span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
-
-<span class="nf">mother</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nf">female</span><span class="p">(</span><span class="nv">Y</span><span class="p">).</span>
-
-<span class="nf">father</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nf">male</span><span class="p">(</span><span class="nv">Y</span><span class="p">).</span>
-
-<span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">),</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">),</span> <span class="nv">X</span> <span class="s s-Atom">\==</span> <span class="nv">Y</span><span class="p">.</span>
-
-<span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mf">18.</span>
-
-<span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
-
-<span class="nf">cousin</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">),</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">),</span> <span class="o">not</span><span class="p">(</span><span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)),</span> <span class="nv">X</span> <span class="s s-Atom">\==</span> <span class="nv">Y</span><span class="p">.</span>
-<span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
-<span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
-<span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
-
-<span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
-<span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">),</span> <span class="nf">ancestor</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
+<pre><span></span><code><span class="nf">ages</span><span class="p">(</span><span class="nv">List</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">findall</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nf">age</span><span class="p">(</span><span class="k">_</span><span class="p">,</span> <span class="nv">X</span><span class="p">),</span> <span class="nv">List</span><span class="p">).</span>
 </code></pre>
 </div>
+
+<p>The predicate <code>findall/3</code> is a <strong>built-in</strong> predicate that instantiates a list (e.g. <code>List</code>) of terms (e.g. <code>X</code>) matching a query (e.g. <code>age(_, X)</code>).</p>
+
+<p>In the query panel enter <code>ages(X)</code> and select <strong>Run!</strong>. The query result should be <code>X = [91, 92, 61, 62, 63, 64, 31, 32, 33, 34, 35, 36, 1, 2, 3, 4, 5]</code>.</p>
+
+<p><strong>List comprehension</strong> in Prolog is achieved using the notation <code>[Head | Tail]</code>, which splits the list into in its first element (<code>Head</code>) and another list representing its remaining elements (<code>Tail</code>).</p>
+
+<p>In the query panel enter <code>ages([X | Rest])</code> and select <strong>Run!</strong>. The query results should be <code>X = 91</code> and <code>Rest = [92, 61, 62, 63, 64, 31, 32, 33, 34, 35, 36, 1, 2, 3, 4, 5]</code>.</p>
+
+<p>If multiple variables are specified to the left of <code>|</code> (vertical bar), separated by <code>,</code> (commas), then multiple elements will be split simultaneously.</p>
+
+<p>In the query panel enter <code>ages([X, Y | Rest])</code> and select <strong>Run!</strong>. The query results should be <code>X = 91</code>, <code>Y = 92</code>, and <code>Rest = [61, 62, 63, 64, 31, 32, 33, 34, 35, 36, 1, 2, 3, 4, 5]</code>.</p>
+
+<h2 id="example-bubble-sort">Example - Bubble sort</h2>
+
+<p><a href="https://en.wikipedia.org/wiki/Bubble_sort">Bubble sort</a> is generally regarded as the simplest sorting algorithm.</p>
+
+<p>The idea is to repeatedly <strong>iterate</strong> through a list while <strong>swapping</strong> successive pairs of elements as needed until a full pass is completed without the need for any swaps.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif" alt="Figure" /></p>
+
+<p>This can be implemented in Prolog by combining recursion, list comprehension, and relational/arithmetic expressions.</p>
+
+<h3 id="step-17-algorithm">Step 17 - Algorithm</h3>
+
+<p>Add the following rules to the bottom of your Prolog program:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">swap</span><span class="p">([</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">],</span> <span class="p">[</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">])</span> <span class="p">:-</span> <span class="nv">X</span> <span class="o">&gt;</span> <span class="nv">Y</span><span class="p">.</span>
+<span class="nf">swap</span><span class="p">([</span><span class="nv">Z</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">],</span> <span class="p">[</span><span class="nv">Z</span> <span class="p">|</span> <span class="nv">RestPrime</span><span class="p">])</span> <span class="p">:-</span> <span class="nf">swap</span><span class="p">(</span><span class="nv">Rest</span><span class="p">,</span> <span class="nv">RestPrime</span><span class="p">).</span>
+
+<span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">List</span><span class="p">,</span> <span class="nv">Sorted</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">swap</span><span class="p">(</span><span class="nv">List</span><span class="p">,</span> <span class="nv">ListPrime</span><span class="p">),</span> <span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">ListPrime</span><span class="p">,</span> <span class="nv">Sorted</span><span class="p">).</span>
+<span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">Sorted</span><span class="p">,</span> <span class="nv">Sorted</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>The first rule uses list comprehension to split the list into its first two elements <code>X</code> and <code>Y</code> along with the remainder of the list <code>Rest</code>. If <code>X</code> is greater than <code>Y</code> (we are assuming here that <code>X</code> and <code>Y</code> are numbers so <code>X &gt; Y</code> is just an arithmetic expression) then the elements are swapped by instantiating a new list as <code>[Y, X | Rest]</code>.</p>
+
+<p>If <code>X</code> is not greater than <code>Y</code> then the Prolog interpreter will proceed to the second rule, which skips the first element <code>Z</code> and applies the swap procedure to the remaining elements <code>Rest</code>.</p>
+
+<p>The third rule serves to recursively call the swap procedure until no more swaps are possible, meaning that when the Prolog interpreter proceeds to the fourth rule we can infer that the list is now sorted.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> More efficient implementations of bubble sort can be achieved in Prolog using a <a href="https://en.wikipedia.org/wiki/Cut_(logic_programming)">special non-logical operator</a> but we do not recommend its use for this tutorial series.</p>
+</blockquote>
+
+<h3 id="step-18-sorted-list">Step 18 - Sorted list</h3>
+
+<p>Add the following rule to the bottom of your Prolog program:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">ages_sorted</span><span class="p">(</span><span class="nv">SortedList</span><span class="p">)</span> <span class="p">:-</span> <span class="nf">ages</span><span class="p">(</span><span class="nv">List</span><span class="p">),</span> <span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">List</span><span class="p">,</span> <span class="nv">SortedList</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>In the query panel enter <code>ages_sorted(X)</code> and select <strong>Run!</strong>. The query result should be <code>X = [1, 2, 3, 4, 5, 31, 32, 33, 34, 35, 36, 61, 62, 63, 64, 91, 92]</code>.</p>
+
+<p>In the query panel enter <code>ages_sorted([X | Rest])</code> and select <strong>Run!</strong>. The query results should be <code>X = 1</code> and <code>Rest = [2, 3, 4, 5, 31, 32, 33, 34, 35, 36, 61, 62, 63, 64, 91, 92]</code>.</p>
+
+<p>This demonstrates that bubble sort is working correctly and that list comprehension can be applied to the resulting list as usual.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this tutorial we have had a brief introduction to logic programming using SWISH, including how to write facts and rules, how to submit queries and interpret the results, how to use core language features such as conjunction, disjunction, and negation, and how to use additional language features such as arithmetic expressions, recursion, and lists. These were demonstrated using a family tree example and an implementation of the bubble sort algorithm.</p>
+
+<p>In the next tutorial we will see how AgentSpeak and Jason extend logic programming to allow us to implement belief-desire-intention (BDI) agents.</p>
 
 </div>
 <footer class="p-6 mt-4">

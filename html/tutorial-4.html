@@ -11,64 +11,227 @@
 <div class="markdown-body border rounded-3 p-6">
 <h1 id="tutorial-4-multi-agent-systems">Tutorial 4 - Multi-agent systems</h1>
 
+<p>This tutorial provides a brief introduction to implementing multi-agent systems in Jason using the Jason configuration file and Jason communication actions.</p>
+
 <ul>
-<li><a href="#multiple-agents">Multiple agents</a>
+<li><a href="#getting-started">Getting started</a>
 <ul>
-<li><a href="#step-4-update-the-configuration-file-hello_worldmas2j">Step 4 - Update the configuration file <code>hello_world.mas2j</code></a></li>
-<li><a href="#step-save-your-changes-and-select-run-jason-application">Step - Save your changes and select <strong>Run Jason Application</strong></a></li>
-<li><a href="#step-update-agent-file-srcaslsample_agentasl">Step - Update agent file <code>src/asl/sample_agent.asl</code></a></li>
-<li><a href="#step-5-update-the-configuration-file-hello_worldmas2j">Step 5 - Update the configuration file <code>hello_world.mas2j</code></a></li>
-<li><a href="#step-6-save-your-changes-and-select-run-jason-application">Step 6 - Save your changes and select <strong>Run Jason Application</strong></a></li>
-<li><a href="#step-7-create-new-agent-files-srcaslbuyer_agentasl-and-srcaslseller_agentasl">Step 7 - Create new agent files <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code></a></li>
-<li><a href="#step-8-update-the-configuration-file-hello_worldmas2j">Step 8 - Update the configuration file <code>hello_world.mas2j</code></a></li>
-<li><a href="#step-9-save-your-changes-and-select-run-jason-application">Step 9 - Save your changes and select <strong>Run Jason Application</strong></a></li>
-<li><a href="#step-10-select-stop-in-the-jason-console">Step 10 - Select <strong>Stop</strong> in the Jason console</a></li>
+<li><a href="#step-1-agents-of-the-same-type">Step 1 - Agents of the same type</a></li>
+<li><a href="#step-2-numbered-agents-of-the-same-type">Step 2 - Numbered agents of the same type</a></li>
+<li><a href="#step-3-agents-of-different-types">Step 3 - Agents of different types</a></li>
+<li><a href="#step-4-initial-base-beliefs-as-parameters">Step 4 - Initial base beliefs as parameters</a></li>
+<li><a href="#step-5-initial-achievement-goals-as-parameters">Step 5 - Initial achievement goals as parameters</a></li>
+<li><a href="#step-6-jason-annotations">Step 6 - Jason annotations</a></li>
 </ul></li>
-<li><a href="#agent-communication">Agent communication</a></li>
+<li><a href="#agent-communication">Agent communication</a>
+<ul>
+<li><a href="#step-7-broadcast-communication-actions">Step 7 - Broadcast communication actions</a></li>
+<li><a href="#step-8-direct-communication-actions">Step 8 - Direct communication actions</a></li>
+<li><a href="#step-9-source-annotations">Step 9 - Source annotations</a></li>
+<li><a href="#step-10-other-performatives">Step 10 - Other performatives</a></li>
+</ul></li>
+<li><a href="#example-traders">Example - Traders</a>
+<ul>
+<li><a href="#step-11-one-buyer">Step 11 - One buyer</a></li>
+<li><a href="#step-12-multiple-buyers">Step 12 - Multiple buyers</a></li>
+</ul></li>
+<li><a href="#example-contract-net-protocol">Example - Contract Net Protocol</a>
+<ul>
+<li><a href="#step-13-task-allocation">Step 13 - Task allocation</a></li>
+<li><a href="#step-14-reallocation">Step 14 - Reallocation</a></li>
+</ul></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
 
-<h2 id="multiple-agents">Multiple agents</h2>
+<h2 id="getting-started">Getting started</h2>
 
-<h3 id="step-4-update-the-configuration-file-hello_worldmas2j">Step 4 - Update the configuration file <code>hello_world.mas2j</code></h3>
+<p>Create a new Jason project in Eclipse called <code>multi_agent</code>.</p>
 
-<p>Edit <code>hello_world.mas2j</code> by removing <code>agent1</code> and adding two new agents called <code>alice</code> and <code>bob</code> as instances of <code>sample_agent</code>.</p>
+<p>The files <code>multi_agent.mas2j</code> and <code>src/asl/sample_agent.asl</code> will be automatically generated as usual.</p>
 
-<p>The file <code>hello_world.mas2j</code> looks as follows:</p>
+<h3 id="step-1-agents-of-the-same-type">Step 1 - Agents of the same type</h3>
+
+<p>It is possible to instantiate multiple agents from the same agent file in Jason. Agents instantiated in this way are essentially <strong>homogeneous</strong> agents, in that they share the same initial beliefs, goals, and plans.</p>
+
+<p>Edit the Jason configuration file as follows:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
 
-    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
 
-    <span class="s s-Atom">agents</span><span class="p">:</span>
-        <span class="s s-Atom">alice</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
-        <span class="s s-Atom">bob</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">agent1</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
+    <span class="s s-Atom">agent2</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
 
-    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
-        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre>
 </div>
 
-<h3 id="step-save-your-changes-and-select-run-jason-application">Step - Save your changes and select <strong>Run Jason Application</strong></h3>
+<p>With the <code>multi_agent</code> project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
 
-<p><img src="figures/update-mas2j-1.png" alt="Figure" /></p>
+<p><img src="figures/console-1.png" alt="Figure" /></p>
 
-<p>Notice that <code>alice</code> and <code>bob</code> are treated as different agents even though they were instantiated from the same agent file.
-This method serves to simplify and generalise code, but in order to achieve interesting functionality we typically need to pass parameters to the instantiations, such as differing initial base beliefs and/or initial achievement goals.
-One way this can be achieved is through the Jason configuration file.</p>
+<p>Notice that <code>agent1</code> and <code>agent2</code> are treated as different agents even though they were instantiated from the same agent file. All agents in a Jason project share the same Jason console.</p>
 
-<h3 id="step-update-agent-file-srcaslsample_agentasl">Step - Update agent file <code>src/asl/sample_agent.asl</code></h3>
+<p>Although <code>agent1</code> appears before <code>agent2</code> in the Jason configuration file, Jason does not guarantee that <code>agent1</code> will always execute actions before <code>agent2</code> in each step. This is why <code>agent2</code> may appear before <code>agent1</code> in the Jason console for a given execution of the Jason project.</p>
 
-<p>Edit <code>sample_agent.asl</code> by removing the initial achievment goal <code>!start</code> and updating the corresponding plan as follows:</p>
+<h3 id="step-2-numbered-agents-of-the-same-type">Step 2 - Numbered agents of the same type</h3>
 
-<p>The file <code>src/asl/sample_agent.asl</code> looks as follows:</p>
+<p>Homogeneous agents can also be instantiated from the same agent file by inserting <code>#</code> (hash) followed by a positive integer at the end of the agent definition. An index (starting from 1) is automatically appended to the agent name so that agents can be uniquely identified.</p>
+
+<p>Edit the Jason configuration file as follows:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="c1">// Agent sample_agent in project hello_world</span>
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
 
-<span class="cm">/* Initial beliefs and rules */</span>
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">agent</span> <span class="s s-Atom">sample_agent</span> <span class="s s-Atom">#</span><span class="mi">5</span><span class="p">;</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[agent5] hello world.
+[agent4] hello world.
+[agent2] hello world.
+[agent1] hello world.
+[agent3] hello world.
+</code></pre>
+</div>
+
+<p>In this example <code>agent sample_agent #5</code> tells Jason to instantiate five agents from <code>sample_agent.asl</code> and to call them <code>agent1</code>, <code>agent2</code>, ..., <code>agent5</code>.</p>
+
+<h3 id="step-3-agents-of-different-types">Step 3 - Agents of different types</h3>
+
+<p>Instantiating agents from different agent files is the most common way in Jason to implement <strong>heterogeneous</strong> agents (i.e. agents equipped with different initial beliefs, goals, and/or plans).</p>
+
+<p>Create a new agent file called <code>friend_of_alice.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">friend</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="nf">friend</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hello &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Create another new agent file called <code>friend_of_bob.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">friend</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="nf">friend</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hello &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">friend_of_bob</span><span class="p">;</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">friend_of_alice</span><span class="p">;</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] hello bob
+[bob] hello alice
+</code></pre>
+</div>
+
+<p>Notice that <code>alice</code> and <code>bob</code> share the same initial goals and plans but have different initial beliefs, which leads to different behaviour when the Jason project is executed. Later we will see examples where the initial goals and plans are also different.</p>
+
+<h3 id="step-4-initial-base-beliefs-as-parameters">Step 4 - Initial base beliefs as parameters</h3>
+
+<p>Although you may wish to create homogeneous agents, it is rare that you will want these agents to be completely <strong>identical</strong> (i.e. to share not only the same plans, but also the same initial beliefs and goals).</p>
+
+<p>One way to customise agents without resorting to different agent files is to supply different initial base beliefs to the agent definition (in the Jason configuration file). Agent configuration options are specified inside square brackets at the end of an agent definition with the keyword <code>beliefs</code> used to specify a comma-separated list (inside quotes) of initial base beliefs.</p>
+
+<p>Create a new agent file called <code>friend.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="nf">friend</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hello &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">friend</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(bob)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">friend</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(alice)&quot;</span><span class="p">];</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] hello bob
+[bob] hello alice
+</code></pre>
+</div>
+
+<p>Notice that <code>alice</code> and <code>bob</code> have different behaviour because they were initialised with different initial base beliefs, even though they were instantiated from the same agent file.</p>
+
+<h3 id="step-5-initial-achievement-goals-as-parameters">Step 5 - Initial achievement goals as parameters</h3>
+
+<p>Similar to its support for custom initial base beliefs, the Jason configuration file also allows initial achievement goals to be specified as agent configuration options. In this case the keyword <code>goals</code> is used to specify a comma-separated list of initial achievement goals <strong>without</strong> the preceding <code>!</code> (exclamation mark).</p>
+
+<p>Edit <code>friend.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
 
 <span class="cm">/* Initial goals */</span>
 
@@ -78,132 +241,795 @@ One way this can be achieved is through the Jason configuration file.</p>
 </code></pre>
 </div>
 
-<h3 id="step-5-update-the-configuration-file-hello_worldmas2j">Step 5 - Update the configuration file <code>hello_world.mas2j</code></h3>
-
-<p>Edit <code>hello_world.mas2j</code> by adding options in square brackets labelled <code>beliefs</code> and <code>goals</code>, where the former is a string comprised of a comma-separated list of initial base beliefs and the latter is a string comprised of a comma-separated list of initial achievement goals (without the preceding <code>!</code> symbols).</p>
-
-<p>The file <code>hello_world.mas2j</code> looks as follows:</p>
+<p>Edit the Jason configuration file as follows:</p>
 
 <div class="codehilite">
-<pre><span></span><code>    <span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
 
-        <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
 
-        <span class="s s-Atom">agents</span><span class="p">:</span>
-            <span class="s s-Atom">alice</span> <span class="s s-Atom">sample_agent</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(carol)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">];</span>
-            <span class="s s-Atom">bob</span> <span class="s s-Atom">sample_agent</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(dave)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">];</span>
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">friend</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(bob)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">friend</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;friend(alice)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">];</span>
 
-        <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
-            <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
-    <span class="p">}</span>
-</code></pre>
-</div>
-
-<h3 id="step-6-save-your-changes-and-select-run-jason-application">Step 6 - Save your changes and select <strong>Run Jason Application</strong></h3>
-
-<p><img src="figures/update-mas2j-2.png" alt="Figure" /></p>
-
-<p>Notice that <code>alice</code> and <code>bob</code> have different behaviour because they were initialised with differing initial base beliefs, even though they were instantiated from the sample agent file.
-We can now move on to more complex agent files.</p>
-
-<h3 id="step-7-create-new-agent-files-srcaslbuyer_agentasl-and-srcaslseller_agentasl">Step 7 - Create new agent files <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code></h3>
-
-<p>The file <code>src/asl/buyer_agent.asl</code> looks as follows:</p>
-
-<div class="codehilite">
-<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
-
-<span class="nf">seller</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">).</span>
-
-<span class="cm">/* Initial goals */</span>
-
-<span class="nc">!buy</span><span class="p">(</span><span class="s s-Atom">item1</span><span class="p">).</span>
-
-<span class="cm">/* Plans */</span>
-
-<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nf">seller</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I would like to buy &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">want</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
-<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;it looks like &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot; is unavailable&quot;</span><span class="p">).</span>
-<span class="nf">+recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, thank you for &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
-<span class="nf">+out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I will try to find &quot;</span><span class="p">,</span> <span class="nv">X</span> <span class="p">,</span> <span class="s2">&quot; elsewhere&quot;</span><span class="p">);</span> <span class="nc">!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-</code></pre>
-</div>
-
-<p>The file <code>src/asl/seller_agent.asl</code> looks as follows:</p>
-
-<div class="codehilite">
-<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
-
-<span class="nf">in_stock</span><span class="p">(</span><span class="s s-Atom">item1</span><span class="p">).</span>
-
-<span class="cm">/* Initial goals */</span>
-
-<span class="cm">/* Plans */</span>
-
-<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;ok &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, here is &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">));</span> <span class="nf">-in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="ow">not</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;sorry &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I do not have &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
-</code></pre>
-</div>
-
-<p>The files <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code> can be interpreted together as follows:</p>
-
-<ul>
-<li><code>alice</code> believes that <code>bob</code> is a seller.</li>
-<li><code>bob</code> believes that he has <code>item1</code> in stock.</li>
-<li><code>alice</code> wants to buy <code>item1</code>.</li>
-<li>If <code>alice</code> wants to buy item <code>X</code> and believes there is a seller <code>Y</code> who has not previously informed her that they do not have <code>X</code> in stock, she will attempt to achieve the goal by telling <code>Y</code> that she wants <code>X</code>.</li>
-<li>If <code>bob</code> is told by agent <code>Y</code> that they want to buy item <code>X</code>, then, if he believes <code>X</code> is in stock, he will tell <code>Y</code> that they will receive <code>X</code> and then revise his beliefs so that he now believes <code>X</code> is not in stock, otherwise he will tell <code>Y</code> that <code>X</code> is out of stock.</li>
-<li>If <code>alice</code> is told that item <code>X</code> is out of stock, she will simply make another attempt to buy <code>X</code>.</li>
-</ul>
-
-<p>These AgentSpeak programs make use of several important features of Jason, including:</p>
-
-<ul>
-<li>Initial beliefs, e.g. <code>seller(bob)</code>, <code>in_stock(item1)</code>.</li>
-<li>Initial achievement goals, e.g. <code>!buy(item1)</code>.</li>
-<li>Variables, e.g. <code>X</code>, <code>Y</code>.</li>
-<li>Annotations, e.g. <code>[source(Y)]</code>.</li>
-<li>Goal addition tiggering events, e.g. <code>+!buy(X)</code>.</li>
-<li>Belief change tiggering events, e.g. <code>+want(X)[source(Y)]</code>.</li>
-<li>Plan contexts with negation, e.g. <code>not in_stock(X)</code>.</li>
-<li>Plan contexts with conjunction, e.g. <code>seller(Y) &amp; not out_of_stock(X)[source(Y)]</code>.</li>
-<li>Internal actions, e.g. <code>.print</code>.</li>
-<li>Agent communication, e.g. <code>.send</code>.</li>
-<li>Belief change actions, e.g. <code>-in_stock(X)</code>.</li>
-</ul>
-
-<h3 id="step-8-update-the-configuration-file-hello_worldmas2j">Step 8 - Update the configuration file <code>hello_world.mas2j</code></h3>
-
-<p>Edit <code>hello_world.mas2j</code> by making <code>alice</code> an instance of <code>buyer_agent</code> and <code>bob</code> an instance of <code>seller_agent</code>.</p>
-
-<p>The file <code>hello_world.mas2j</code> looks as follows:</p>
-
-<div class="codehilite">
-<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
-
-    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
-
-    <span class="s s-Atom">agents</span><span class="p">:</span>
-        <span class="s s-Atom">alice</span> <span class="s s-Atom">buyer_agent</span><span class="p">;</span>
-        <span class="s s-Atom">bob</span> <span class="s s-Atom">seller_agent</span><span class="p">;</span>
-
-    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
-        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre>
 </div>
 
-<h3 id="step-9-save-your-changes-and-select-run-jason-application">Step 9 - Save your changes and select <strong>Run Jason Application</strong></h3>
+<p>Run the Jason project.</p>
 
-<p><img src="figures/run-buyer-seller.png" alt="Figure" /></p>
+<div class="codehilite">
+<pre><span></span><code>[alice] hello bob
+[bob] hello alice
+</code></pre>
+</div>
 
-<p>Notice that <code>bob</code> had no initial goal(s) and simply reacted to an event triggered by <code>alice</code>.
-Conversely, notice that <code>alice</code> exhibits both reactive and goal-directed behaviour.</p>
+<p>The behaviour is unchanged because they were both given the same initial achievement goal <code>!start</code>.</p>
 
-<h3 id="step-10-select-stop-in-the-jason-console">Step 10 - Select <strong>Stop</strong> in the Jason console</h3>
+<h3 id="step-6-jason-annotations">Step 6 - Jason annotations</h3>
+
+<p>All belief atoms and goals in Jason can be attached with <strong>optional</strong> meta-information, called <strong>annotations</strong>, represented as lists of logic programming atoms and handled by Jason in a familiar way. Annotations are <strong>hidden by default</strong> but they can be explicitly referenced in agent files using square bracket notation.</p>
+
+<p>Create a new agent file called <code>meta.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">feeling</span><span class="p">(</span><span class="s s-Atom">today</span><span class="p">,</span> <span class="s s-Atom">good</span><span class="p">)[</span><span class="nf">degree_of_belief</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">75</span><span class="p">)].</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+feeling</span><span class="p">(</span><span class="s s-Atom">today</span><span class="p">,</span> <span class="s s-Atom">good</span><span class="p">)[</span><span class="nf">degree_of_belief</span><span class="p">(</span><span class="nv">X</span><span class="p">)]</span> <span class="p">:</span> <span class="nv">X</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;today is a good day&quot;</span><span class="p">).</span>
+
+<span class="nf">+feeling</span><span class="p">(</span><span class="s s-Atom">today</span><span class="p">,</span> <span class="s s-Atom">good</span><span class="p">)[</span><span class="nf">degree_of_belief</span><span class="p">(</span><span class="nv">X</span><span class="p">)]</span> <span class="p">:</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;today is not a good day&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>The line <code>feeling(today, good)[degree_of_belief(0.75)]</code> means that <code>feeling(today, good)</code> is an initial base belief annotated with meta-information <code>degree_of_belief(0.75)</code>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> This symbol <code>degree_of_belief</code> has no in-built meaning in Jason and has been chosen (by us as Jason programmers) merely to reflect intended usage.</p>
+</blockquote>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">meta</span><span class="p">;</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] today is a good day
+</code></pre>
+</div>
+
+<p>Change the initial base belief as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">feeling</span><span class="p">(</span><span class="s s-Atom">today</span><span class="p">,</span> <span class="s s-Atom">good</span><span class="p">)[</span><span class="nf">degree_of_belief</span><span class="p">(</span><span class="mi">0</span><span class="p">.</span><span class="mi">25</span><span class="p">)].</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] today is not a good day
+</code></pre>
+</div>
+
+<p>A common use case for Jason annotations is to constrain the selection of beliefs, goals, and plans. In this example the first plan for triggering event <code>+feeling(today, good)[degree_of_belief(X)]</code> has been constrained via its context, which says that <code>X &gt;= 0.5</code> must be satisfied in order for the plan to be applicable.</p>
+
+<p>Edit <code>meta.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!go_to</span><span class="p">(</span><span class="s s-Atom">work</span><span class="p">)[</span><span class="nf">priority</span><span class="p">(</span><span class="s s-Atom">high</span><span class="p">)].</span>
+<span class="nc">!go_to</span><span class="p">(</span><span class="s s-Atom">sleep</span><span class="p">)[</span><span class="nf">priority</span><span class="p">(</span><span class="s s-Atom">low</span><span class="p">)].</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!go_to</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">priority</span><span class="p">(</span><span class="s s-Atom">high</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;going to &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
+
+<span class="nc">+!go_to</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">priority</span><span class="p">(</span><span class="s s-Atom">low</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;will go to &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot; another time&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] going to work
+[alice] will go to sleep another time
+</code></pre>
+</div>
+
+<p>This example demonstrates that Jason annotations also work for (sub)goals in a similar manner as for beliefs.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> It is easy to abuse Jason annotations; they should only be used to represent <strong>meta-information</strong>, not for information that is more appropriately embedded in existing concepts such as beliefs or goals.</p>
+</blockquote>
+
+<p>Jason annotations can be used in single-agent systems as demonstrated here. However, we will see later that annotations are especially useful in multi-agent settings.</p>
 
 <h2 id="agent-communication">Agent communication</h2>
 
+<p>Jason implements support for agent communication via its library of <a href="https://jason.sourceforge.net/api/jason/stdlib/package-summary.html">standard internal actions</a>.</p>
+
+<h3 id="step-7-broadcast-communication-actions">Step 7 - Broadcast communication actions</h3>
+
+<p>Suppose an agent wants to communicate some belief to all other agents in the Jason project. This can be achieved by the Jason communication action <code>.broadcast(tell, b)</code> where <code>b</code> is a base belief that is added to the belief base of all other agents when the action is executed.</p>
+
+<p>Create a new agent file called <code>leader.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;welcome everyone!&quot;</span><span class="p">);</span> <span class="nb">.broadcast</span><span class="p">(</span><span class="s s-Atom">tell</span><span class="p">,</span> <span class="s s-Atom">welcomed</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Create another new agent file called <code>follower.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+welcomed</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you, glad to be here&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">leader</span><span class="p">;</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">follower</span><span class="p">;</span>
+    <span class="s s-Atom">carol</span> <span class="s s-Atom">follower</span><span class="p">;</span>
+    <span class="s s-Atom">dave</span> <span class="s s-Atom">follower</span><span class="p">;</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] welcome everyone!
+[carol] thank you, glad to be here
+[bob] thank you, glad to be here
+[dave] thank you, glad to be here
+</code></pre>
+</div>
+
+<p>When <code>alice</code> executes <code>.broadcast(tell, welcomed)</code> the base belief <code>welcomed</code> is added to the belief base of <code>bob</code>, <code>carol</code>, and <code>dave</code>. According to the semantics of Jason this is treated as a standard belief addition event, which means that the Jason interpreter will look for applicable plans to respond to the event. In this case all three agents have the plan with triggering event <code>+welcomed</code>, which is the plan they all adopt after receiving the message from <code>alice</code>.</p>
+
+<h3 id="step-8-direct-communication-actions">Step 8 - Direct communication actions</h3>
+
+<p>Suppose an agent wants to communicate some belief to a specific agent in the Jason project. This can be achieved by the Jason communication action <code>.send(agent, tell, b)</code> where <code>agent</code> is an agent name and <code>b</code> is a base belief that is added to the belief base of <code>agent</code> when the action is executed.</p>
+
+<p>Edit <code>leader.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+arrived</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;welcome &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="s s-Atom">welcomed</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Edit <code>follower.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hi alice!&quot;</span><span class="p">);</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">arrived</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
+
+<span class="nf">+welcomed</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you, glad to be here&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p><strong>Note:</strong> <code>.my_name(X)</code> is a <a href="https://jason.sourceforge.net/api/jason/stdlib/package-summary.html">standard internal action</a> that, when executed, instantiates <code>X</code> with the agent's own name.</p>
+</blockquote>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] hi alice!
+[alice] welcome bob!
+[bob] thank you, glad to be here
+[carol] hi alice!
+[alice] welcome carol!
+[dave] hi alice!
+[carol] thank you, glad to be here
+[alice] welcome dave!
+[dave] thank you, glad to be here
+</code></pre>
+</div>
+
+<p>Clearly the only change from <code>.broadcast</code> is that <code>.send</code> allows agents to communicate directly with one another.</p>
+
+<h3 id="step-9-source-annotations">Step 9 - Source annotations</h3>
+
+<p>Every belief and goal is <strong>automatically</strong> labelled in Jason with a <strong>special annotation</strong> of the form <code>source(X)</code>. If the belief or goal originates from the <strong>agent itself</strong> (e.g. via its initial beliefs, goals, or plans) then the belief or goal will be annotated with <code>source(self)</code>. If the belief or goal originates from <strong>another agent</strong> (via <code>.send</code> or <code>.broadcast</code> communication actions) then the belief or goal will be annotated with <code>source(agent)</code> where <code>agent</code> is the name of the other agent.</p>
+
+<p>Edit <code>leader.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">tutorial</span><span class="p">(</span><span class="s s-Atom">intro_to_jason</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span><span class="p">[</span><span class="nf">source</span><span class="p">(</span><span class="nv">X</span><span class="p">)]</span> <span class="p">:</span> <span class="nf">tutorial</span><span class="p">(</span><span class="nv">Y</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Z</span><span class="p">)]</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;this tutorial is &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot; (X=&quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;, Z=&quot;</span><span class="p">,</span> <span class="nv">Z</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">).</span>
+
+<span class="nf">+arrived</span><span class="p">[</span><span class="nf">source</span><span class="p">(</span><span class="nv">X</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;welcome &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="s s-Atom">welcomed</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Edit <code>follower.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!start</span><span class="p">.</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!start</span><span class="p">[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;hi alice!&quot;</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="s s-Atom">arrived</span><span class="p">).</span>
+
+<span class="nf">+welcomed</span><span class="p">[</span><span class="nf">source</span><span class="p">(</span><span class="nv">X</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;, glad to be here&quot;</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[carol] hi alice!
+[bob] hi alice!
+[dave] hi alice!
+[alice] this tutorial is intro_to_jason (X=self, Z=self)
+[alice] welcome carol!
+[alice] welcome bob!
+[alice] welcome dave!
+[carol] thank you alice, glad to be here
+[bob] thank you alice, glad to be here
+[dave] thank you alice, glad to be here
+</code></pre>
+</div>
+
+<p>The <code>source(X)</code> annotation demonstrates the usefulness of Jason annotations in the context of multi-agent systems. For example, the fact that all beliefs and goals are automatically annotated with <code>source(X)</code> means that back-and-forth communication can be implemented without the need to manually track agent names within the content of communication actions (as was done in the previous example). Moreover, representing <code>source(X)</code> as an annotation rather than embedding it in the belief itself better reflects the idea that <code>source(X)</code> is meta-information associated with a belief, rather than part of the belief itself.</p>
+
+<h3 id="step-10-other-performatives">Step 10 - Other performatives</h3>
+
+<p>The argument <code>tell</code> in the previous examples <code>.broadcast(tell, welcomed)</code> and <code>.send(alice, tell, welcomed)</code> is called a <strong>performative</strong>. This is just one of many performatives supported by Jason communication actions. Other examples include <code>untell</code>, <code>achieve</code>, and <code>askOne</code>:</p>
+
+<ul>
+<li>If <code>alice</code> executes <code>.send(bob, untell, b)</code>, base belief <code>b[source(alice)]</code> is deleted from the belief base of <code>bob</code></li>
+<li>If <code>alice</code> executes <code>.send(bob, achieve, g)</code>, achievement goal addition event <code>+!g[source(alice)]</code> is added to the event set of <code>bob</code> (as an external event)</li>
+<li>If <code>alice</code> executes <code>.send(bob, askOne, b)</code>, test goal addition event <code>+?b[source(alice)]</code> is added to the event set of <code>bob</code> (as an external event) and the answer <code>b[source(bob)]</code> is added (asynchronously) to the belief base of <code>alice</code> once found</li>
+</ul>
+
+<p>Each performative can be used in both <code>.send</code> and <code>.broadcast</code> forms, with the usual meaning in each case.</p>
+
+<p>Examples of more advanced performatives include <code>unachieve</code>, <code>askAll</code>, <code>tellHow</code>, <code>untellHow</code>, and <code>askHow</code>. The last three in particular relate to the communication of <strong>plans</strong>. Full semantics for all Jason communication actions can be found in Chapter 6 of the Jason textbook.</p>
+
+<h2 id="example-traders">Example - Traders</h2>
+
+<p>Suppose we want to implement a collection of trader agents, each designed to buy and sell items with other agents depending on their initial beliefs and initial achievement goals.</p>
+
+<h3 id="step-11-one-buyer">Step 11 - One buyer</h3>
+
+<p>Create a new agent file called <code>trader.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!acquire</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemWant</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">ItemWant</span> <span class="o">&gt;</span> <span class="nv">ItemHave</span> <span class="p">&lt;-</span>
+    <span class="nv">ItemNeed</span> <span class="o">=</span> <span class="nv">ItemWant</span> <span class="o">-</span> <span class="nv">ItemHave</span><span class="p">;</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;does anyone have &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="s2">&quot; (x&quot;</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">,</span> <span class="s2">&quot;) to sell?&quot;</span><span class="p">);</span>
+    <span class="nf">+need</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">);</span>
+    <span class="nf">+target</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemWant</span><span class="p">);</span>
+    <span class="nb">.broadcast</span><span class="p">(</span><span class="s s-Atom">askOne</span><span class="p">,</span> <span class="nf">available</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">,</span> <span class="p">_)).</span>
+
+<span class="o">+</span><span class="nc">?available</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">,</span> <span class="nv">ItemAvailable</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Buyer</span><span class="p">)]</span> <span class="p">:</span>
+  <span class="nf">have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nb">.min</span><span class="p">([</span><span class="nv">ItemNeed</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">],</span> <span class="nv">ItemAvailable</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nb">.random</span><span class="p">(</span><span class="nv">Percentage</span><span class="p">);</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="nv">Percentage</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="nv">Buyer</span><span class="p">,</span> <span class="s2">&quot;, I can sell you &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="s2">&quot; (x&quot;</span><span class="p">,</span> <span class="nv">ItemAvailable</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">).</span>
+
+<span class="nf">+available</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="p">_,</span> <span class="nv">ItemAvailable</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Seller</span><span class="p">)]</span> <span class="p">:</span>
+  <span class="nf">need</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nb">.min</span><span class="p">([</span><span class="nv">ItemAvailable</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">],</span> <span class="nv">ItemBuy</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">ItemBuy</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="nv">Seller</span><span class="p">,</span> <span class="s2">&quot;, I would like to buy &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="s2">&quot; (x&quot;</span><span class="p">,</span> <span class="nv">ItemBuy</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">);</span>
+    <span class="nf">-need</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemNeed</span><span class="p">);</span>
+    <span class="nf">+need</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemNeed</span> <span class="o">-</span> <span class="nv">ItemBuy</span><span class="p">);</span>
+    <span class="nb">.send</span><span class="p">(</span><span class="nv">Seller</span><span class="p">,</span> <span class="s s-Atom">achieve</span><span class="p">,</span> <span class="nf">sell</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemBuy</span><span class="p">)).</span>
+
+<span class="nc">+!sell</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemBuy</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Buyer</span><span class="p">)]</span> <span class="p">:</span>
+  <span class="nf">have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nb">.min</span><span class="p">([</span><span class="nv">ItemHave</span><span class="p">,</span> <span class="nv">ItemBuy</span><span class="p">],</span> <span class="nv">ItemSell</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">ItemSell</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="nv">Buyer</span><span class="p">,</span> <span class="s2">&quot;, here is your purchase of &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="s2">&quot; (x&quot;</span><span class="p">,</span> <span class="nv">ItemSell</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">);</span>
+    <span class="nf">-have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">);</span>
+    <span class="nf">+have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span> <span class="o">-</span> <span class="nv">ItemSell</span><span class="p">);</span>
+    <span class="nb">.send</span><span class="p">(</span><span class="nv">Buyer</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">received</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemSell</span><span class="p">)).</span>
+
+<span class="nf">+received</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemReceived</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nf">-have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">);</span>
+    <span class="nf">+have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span> <span class="o">+</span> <span class="nv">ItemReceived</span><span class="p">).</span>
+
+<span class="nf">+have</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">target</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I now have all the &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="s2">&quot; I wanted&quot;</span><span class="p">);</span>
+    <span class="nf">-target</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemHave</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p><strong>Note:</strong> <code>.random(X)</code> is a <a href="https://jason.sourceforge.net/api/jason/stdlib/package-summary.html">standard internal action</a> that, when executed, instantiates <code>X</code> with a random number between 0 and 1. Similarly, <code>.min(List, X)</code> is a standard internal action that, when executed, instantiates <code>X</code> with the minimum element in <code>List</code> according to <strong>natural order</strong>.</p>
+</blockquote>
+
+<p>This agent file uses several language features related to multi-agent systems, e.g.:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Feature</th>
+  <th>Example(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Source annotations</td>
+  <td><code>source(Buyer)</code>, <code>source(Seller)</code></td>
+</tr>
+<tr>
+  <td>Direct <code>tell</code> communication</td>
+  <td><code>.send(Buyer, tell, received(Item, ItemSell))</code></td>
+</tr>
+<tr>
+  <td>Direct <code>achieve</code> communication</td>
+  <td><code>.send(Seller, achieve, sell(Item, ItemBuy))</code></td>
+</tr>
+<tr>
+  <td>Broadcast <code>askOne</code> communication</td>
+  <td><code>.broadcast(askOne, available(Item, ItemNeed, _))</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+     <span class="s s-Atom">alice</span> <span class="s s-Atom">trader</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;have(apples, 1)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;acquire(apples, 5)&quot;</span><span class="p">];</span>
+     <span class="s s-Atom">bob</span> <span class="s s-Atom">trader</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;have(apples, 2)&quot;</span><span class="p">];</span>
+     <span class="s s-Atom">carol</span> <span class="s s-Atom">trader</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;have(apples, 3)&quot;</span><span class="p">];</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>This Jason configuration file uses several language features related to multi-agent systems, e.g.:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Feature</th>
+  <th>Example(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Agents of the same type</td>
+  <td><code>alice trader [...]; bob trader [...]</code></td>
+</tr>
+<tr>
+  <td>Initial base beliefs as parameters</td>
+  <td><code>[beliefs="have(apples, 2)"]</code></td>
+</tr>
+<tr>
+  <td>Initial achievement goals as parameters</td>
+  <td><code>[..., goals="acquire(apples, 5)"]</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>The most important observation is that according to the agent file all <code>trader</code> agents can act as both buyer and seller, yet according to the Jason configuration file only <code>alice</code> has an initial achievement goal to acquire items. Thus, for this example <code>alice</code> serves as the buyer while <code>bob</code> and <code>carol</code> serve as the sellers. The code can be understood as follows:</p>
+
+<ul>
+<li>The first plan describes how the agent should behave when it receives a new achievement goal to acquire items. The context says that plan should only be adopted if the number of items to acquire (<code>ItemWant</code>) is less than the number of items already in its possession (<code>ItemHave</code>). The first step in the body determines the additional number of items to acquire (<code>ItemNeed</code>), while the two belief addition actions (<code>+need(Item, ItemNeed)</code> and <code>+target(Item, ItemWant)</code>) simply track the immediate and overall objectives. Finally, the communication action asks all other agents how many items (up to <code>ItemNeed</code>) they are able to fulfil.</li>
+<li>Since a <code>trader</code> agent can act as both buyer and seller, the second plan describes how the agent should behave when (acting as seller) it receives a question about how many items it is able to fulfil. We assume the agent takes a short amount of time to consider this question (up to 1000 milliseconds), and responds with either the requested number of items or the number of items it has in its possession, whichever is lower. In this sense the agent does not necessarily reveal to other agents the full number items it has in its possession.</li>
+<li>The third plan describes how the agent should behave when (acting as buyer) it receives an answer to its question. The context serves to figure out how many items to buy (<code>ItemBuy</code>) from the seller (<code>Seller</code>) based on the number of items it still needs (<code>ItemNeed</code>) and how many items the seller has available (<code>ItemAvailable</code>). If the number of items to buy is greater than zero, the communication asks the seller to achieve the goal of selling it the requested number of items, while the belief change actions serve to update the agent's immediate objective regarding how many additional items to acquire.</li>
+<li>The four plan describes how the agent should behave when (acting as seller) it receives an request to sell items, which plays out similar to the third plan according to the number of items it is able to sell (<code>ItemSell</code>). The main difference is that the belief change actions serve to update the number of items in its possession, while the communication action informs the buyer that it has received the items.</li>
+<li>The fifth and sixth plans how the agent (acting as buyer) should maintain its beliefs about the number of items in its possession and to determine when its overall objective (the original <code>ItemWant</code>) has been achieved.</li>
+</ul>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] does anyone have apples (x4) to sell?
+[carol] alice, I can sell you apples (x3)
+[alice] carol, I would like to buy apples (x3)
+[carol] alice, here is your purchase of apples (x3)
+[bob] alice, I can sell you apples (x2)
+[alice] bob, I would like to buy apples (x1)
+[bob] alice, here is your purchase of apples (x1)
+[alice] I now have all the apples I wanted
+</code></pre>
+</div>
+
+<p>Notice that <code>alice</code> wants to acquire five <code>apples</code>, but already as one in her possession, so she only needs an additional four. Meanwhile <code>carol</code> is able to sell three but <code>bob</code> is only able to sell two. Moreover, <code>carol</code> responds to the request before <code>bob</code> so <code>alice</code> agrees to buy all three from <code>carol</code>, leaving only one to buy from <code>bob</code>. Once she completes the purchase with <code>bob</code> she now has five in her possession, satisfying her original objective.</p>
+
+<h3 id="step-12-multiple-buyers">Step 12 - Multiple buyers</h3>
+
+<p>As implied previously, the only criteria determining if a <code>trader</code> agent will act as buyer is whether it has an achievement goal to acquire items that it does not already have in its possession.</p>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">multi_agent</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">trader</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;have(apples, 1), have(bananas, 2)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;acquire(apples, 5)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">trader</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;have(apples, 2), have(bananas, 0)&quot;</span><span class="p">,</span> <span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;acquire(bananas, 3)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">carol</span> <span class="s s-Atom">trader</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;have(apples, 3), have(bananas, 2)&quot;</span><span class="p">];</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] does anyone have apples (x4) to sell?
+[bob] does anyone have bananas (x3) to sell?
+[carol] bob, I can sell you bananas (x2)
+[bob] carol, I would like to buy bananas (x2)
+[carol] bob, here is your purchase of bananas (x2)
+[bob] alice, I can sell you apples (x2)
+[alice] bob, I would like to buy apples (x2)
+[bob] alice, here is your purchase of apples (x2)
+[carol] alice, I can sell you apples (x3)
+[alice] carol, I would like to buy apples (x2)
+[carol] alice, here is your purchase of apples (x2)
+[alice] I now have all the apples I wanted
+[alice] bob, I can sell you bananas (x2)
+[bob] alice, I would like to buy bananas (x1)
+[alice] bob, here is your purchase of bananas (x1)
+[bob] I now have all the bananas I wanted
+</code></pre>
+</div>
+
+<p>Here we see agents instantiated from the same agent file <code>trader.asl</code> but with different initial beliefs and initial achievement goals, which leads to a different outcomes when executing the Jason project. The fact that the agents continue to function without changes to the agent file demonstrates <strong>generalisability</strong> of the original code.</p>
+
+<p>In this example we have a second buyer <code>bob</code> who has the achievement goal to acquire three <code>bananas</code>, having none in his possession already. Thus, <code>alice</code> is seeking to buy four <code>apples</code> and <code>bob</code> is seeking to buy three <code>bananas</code>. The objectives are satisfied once <code>alice</code> buys two <code>apples</code> each from <code>bob</code> and <code>carol</code>, and once <code>bob</code> buys two <code>bananas</code> from <code>carol</code> and one from <code>alice</code>. This means that <code>alice</code> and <code>bob</code> have achieved their objectives by buying and selling with each other.</p>
+
+<h2 id="example-contract-net-protocol">Example - Contract Net Protocol</h2>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Contract_Net_Protocol">Contract Net Protocol</a> is a classic mechanism for task allocation in multi-agent systems.</p>
+
+<p>Suppose an agent has a task that it needs completed. The agent cannot complete the task itself but there are other agents able to complete the task on its behalf. The agent assumes the role of <strong>manager</strong>; it is responsible for allocating the task to another agent. All other agents assume the role of <strong>contractor</strong>; they are able to bid for the task and are responsible for completing the task if their bid is successful.</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/CNP.svg/440px-CNP.svg.png" alt="Figure" /></p>
+
+<p>The Contract Net Protocol plays out as follows. The manager sends a <strong>call for proposals</strong> to all contractors. The contractors respond by either <strong>rejecting</strong> the call or by <strong>proposing</strong> a bid. The manager then chooses a winning bid, and notifies each contractor whether their bid has been <strong>accepted</strong> or <strong>rejected</strong>. Finally the winning contractor either <strong>completes</strong> the task and informs the manager, or notifies the manager that they want to <strong>cancel</strong> the task. If the task is cancelled, the manager can restart the process.</p>
+
+<h3 id="step-13-task-allocation">Step 13 - Task allocation</h3>
+
+<p>Create a new agent file called <code>manager.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!call_for_proposals</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">)</span> <span class="p">:</span> 
+  <span class="k">true</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Requesting proposals for &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">);</span>
+    <span class="nb">.broadcast</span><span class="p">(</span><span class="s s-Atom">achieve</span><span class="p">,</span> <span class="nf">propose</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">));</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+    <span class="nc">?winner</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bids</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Received proposals &quot;</span><span class="p">,</span> <span class="nv">Bids</span><span class="p">,</span> <span class="s2">&quot; for &quot;</span><span class="p">,</span> <span class="nv">Task</span> <span class="p">,</span><span class="s2">&quot; - &quot;</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">,</span> <span class="s2">&quot; is the winner&quot;</span><span class="p">);</span>
+    <span class="nc">!notify</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bids</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">).</span>
+
+<span class="o">+</span><span class="nc">?winner</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bids</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">proposal</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="p">_)</span> <span class="p">&lt;-</span>
+    <span class="nb">.findall</span><span class="p">(</span><span class="nf">bid</span><span class="p">(</span><span class="nv">Bid</span><span class="p">,</span> <span class="nv">Contractor</span><span class="p">),</span> <span class="nf">proposal</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Contractor</span><span class="p">)],</span> <span class="nv">Bids</span><span class="p">);</span>
+    <span class="nb">.min</span><span class="p">(</span><span class="nv">Bids</span><span class="p">,</span> <span class="nf">bid</span><span class="p">(_,</span> <span class="nv">WinningContractor</span><span class="p">)).</span>
+
+<span class="nc">+!notify</span><span class="p">(_,</span> <span class="p">_,</span> <span class="p">[],</span> <span class="p">_)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="k">true</span><span class="p">.</span>
+
+<span class="nc">+!notify</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="p">[</span><span class="nf">bid</span><span class="p">(</span><span class="nv">WinningBid</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">)</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">],</span> <span class="nv">WinningContractor</span><span class="p">)</span> <span class="p">:</span>
+  <span class="k">true</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Accepting proposal for &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">,</span> <span class="s2">&quot; from &quot;</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">);</span>
+    <span class="nb">.send</span><span class="p">(</span><span class="nv">WinningContractor</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">accepted</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">WinningBid</span><span class="p">));</span>
+    <span class="nc">!notify</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Rest</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">).</span>
+
+<span class="nc">+!notify</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="p">[</span><span class="nf">bid</span><span class="p">(</span><span class="nv">LosingBid</span><span class="p">,</span> <span class="nv">LosingContractor</span><span class="p">)</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">],</span> <span class="nv">WinningContractor</span><span class="p">)</span> <span class="p">:</span>
+  <span class="k">true</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Rejecting proposal for &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">,</span> <span class="s2">&quot; from &quot;</span><span class="p">,</span> <span class="nv">LosingContractor</span><span class="p">);</span>
+    <span class="nc">!notify</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Rest</span><span class="p">,</span> <span class="nv">WinningContractor</span><span class="p">).</span>
+
+<span class="nf">-proposal</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Contractor</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nc">!call_for_proposals</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Create a new agent file called <code>contractor.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="nf">cost</span><span class="p">(</span><span class="s s-Atom">task1</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
+<span class="nf">cost</span><span class="p">(</span><span class="s s-Atom">task2</span><span class="p">,</span> <span class="mi">4</span><span class="p">).</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nc">+!propose</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Manager</span><span class="p">)]</span> <span class="p">:</span>
+  <span class="nf">resources</span><span class="p">(</span><span class="nv">Resources</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">cost</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Cost</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Resources</span> <span class="o">&gt;=</span> <span class="nv">Cost</span> <span class="p">&lt;-</span>
+    <span class="nb">.random</span><span class="p">(</span><span class="nv">Percentage</span><span class="p">);</span>
+    <span class="nv">Bid</span> <span class="o">=</span> <span class="nb">math.round</span><span class="p">(</span><span class="nv">Cost</span> <span class="o">+</span> <span class="p">((</span><span class="nv">Resources</span> <span class="o">-</span> <span class="nv">Cost</span><span class="p">)</span> <span class="o">*</span> <span class="nv">Percentage</span><span class="p">));</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Proposing &quot;</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">,</span> <span class="s2">&quot; seconds for &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">);</span>
+    <span class="nb">.send</span><span class="p">(</span><span class="nv">Manager</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">proposal</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">)).</span>
+
+<span class="nc">+!propose</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Manager</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Declining &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">).</span>
+
+<span class="nf">+accepted</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Manager</span><span class="p">)]</span> <span class="p">:</span>
+  <span class="nf">resources</span><span class="p">(</span><span class="nv">Resources</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Bid</span> <span class="o">&gt;</span> <span class="nv">Resources</span> <span class="p">&lt;-</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Cancelling &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">,</span> <span class="s2">&quot; due to insufficient resources&quot;</span><span class="p">);</span>
+    <span class="nb">.send</span><span class="p">(</span><span class="nv">Manager</span><span class="p">,</span> <span class="s s-Atom">untell</span><span class="p">,</span> <span class="nf">proposal</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">)).</span>
+
+<span class="nf">+accepted</span><span class="p">(</span><span class="nv">Task</span><span class="p">,</span> <span class="nv">Instance</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">resources</span><span class="p">(</span><span class="nv">Resources</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nf">-resources</span><span class="p">(</span><span class="nv">Resources</span><span class="p">);</span>
+    <span class="nf">+resources</span><span class="p">(</span><span class="nv">Resources</span> <span class="o">-</span> <span class="nv">Bid</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Performing &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">,</span> <span class="s2">&quot; for &quot;</span><span class="p">,</span> <span class="nv">Bid</span><span class="p">,</span> <span class="s2">&quot; seconds&quot;</span><span class="p">);</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="nv">Bid</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Completed &quot;</span><span class="p">,</span> <span class="nv">Task</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p><strong>Note:</strong> <code>math.round(X)</code> is a <a href="https://jason.sourceforge.net/doc/api/jason/functions/package-summary.html">function</a> that returns the nearest integer to number <code>X</code>. The fact that it is a <strong>function</strong> rather than a <strong>standard internal action</strong> (as seen previously) is why we have the form <code>Y = math.round(X)</code> rather than e.g. <code>math.round(X, Y)</code>.</p>
+</blockquote>
+
+<p>These agent files uses several language features related to multi-agent systems, e.g.:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Feature</th>
+  <th>Example(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Source annotations</td>
+  <td><code>source(Contractor)</code>, <code>source(Manager)</code></td>
+</tr>
+<tr>
+  <td>Broadcast <code>achieve</code> communication</td>
+  <td><code>.broadcast(achieve, propose(Task, Instance))</code></td>
+</tr>
+<tr>
+  <td>Direct <code>tell</code> communication</td>
+  <td><code>.send(Manager, tell, proposal(Task, Instance, Bid))</code></td>
+</tr>
+<tr>
+  <td>Direct <code>untell</code> communication</td>
+  <td><code>.send(Manager, untell, proposal(Task, Instance, Bid))</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Unlike with the traders example, we have implemented each role as a different agent file, although in theory all agents could act as both manager and contractor. This choice was made in the interests of making the code more readable.</p>
+
+<p>The <code>manager</code> agent file can be understood as follows:</p>
+
+<ul>
+<li>The first plan issues the call for proposals for a given <code>Task</code>. The second term <code>Instance</code> serves to distinguish multiple calls for the same task (e.g. because a previous allocation of that task was cancelled). After issuing the call the agent waits 2000 milliseconds to allow the contractors time to respond, after which it generates a new test subgoal to gather the bids as a list (<code>Bids</code>) and to select the winner (<code>WinningContractor</code>). Finally the agent generates an achievement subgoal to notify all bidders of the result.</li>
+<li>The second plan gathers the bids as a list (<code>Bids</code>) using the internal action <code>.findall</code> previously seen in <a href="tutorial-3.html">Tutorial 3</a>, and then selects the winner (<code>WinningContractor</code>) as the minimum element from that list. Notice in particular that <code>Bid</code> is placed first in <code>bid(Bid, Contractor)</code>, which ensures that natural order of the list prioritises the <code>Bid</code> itself rather than e.g. alphabetical order of agent name (<code>Contractor</code>).</li>
+<li>The third, fourth, and fifth plans describe how to notify bidders of the result. This is achieved by recursively iterating through the list of <code>Bids</code> until the empty list is reached. The winner is dealt with by the fourth plan, where plan ordering and variable matching (<code>[bid(_, WinningContractor) | Rest], WinningContractor</code>) serves to select that bid before others. Since <code>WinningContractor</code> is removed, plan selection for the rest of the (non-empty) list will always proceed to the fifth plan, which serves to notify the losers. Termination is then achieved by the third plan, when the list is empty, which says to do nothing.</li>
+<li>The final plan assumes that the winning contractor may cancel the task by issuing an <code>untell</code> communication action to delete its original bid. When this happens, the <code>manager</code> will simply restart the process while incrementing <code>Instance</code> (so that the new call can be distinguished from the previous call).</li>
+</ul>
+
+<p>The <code>contractor</code> agent file can be understood as follows:</p>
+
+<ul>
+<li>All <code>contractor</code> agents share the same initial beliefs about the cost of tasks. We assume that each <code>contractor</code> agent is also instantiated with an initial belief about its available resources.</li>
+<li>The first and second plans respond to the call for proposals issued by the <code>manager</code>. If the agent believes it has sufficient resources to complete the task it will make a bid using the first plan. The bid it chooses is a random integer between the cost of the task and the agent's current available resources. Once settled, the agent informs the <code>manager</code> of its bid. If the agent believes it has insufficient resources to complete the task it will reject (or rather ignore) the call using the second plan.</li>
+<li>The third and fourth plans handle the situation where the agent is the winning bidder. Again the behavior depends on whether the agent has sufficient resources to complete the task (since this may have changed between when the bid was proposed and accepted). If the agent has insufficient resources the third plan says that it should cancel the task using an <code>untell</code> communication action to the <code>manager</code>. Otherwise (based on plan ordering) the agent will revise its current available resources accordingly and complete the task as originally agreed.</li>
+</ul>
+
+<p>It is worth stating that we have omitted some communication actions implied by the Contract Net Protocol, such as when a <code>contractor</code> rejects the call or informs the <code>manager</code> that the task is complete. The reason they have been omitted is simply that they have no bearing on this particular example.</p>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">contract_net</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">manager</span> <span class="p">[</span><span class="s s-Atom">goals</span><span class="o">=</span><span class="s2">&quot;call_for_proposals(task1, 0), call_for_proposals(task2, 0)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">contractor</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;resources(3)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">carol</span> <span class="s s-Atom">contractor</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;resources(4)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">dave</span> <span class="s s-Atom">contractor</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;resources(5)&quot;</span><span class="p">];</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>This Jason configuration file uses several language features related to multi-agent systems, e.g.:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Feature</th>
+  <th>Example(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Agents of different types</td>
+  <td><code>alice manager [...]; bob contractor [...]</code></td>
+</tr>
+<tr>
+  <td>Agents of the same type</td>
+  <td><code>bob contractor [...]; bob contractor [...]</code></td>
+</tr>
+<tr>
+  <td>Initial base beliefs as parameters</td>
+  <td><code>[beliefs="resources(3)"]</code></td>
+</tr>
+<tr>
+  <td>Initial achievement goals as parameters</td>
+  <td><code>[goals="call_for_proposals(task1, 0), ..."]</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Requesting proposals for task1
+[alice] Requesting proposals for task2
+[dave] Proposing 3 seconds for task1
+[bob] Proposing 2 seconds for task1
+[carol] Proposing 4 seconds for task1
+[carol] Proposing 4 seconds for task2
+[bob] Declining task2
+[dave] Proposing 5 seconds for task2
+[alice] Received proposals [bid(4,carol),bid(2,bob),bid(3,dave)] for task1 - bob is the winner
+[alice] Received proposals [bid(5,dave),bid(4,carol)] for task2 - carol is the winner
+[alice] Rejecting proposal for task1 from carol
+[alice] Rejecting proposal for task2 from dave
+[alice] Accepting proposal for task1 from bob
+[alice] Accepting proposal for task2 from carol
+[alice] Rejecting proposal for task1 from dave
+[bob] Performing task1 for 2 seconds
+[carol] Performing task2 for 4 seconds
+[bob] Completed task1
+[carol] Completed task2
+</code></pre>
+</div>
+
+<p>In this example the cost of tasks and an agent's available resources are both measured in seconds. The manager <code>alice</code> has issued a call for proposals for two tasks, <code>task1</code> and <code>task2</code>, which the contractors <code>bob</code>, <code>carol</code>, and <code>dave</code> believe have a cost of 2 and 4 seconds, respectively. For <code>task1</code>, <code>bob</code> bids 2 seconds, <code>carol</code> bids 4 seconds, and <code>dave</code> bids 3 seconds. For <code>task2</code>, <code>carol</code> bids 4 seconds and <code>dave</code> bids 5 seconds but <code>bob</code> declines to bid. The winning bid in each case is determined by the lowest bid, with ties broken by agent name in alphabetical order. The winner for <code>task1</code> is <code>bob</code> and the winner for <code>task2</code> is <code>carol</code>. All bidders are informed of the results by <code>alice</code> and the winning bidders complete their allocated tasks.</p>
+
+<h3 id="step-14-reallocation">Step 14 - Reallocation</h3>
+
+<p>The Contract Net Protocol permits contractors to cancel allocated tasks.</p>
+
+<p>For example, it is possible that the resources available to a contractor may change in the elapsed time between when the contractor issued the proposal and when the proposal was accepted by the manager. Likewise, if several calls for proposals are active simultaneously but contractors only have limited resources, it is possible that a contractor who wins multiple task allocations may then have insufficient resources to complete all its allocated tasks.</p>
+
+<p>Rerun the Jason project a few times until you see e.g. <code>Cancelling task1 due to insufficient resources</code>.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Requesting proposals for task1
+[alice] Requesting proposals for task2
+[carol] Proposing 2 seconds for task1
+[bob] Proposing 3 seconds for task1
+[dave] Proposing 3 seconds for task1
+[carol] Proposing 4 seconds for task2
+[bob] Declining task2
+[dave] Proposing 4 seconds for task2
+[alice] Received proposals [bid(4,carol),bid(4,dave)] for task2 - carol is the winner
+[alice] Received proposals [bid(3,bob),bid(3,dave),bid(2,carol)] for task1 - carol is the winner
+[alice] Accepting proposal for task2 from carol
+[alice] Rejecting proposal for task1 from bob
+[alice] Rejecting proposal for task1 from dave
+[alice] Rejecting proposal for task2 from dave
+[carol] Performing task2 for 4 seconds
+[alice] Accepting proposal for task1 from carol
+[carol] Cancelling task1 due to insufficient resources
+[alice] Requesting proposals for task1
+[carol] Declining task1
+[dave] Proposing 3 seconds for task1
+[bob] Proposing 2 seconds for task1
+[alice] Received proposals [bid(2,bob),bid(3,dave)] for task1 - bob is the winner
+[alice] Accepting proposal for task1 from bob
+[alice] Rejecting proposal for task1 from dave
+[bob] Performing task1 for 2 seconds
+[carol] Completed task2
+[bob] Completed task1
+</code></pre>
+</div>
+
+<p>In this example the tasks, costs, and agents are the same as before. This time however the bids are different. For <code>task1</code>, <code>bob</code> bids 3 seconds, <code>carol</code> bids 2 seconds, and <code>dave</code> again bids 3 seconds. For <code>task2</code>, <code>carol</code> again bids 4 seconds and <code>dave</code> bids 4 seconds but <code>bob</code> again declines to bid. The winner for both tasks is <code>carol</code>. All bidders are informed of the result by <code>alice</code>. However, according to the Jason configuration file <code>carol</code> only has 4 seconds of available resources. This means that <code>carol</code> has over-committed by two seconds and must cancel one task, and she chooses to cancel <code>task1</code>. With <code>task1</code> now cancelled, <code>alice</code> issues another call for proposals. This time <code>bob</code> bids 2 seconds and <code>dave</code> bids 3 seconds but <code>carol</code> declines to bid. The winner for this second call is <code>bob</code>. All bidders are informed of the result and the winning bidders complete their allocated tasks.</p>
+
 <h2 id="conclusion">Conclusion</h2>
+
+<p>In this tutorial we had a brief introduction to implementing multi-agent systems in Jason, including details on the Jason configuration file and Jason communication actions. These were demonstrated using an example of trader agents and an implementation of the Contract Net Protocol.</p>
+
+<p>Optional advanced material related to Jason development is available in the appendix of this tutorial series, including how to implement virtual environments and environment actions, how to implement graphical user interfaces, and how to implement custom internal actions.</p>
 
 </div>
 <footer class="p-6 mt-4">

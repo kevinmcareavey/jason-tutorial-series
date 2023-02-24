@@ -14,46 +14,35 @@
 <p>This tutorial provides a brief introduction to implementing agents in Jason using its extension to the AgentSpeak language.</p>
 
 <ul>
-<li><a href="#hello-world-program">Hello, World! program</a>
+<li><a href="#getting-started">Getting started</a>
 <ul>
-<li><a href="#step-1-create-a-new-jason-project">Step 1 - Create a new Jason project</a>
+<li><a href="#step-1-create-a-new-jason-project">Step 1 - Create a new Jason project</a></li>
+<li><a href="#step-2-agent-file">Step 2 - Agent file</a></li>
+<li><a href="#step-3-jason-configuration-file">Step 3 - Jason configuration file</a></li>
+<li><a href="#step-4-run-the-jason-project">Step 4 - Run the Jason project</a></li>
+<li><a href="#step-5-terminate-the-jason-project">Step 5 - Terminate the Jason project</a></li>
+</ul></li>
+<li><a href="#example-happy-birthday">Example - Happy birthday</a>
 <ul>
-<li><a href="#agentspeak-files">AgentSpeak file(s)</a></li>
-<li><a href="#jason-configuration-file">Jason configuration file</a></li>
+<li><a href="#step-6-create-a-new-agent">Step 6 - Create a new agent</a></li>
+<li><a href="#step-7-initial-beliefs-and-rules">Step 7 - Initial beliefs and rules</a></li>
+<li><a href="#step-8-run-the-jason-project">Step 8 - Run the Jason project</a></li>
+<li><a href="#step-9-belief-change-achievement-subgoals">Step 9 - Belief change &amp; achievement (sub)goals</a></li>
 </ul></li>
-<li><a href="#step-2-run-the-jason-project">Step 2 - Run the Jason project</a></li>
-<li><a href="#step-3-terminate-the-jason-project">Step 3 - Terminate the Jason project</a></li>
-<li><a href="#step-4-create-a-new-agent">Step 4 - Create a new agent</a></li>
-</ul></li>
-<li><a href="#family-tree-cont">Family tree (cont.)</a>
+<li><a href="#example-grid-world-cleaner">Example - Grid world cleaner</a>
 <ul>
-<li><a href="#step-5-translate-prolog-to-jason-syntax">Step 5 - Translate Prolog to Jason syntax</a></li>
-<li><a href="#step-6-run-the-jason-project">Step 6 - Run the Jason project</a></li>
-<li><a href="#step-7-implement-some-agent-behaviour">Step 7 - Implement some agent behaviour</a></li>
+<li><a href="#step-10-traverse-once">Step 10 - Traverse once</a></li>
+<li><a href="#step-11-test-subgoals">Step 11 - Test (sub)goals</a></li>
+<li><a href="#step-12-adapt-to-different-grids">Step 12 - Adapt to different grids</a></li>
+<li><a href="#step-13-traverse-forever">Step 13 - Traverse forever</a></li>
+<li><a href="#step-14-collect-one-item-at-a-time">Step 14 - Collect one item at a time</a></li>
+<li><a href="#step-15-collect-multiple-items-at-a-time">Step 15 - Collect multiple items at a time</a></li>
+<li><a href="#step-16-collect-items-of-a-given-type">Step 16 - Collect items of a given type</a></li>
 </ul></li>
-<li><a href="#grid-world-traversal">Grid world traversal</a>
-<ul>
-<li><a href="#step-8-traverse-once">Step 8 - Traverse once</a></li>
-<li><a href="#step-9-adapt-to-different-grids">Step 9 - Adapt to different grids</a></li>
-<li><a href="#step-10-traverse-forever">Step 10 - Traverse forever</a></li>
-</ul></li>
-<li><a href="#collecting-items">Collecting items</a>
-<ul>
-<li><a href="#step-11-collect-one-item-at-a-time">Step 11 - Collect one item at a time</a></li>
-<li><a href="#step-12-collect-multiple-items-at-a-time">Step 12 - Collect multiple items at a time</a></li>
-<li><a href="#step-13-collect-items-of-a-given-type">Step 13 - Collect items of a given type</a></li>
-</ul></li>
-<li><a href="#conclusion">Conclusion</a>
-<ul>
-<li><a href="#complete-listing">Complete listing</a>
-<ul>
-<li><a href="#family-tree">Family tree</a></li>
-<li><a href="#grid-world">Grid world</a></li>
-</ul></li>
-</ul></li>
+<li><a href="#conclusion">Conclusion</a></li>
 </ul>
 
-<h2 id="hello-world-program">Hello, World! program</h2>
+<h2 id="getting-started">Getting started</h2>
 
 <p>When introducing a new programming language, it is customary to start with its <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">Hello, World! program</a>. This was already included in <a href="tutorial-1a.html">Tutorial 1a</a>, but we will now go through it in more detail.</p>
 
@@ -61,15 +50,15 @@
 
 <p>Open Eclipse and select <strong>File &gt; New &gt; Other &gt; Jason &gt; Jason Project</strong> from the Eclipse menu.</p>
 
-<p><img src="figures/new-jason-project-1.png" alt="Figure" /></p>
+<!-- ![Figure](figures/new-jason-project-1.png) -->
 
 <p>Select <strong>Next</strong>.</p>
 
-<p><img src="figures/new-jason-project-2.png" alt="Figure" /></p>
+<!-- ![Figure](figures/new-jason-project-2.png) -->
 
 <p>Enter <code>hello_world</code> in the <strong>Project name</strong> field and select <strong>Finish</strong>.</p>
 
-<p><img src="figures/new-jason-project-3.png" alt="Figure" /></p>
+<!-- ![Figure](figures/new-jason-project-3.png) -->
 
 <p>If you are prompted to open the project in <strong>Jason perspective</strong>, select <strong>Open Perspective</strong>.</p>
 
@@ -79,7 +68,7 @@
   <p><strong>Note:</strong> To see the new Jason project you may need to close the <strong>Welcome</strong> tab.</p>
 </blockquote>
 
-<h4 id="agentspeak-files">AgentSpeak file(s)</h4>
+<h3 id="step-2-agent-file">Step 2 - Agent file</h3>
 
 <p>The file <code>src/asl/sample_agent.asl</code> is an agent program written in Jason's extension to the AgentSpeak language (hence the file extension <code>.asl</code>). All agent programs in a Jason project should be stored in the <code>src/asl</code> directory.</p>
 
@@ -130,7 +119,7 @@ In this instance the event set only contains one event, so <code>+!start</code> 
 If the selected event unifies with the triggering event of a plan then that plan is called a <strong>relevant plan</strong>.
 If the context of a relevant plan is entailed (as in a Prolog-style query) by the agent's current belief base then that plan is called an <strong>applicable plan</strong>.
 The Jason interpreter will find the set of applicable plans and then apply its <strong>option selection function</strong> to choose one of those plans to add to the <strong>intention stack</strong> of the selected event.
-Default option selection in Jason operates in a prioritised fashion, as is <a href="tutorial-2.html#step-6-queries-with-variables">standard in Prolog</a>, based on the order that beliefs, plans, and rules appear in the AgentSpeak file.
+Default option selection in Jason operates in a prioritised fashion, as is <a href="tutorial-2.html#step-6-queries-with-variables">standard in Prolog</a>, based on the order that beliefs, plans, and rules appear in the agent file.
 In this instance there is only one applicable plan <code>+!start : true &lt;- .print("hello world.")</code>, so it will be selected, pushed to the (empty) intention stack, and the intention will be added to the agent's <strong>intention set</strong>.</p>
 
 <p>At the start of the acting phase the Jason interpreter will apply its <strong>intention selection function</strong> to the intention set.
@@ -144,7 +133,7 @@ The event set and intention set are both now <strong>empty</strong>, so the agen
   <p><strong>Note:</strong> It is important to emphasise that an agent program only specifies the <strong>initial</strong> beliefs, rules, goals, and plans of the agent. Jason allows each of these to change over time. As a rule of thumb, an agent program is <strong>trivial</strong> if beliefs and goals remain fixed over time, but it is reasonably common for rules and plans to remain fixed.</p>
 </blockquote>
 
-<h4 id="jason-configuration-file">Jason configuration file</h4>
+<h3 id="step-3-jason-configuration-file">Step 3 - Jason configuration file</h3>
 
 <p>The file <code>hello_world.mas2j</code> is a Jason configuration file. There should be at least one configuration file in a Jason project, stored in the base directory, and typically with the same name as the project along with file extension <code>.mas2j</code>.</p>
 
@@ -187,17 +176,13 @@ The event set and intention set are both now <strong>empty</strong>, so the agen
 
 <p>If our project in Eclipse is called <code>hello_world</code> then the Jason configuration file might be called <code>hello_world.mas2j</code> and the file contents might start with <code>MAS hello_world</code>.</p>
 
-<p>The format of the agent definition demonstrates that an agent program (<code>.asl</code> file) actually specifies an <strong>agent type</strong>, with an agent being an <strong>instantiation</strong> of an agent type identified by an agent name.
-This is analogous to the difference between a <strong>class</strong> and an <strong>object</strong> in object-oriented programming.
-For example, a second agent <code>agent2 sample_agent</code> could be added to <code>agents</code>, and this agent <code>agent2</code> would also be instantiated from <code>sample_agent.asl</code>.</p>
-
-<p>If the agent name is omitted from an agent definition then Jason will automatically use the agent type as the agent name. If multiple agents are defined in this way then Jason will automatically append an index to the agent name to distinguish agents of the same type.</p>
+<p>The format of the agent definition demonstrates that an agent program (<code>.asl</code> file) actually specifies an <strong>agent type</strong>, with an agent being an <strong>instantiation</strong> of an agent type identified by an agent name. This is analogous to the difference between a <strong>class</strong> and an <strong>object</strong> in object-oriented programming. If the agent name is omitted from an agent definition then Jason will automatically use the agent type as the agent name followed by an index (e.g. <code>sample_agent1</code>).</p>
 
 <blockquote>
   <p><strong>Note:</strong> It is good practice to always include an explicit agent name in the agent definition.</p>
 </blockquote>
 
-<h3 id="step-2-run-the-jason-project">Step 2 - Run the Jason project</h3>
+<h3 id="step-4-run-the-jason-project">Step 4 - Run the Jason project</h3>
 
 <p>With the <code>hello_world</code> project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
 
@@ -207,17 +192,21 @@ For example, a second agent <code>agent2 sample_agent</code> could be added to <
 
 <p><img src="figures/run-hello-world.png" alt="Figure" /></p>
 
-<p>This window is the <strong>Jason console</strong>, which is shared by all agents in the Jason project.
+<p>This window is the <strong>Jason console</strong>.
 If an agent executes the internal action <code>.print("hello world.")</code>, then the parameter text <code>hello world.</code> will be printed to the console and labelled with the agent's name.
 For example, the line <code>[agent1] hello world.</code> means that agent <code>agent1</code> has executed <code>.print("hello world.")</code>.</p>
 
 <p>Notice that the Jason project is still running; Jason agents persist until they are explicitly terminated.</p>
 
-<h3 id="step-3-terminate-the-jason-project">Step 3 - Terminate the Jason project</h3>
+<h3 id="step-5-terminate-the-jason-project">Step 5 - Terminate the Jason project</h3>
 
 <p>This will terminate the Jason project, including all running agents.</p>
 
-<h3 id="step-4-create-a-new-agent">Step 4 - Create a new agent</h3>
+<h2 id="example-happy-birthday">Example - Happy birthday</h2>
+
+<p>To illustrate the relationship between Prolog and Jason, let us translate the Prolog program from <a href="tutorial-2.html">Tutorial 2</a> into Jason.</p>
+
+<h3 id="step-6-create-a-new-agent">Step 6 - Create a new agent</h3>
 
 <p>With the <code>hello_world</code> project highlighted in Eclipse, select <strong>File &gt; New &gt; Agent</strong>.</p>
 
@@ -225,7 +214,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>A new file <code>family_tree.asl</code> should be created in <code>src/asl</code> and its content should be similar to the existing <code>sample_agent.asl</code> file.</p>
 
-<p>Open <code>hello_world.mas2j</code>. An new agent with agent type <code>family_tree</code> but no agent name should have been added to the list of agent. Call this agent <code>agent2</code>.</p>
+<p>Edit the Jason configuration file as follows:</p>
 
 <div class="codehilite">
 <pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
@@ -233,7 +222,6 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
   <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
 
   <span class="s s-Atom">agents</span><span class="p">:</span>
-    <span class="s s-Atom">agent1</span> <span class="s s-Atom">sample_agent</span><span class="p">;</span>
     <span class="s s-Atom">agent2</span> <span class="s s-Atom">family_tree</span><span class="p">;</span>
 
   <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
@@ -242,21 +230,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </code></pre>
 </div>
 
-<p>With the <code>hello_world</code> project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
-
-<p><img src="figures/console-1.png" alt="Figure" /></p>
-
-<blockquote>
-  <p><strong>Note:</strong> Although <code>agent1</code> appears first in the Jason configuration file, Jason by default does not guarantee that <code>agent1</code> will always execute actions before <code>agent2</code>, hence why the latter's print message may appear before the former in the Jason console.</p>
-</blockquote>
-
-<p>Terminate the Jason project.</p>
-
-<h2 id="family-tree-cont">Family tree (cont.)</h2>
-
-<p>To illustrate the relationship between Prolog and Jason, let us translate the Prolog program from <a href="tutorial-2.html">Tutorial 2</a> into Jason.</p>
-
-<h3 id="step-5-translate-prolog-to-jason-syntax">Step 5 - Translate Prolog to Jason syntax</h3>
+<h3 id="step-7-initial-beliefs-and-rules">Step 7 - Initial beliefs and rules</h3>
 
 <p>Update <code>family_tree.asl</code> as follows:</p>
 
@@ -335,16 +309,28 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">\==</span> <span class="nv">Y</span><span class="p">.</span>
 
-<span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">.</span>
-
 <span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
 
 <span class="nf">cousin</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span><span class="p">(</span><span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">))</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">\==</span> <span class="nv">Y</span><span class="p">.</span>
 
 <span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">|</span> <span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">|</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
 
+<span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">.</span>
+
+<span class="nf">years_as_adult</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Z</span> <span class="o">=</span> <span class="nv">Y</span> <span class="o">-</span> <span class="mi">18</span><span class="p">.</span>
+
 <span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
 <span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">ancestor</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
+
+<span class="nf">ages</span><span class="p">(</span><span class="nv">List</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nb">.findall</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nf">age</span><span class="p">(_,</span> <span class="nv">X</span><span class="p">),</span> <span class="nv">List</span><span class="p">).</span>
+
+<span class="nf">swap</span><span class="p">([</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">],</span> <span class="p">[</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">])</span> <span class="p">:</span><span class="o">-</span> <span class="nv">X</span> <span class="o">&gt;</span> <span class="nv">Y</span><span class="p">.</span>
+<span class="nf">swap</span><span class="p">([</span><span class="nv">Z</span> <span class="p">|</span> <span class="nv">Rest</span><span class="p">],</span> <span class="p">[</span><span class="nv">Z</span> <span class="p">|</span> <span class="nv">RestPrime</span><span class="p">])</span> <span class="p">:</span><span class="o">-</span> <span class="nf">swap</span><span class="p">(</span><span class="nv">Rest</span><span class="p">,</span> <span class="nv">RestPrime</span><span class="p">).</span>
+
+<span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">List</span><span class="p">,</span> <span class="nv">Sorted</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">swap</span><span class="p">(</span><span class="nv">List</span><span class="p">,</span> <span class="nv">ListPrime</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">ListPrime</span><span class="p">,</span> <span class="nv">Sorted</span><span class="p">).</span>
+<span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">Sorted</span><span class="p">,</span> <span class="nv">Sorted</span><span class="p">).</span>
+
+<span class="nf">ages_sorted</span><span class="p">(</span><span class="nv">SortedList</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">ages</span><span class="p">(</span><span class="nv">List</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">bubble_sort</span><span class="p">(</span><span class="nv">List</span><span class="p">,</span> <span class="nv">SortedList</span><span class="p">).</span>
 
 <span class="cm">/* Initial goals */</span>
 
@@ -352,17 +338,23 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </code></pre>
 </div>
 
-<p>Notice that this Jason code is identical to the the Prolog code from <a href="tutorial-2.html">Tutorial 2</a>, with a few exceptions:</p>
+<p>Notice that this Jason code is almost identical to the the Prolog code from <a href="tutorial-2.html">Tutorial 2</a>. The few exceptions are:</p>
 
 <ul>
-<li><code>%</code> (percent) <strong>does not denote</strong> the start of a comment</li>
-<li><code>&amp;</code> (ampersand) rather than <code>,</code> (comma) denotes <strong>conjunction</strong></li>
-<li><code>|</code> (vertical bar) rather than <code>;</code> (semi-colon) denotes <strong>disjunction</strong></li>
+<li>Comments are denoted by <code>//</code> or <code>/*</code> ... <code>*/</code> rather than <code>%</code> (percent)</li>
+<li>Conjunction is denoted by <code>&amp;</code> (ampersand) rather than <code>,</code> (comma)</li>
+<li>Disjunction is denoted by <code>|</code> (vertical bar) rather than <code>;</code> (semi-colon)</li>
+<li>Arithmetic operations are denoted by <code>=</code> (equals) rather than <code>is</code></li>
+<li>In-built predicate <code>findall/3</code> is prepended with <code>.</code> (full stop)</li>
 </ul>
 
 <p>There are also a few differences in terminology: what were called <strong>facts</strong> in Prolog are now called <strong>initial base beliefs</strong>, and what were called <strong>rules</strong> are now called <strong>initial rules</strong>.</p>
 
-<h3 id="step-6-run-the-jason-project">Step 6 - Run the Jason project</h3>
+<blockquote>
+  <p><strong>Note:</strong> In Jason arithmetic operations are automatically evaluated in-place, so the rule for <code>years_as_adult/2</code> could also be written as <code>years_as_adult(X, Y - 18) :- adult(X) &amp; age(X, Y)</code>.</p>
+</blockquote>
+
+<h3 id="step-8-run-the-jason-project">Step 8 - Run the Jason project</h3>
 
 <p>Remove <code>agent1</code> from the Jason configuration file.</p>
 
@@ -380,11 +372,11 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </code></pre>
 </div>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+<p>Run the Jason project.</p>
 
 <p>The empty Jason console should appear. Notice that there is no way for you as a Jason programmer to manually submit Prolog-style queries. While Jason does rely on queries, for the most part they are handled automatically by the Jason interpreter (e.g. when evaluating relevant plans, applicable plans, and test goals). As a Jason programmer it is your responsibility to write plans, with appropriate triggering events and plan contexts, that encode the agent's behaviour relative to its current belief base and event set.</p>
 
-<h3 id="step-7-implement-some-agent-behaviour">Step 7 - Implement some agent behaviour</h3>
+<h3 id="step-9-belief-change-achievement-subgoals">Step 9 - Belief change &amp; achievement (sub)goals</h3>
 
 <p>Add the following initial base beliefs to <code>family_tree.asl</code>:</p>
 
@@ -406,56 +398,85 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <span class="cm">/* Plans */</span>
 
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">female</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;! You are my favourite sister&quot;</span><span class="p">).</span>
+<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">female</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">acknowledged</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;! You are my favourite sister&quot;</span><span class="p">);</span> <span class="nf">+acknowledged</span><span class="p">(</span><span class="nv">Y</span><span class="p">);</span> <span class="nc">!wish_happy_birthday</span><span class="p">.</span>
 
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">male</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;! You are my favourite brother&quot;</span><span class="p">).</span>
+<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">male</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">acknowledged</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;! You are my favourite brother&quot;</span><span class="p">);</span> <span class="nf">+acknowledged</span><span class="p">(</span><span class="nv">Y</span><span class="p">);</span> <span class="nc">!wish_happy_birthday</span><span class="p">.</span>
 
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
+<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">acknowledged</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">);</span> <span class="nf">+acknowledged</span><span class="p">(</span><span class="nv">Y</span><span class="p">);</span> <span class="nc">!wish_happy_birthday</span><span class="p">.</span>
 
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Hmm, no one&#39;s birthday today...&quot;</span><span class="p">).</span>
+<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Hmm, hope I have not forgotten anyone...&quot;</span><span class="p">).</span>
 </code></pre>
 </div>
 
-<p>According to this Jason code the agent thinks he is <code>dave</code> and that <code>eve</code>, <code>ivan</code>, and <code>wendy</code> all have their birthdays today. The agent has the initial achievement goal <code>!wish_happy_birthday</code>, which according to the three plans mean he wants to wish someone in his immediate family happy birthday if their birthday is today. Moreover, if that person is his brother or sister then he wants to tell them they are his favourite brother or sister.</p>
+<p>This code makes use of a range of Jason language features, e.g.:</p>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+<table>
+<thead>
+<tr>
+  <th>Feature</th>
+  <th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Negation</td>
+  <td><code>not acknowledged(Y)</code></td>
+</tr>
+<tr>
+  <td>Conjunction</td>
+  <td><code>self_name(X) &amp; birthday(Y)</code></td>
+</tr>
+<tr>
+  <td>Variable repetition</td>
+  <td><code>birthday(Y) &amp; sibling(X, Y)</code></td>
+</tr>
+<tr>
+  <td>Goal addition triggering events</td>
+  <td><code>+!wish_happy_birthday</code></td>
+</tr>
+<tr>
+  <td>Achievement (sub)goals</td>
+  <td><code>!wish_happy_birthday</code></td>
+</tr>
+<tr>
+  <td>Recursion</td>
+  <td><code>+!wish_happy_birthday : ... &lt;- ...; !wish_happy_birthday.</code></td>
+</tr>
+<tr>
+  <td><a href="https://jason.sourceforge.net/api/jason/stdlib/package-summary.html">Standard internal actions</a></td>
+  <td><code>.print("Happy birthday ", Y, "!")</code></td>
+</tr>
+<tr>
+  <td>Belief change actions</td>
+  <td><code>+acknowledged(Y)</code> (belief addition)</td>
+</tr>
+</tbody>
+</table>
 
-<p>The Jason console should appear and display the following text:</p>
+<p>According to the code the agent thinks he is <code>dave</code>, that <code>eve</code>, <code>ivan</code>, and <code>wendy</code> all have their birthdays today, that <code>eve</code> and <code>ivan</code> are immediate family members (with <code>eve</code> a sibling), and that <code>wendy</code> is not an immediate family member. The agent has the initial achievement goal <code>!wish_happy_birthday</code>, which according to the plans mean he wants to wish someone in his immediate family happy birthday if their birthday is today and he has not already wished them happy birthday. Moreover, if that person is his brother or sister then he wants to tell them they are his favourite brother or sister. After having wished someone happy birthday, the agent records in his belief base that he has done so.</p>
+
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
 <pre><span></span><code>[agent2] Happy birthday eve! You are my favourite sister
+[agent2] Happy birthday ivan!
+[agent2] Hmm, hope I have not forgotten anyone...
 </code></pre>
 </div>
 
-<p>Remove <code>birthday(eve)</code> from <code>family_tree.asl</code> and rerun the Jason application.</p>
-
-<div class="codehilite">
-<pre><span></span><code>[agent2] Happy birthday ivan!
-</code></pre>
-</div>
-
-<p>In this instance <code>ivan</code> is an immediate family member but is not a sibling.</p>
-
-<p>Remove <code>birthday(ivan)</code> from <code>family_tree.asl</code> and rerun the Jason application.</p>
-
-<div class="codehilite">
-<pre><span></span><code>[agent2] Hmm, no one&#39;s birthday today...
-</code></pre>
-</div>
-
-<p>In this instance <code>wendy</code> is not immediate family member, although it is her birthday today.</p>
+<p>This result matches the intended logic of the Jason code.</p>
 
 <blockquote>
-  <p><strong>Note:</strong> The fourth plan was not selected in earlier runs because, although it is always applicable for achievement goal <code>!wish_happy_birthday</code>, it is positioned at the bottom of the AgentSpeak file and thus has lowest priority; it will only be selected if there are no other applicable plans with higher priority.</p>
+  <p><strong>Note:</strong> The fourth plan was not selected in earlier runs because, although it is always applicable for achievement goal <code>!wish_happy_birthday</code>, it is positioned at the bottom of the agent file and thus has lowest priority; it will only be selected if there are no other applicable plans with higher priority.</p>
 </blockquote>
 
-<h2 id="grid-world-traversal">Grid world traversal</h2>
+<h2 id="example-grid-world-cleaner">Example - Grid world cleaner</h2>
 
 <p>Imagine an arbitrary grid world, such as a 3 by 3 grid. Columns are indexed from left to right on the x-axis. Rows are indexed from bottom to top on the y-axis.</p>
 
 <p><img src="figures/grid-blank.png" alt="Figure" /></p>
 
-<h3 id="step-8-traverse-once">Step 8 - Traverse once</h3>
+<h3 id="step-10-traverse-once">Step 10 - Traverse once</h3>
 
 <p>Suppose we want to implement an agent that can traverse the grid according to the following logic:</p>
 
@@ -488,12 +509,11 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <span class="nc">+!explore</span> <span class="p">:</span>
   <span class="nf">next_move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Direction</span> <span class="o">\==</span> <span class="s s-Atom">unknown</span> <span class="o">&lt;-</span>
     <span class="nc">!move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">);</span>
-    <span class="nc">?where_am_i</span><span class="p">;</span>
+    <span class="nc">?location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Arrived at row &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, column &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span>
     <span class="nc">!explore</span><span class="p">.</span>
 
 <span class="nc">+!explore</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Stopping&quot;</span><span class="p">).</span>
-
-<span class="o">+</span><span class="nc">?where_am_i</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Arrived at row &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, column &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.wait</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span>
 
 <span class="nc">+!move</span><span class="p">(</span><span class="s s-Atom">right</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span> <span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
 <span class="nc">+!move</span><span class="p">(</span><span class="s s-Atom">up</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span> <span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="o">+</span><span class="mi">1</span><span class="p">).</span>
@@ -502,7 +522,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </code></pre>
 </div>
 
-<p>This code makes use of a whole range of Jason language features, e.g.:</p>
+<p>This code makes use of a range of Jason language features, e.g.:</p>
 
 <table>
 <thead>
@@ -538,7 +558,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </tr>
 <tr>
   <td>Goal addition triggering events</td>
-  <td><code>+!explore</code>, <code>+?where_am_i</code></td>
+  <td><code>+!explore</code></td>
 </tr>
 <tr>
   <td>Achievement (sub)goals</td>
@@ -546,7 +566,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </tr>
 <tr>
   <td>Test (sub)goals</td>
-  <td><code>?where_am_i</code></td>
+  <td><code>?location(robot, X, Y)</code></td>
 </tr>
 <tr>
   <td>Recursion</td>
@@ -570,7 +590,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <li>Rules for <code>next_move/1</code> determine the next movement direction based on the agent's current position, the dimensions of the grid, and whether the agent's current row is even (<code>Y mod 2 == 0</code>) or odd (<code>Y mod 2 \== 0</code>), with the direction for the top right cell being undefined (<code>unknown</code>)</li>
 <li>Plans with triggering event <code>+!explore</code> say that the agent should continue to move according to the direction determined by <code>next_move/1</code> until the direction is <code>unknown</code></li>
 <li>Plans with triggering event <code>+!move(X)</code> serve to increment or decrement the agent's (belief about its) current row or column using belief change actions, firstly by deleting the existing belief (<code>-location(robot, X, Y)</code>), and secondly by adding a new belief (e.g. <code>+location(robot, X+1, Y)</code>)</li>
-<li>The plan with triggering event <code>+?where_am_i</code> is just a convenience; it prints the agent's current position and then delays execution for 500 milliseconds in order to emphasise execution steps within the Jason console</li>
+<li>The test (sub)goal <code>?location(robot, X, Y)</code> serves to query the agent's belief base for its location <strong>after</strong> the <code>!move(Direction)</code> has been achieved, demonstrating a key use case for test (sub)goal which is <strong>delayed instantiation of variables</strong>; had we included <code>location(robot, X, Y)</code> in the plan context, then the subsequent <code>.print</code> message would have shown the agent's location <strong>before</strong> the <code>!move(Direction)</code> had been achieved</li>
 </ul>
 
 <p>Remove any existing agents from the Jason configuration file and create a new agent called  <code>agent3</code>.</p>
@@ -589,9 +609,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 </code></pre>
 </div>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
-
-<p>The Jason console should appear and display the following text:</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
 <pre><span></span><code>[agent3] Arrived at row 1, column 2
@@ -612,7 +630,37 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
   <p><strong>Note</strong>: Remember that the agent is moving in its own mind only, since it is executing <strong>belief change actions</strong> rather than <strong>environment actions</strong>. Implementing environment actions in Jason is covered in <a href="tutorial-appendix-a">Appendix A</a>.</p>
 </blockquote>
 
-<h3 id="step-9-adapt-to-different-grids">Step 9 - Adapt to different grids</h3>
+<h3 id="step-11-test-subgoals">Step 11 - Test (sub)goals</h3>
+
+<p>Before we move on it may be worth saying a little more about test (sub)goals.</p>
+
+<p>When the Jason interpreter encounters a test (sub)goal such as <code>?location(robot, X, Y)</code> it will initially treat this as a standard query <code>location(robot, X, Y)</code> applied to the agent's current belief base. If the query cannot be answered, the Jason interpreter will then try to find an applicable plan from the agent's plan library for triggering event <code>+?location(robot, X, Y)</code>. If such a plan exists and is completed successfully (e.g. by executing any actions and completing any subgoals) then the test (sub)goal is achieved and any variables will be fully instantiated, effectively answering the original query. In this sense, a test goal is an <strong>epistemic goal</strong>.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> It might help to think of variables in an achievement goal as being its <strong>inputs</strong> (i.e. they must be fully instantiated <strong>before</strong> the goal can be completed) and variables in a test (sub)goal as being its <strong>outputs</strong> (i.e. they will be fully instantiated <strong>after</strong> it is completed).</p>
+</blockquote>
+
+<p>Suppose we just want to slow things by telling the agent to delay execution for 500 milliseconds while it checks its current location. Replace the first two plans as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nc">+!explore</span> <span class="p">:</span>
+  <span class="nf">next_move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Direction</span> <span class="o">\==</span> <span class="s s-Atom">unknown</span> <span class="o">&lt;-</span>
+    <span class="nc">!move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">);</span>
+    <span class="nc">?where_am_i</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Arrived at row &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, column &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span>
+    <span class="nc">!explore</span><span class="p">.</span>
+
+<span class="nc">+!explore</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Stopping&quot;</span><span class="p">).</span>
+
+<span class="o">+</span><span class="nc">?where_am_i</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.wait</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<p>The same text should appear as before but there should now be a delay of 500 milliseconds between each step.</p>
+
+<h3 id="step-12-adapt-to-different-grids">Step 12 - Adapt to different grids</h3>
 
 <p>We know that the code works for a 3 by 3 grid where the agent is in the bottom left corner. However, the code would be rather limited and uninteresting if it <strong>only</strong> worked in this instance.</p>
 
@@ -688,7 +736,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
   <p><strong>Note:</strong> Generalisability is the mark of a good Jason implementation. You should try to implement your agents in such a way that they can adapt to different initial beliefs and initial achievement goals.</p>
 </blockquote>
 
-<h3 id="step-10-traverse-forever">Step 10 - Traverse forever</h3>
+<h3 id="step-13-traverse-forever">Step 13 - Traverse forever</h3>
 
 <p>Suppose we want the agent to traverse the grid back and forth forever. One option is to extend the previous code by treating it as an <strong>outbound</strong> traversal, while adding equivalent code for an <strong>inbound</strong> traversal, i.e.:</p>
 
@@ -750,7 +798,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>Roughly speaking, the code says that the agent should add <code>route(robot, outbound)</code> as a belief when it arrives (or rather believes it has arrived) in the bottom left cell, and should delete <code>route(robot, outbound)</code> when arrives in the top right cell. Thus <code>route(robot, outbound)</code> will evaluate to true while the agent is on its outbound traversal, and <code>not route(robot, outbound)</code> will evaluate to true on its inbound traversal.</p>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
 <pre><span></span><code>[agent3] Now travelling outbound
@@ -778,11 +826,9 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>These print messages will continue until the Jason project is terminated, which demonstrates that the traversal behaviour is working correctly.</p>
 
-<h2 id="collecting-items">Collecting items</h2>
-
 <p>Suppose the grid is littered with items (e.g. waste) and the agent's job is to collect and deposit the items somewhere else (e.g. a bin).</p>
 
-<h3 id="step-11-collect-one-item-at-a-time">Step 11 - Collect one item at a time</h3>
+<h3 id="step-14-collect-one-item-at-a-time">Step 14 - Collect one item at a time</h3>
 
 <p>Suppose the agent can carry one item at a time. Add the following initial base beliefs:</p>
 
@@ -818,7 +864,8 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <span class="nc">+!clean</span> <span class="p">:</span>
   <span class="nf">next_move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Direction</span> <span class="o">\==</span> <span class="s s-Atom">unknown</span> <span class="o">&lt;-</span>
     <span class="nc">!move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">);</span>
-    <span class="nc">?where_am_i</span><span class="p">;</span>
+    <span class="nc">?where_am_i</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Arrived at row &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, column &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span>
     <span class="nc">!clean</span><span class="p">.</span>
 
 <span class="nc">+!clean</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Stopping&quot;</span><span class="p">).</span>
@@ -831,7 +878,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>The first plan then says that if the agent is in the same location as the <code>bin</code>, and is carrying <code>waste</code>, then it should deposit the <code>waste</code> in the <code>bin</code> and continue with its cleaning procedure. Technically the action of depositing <code>waste</code> in the <code>bin</code> is achieved by deleting <code>carrying(robot, waste)</code> from the agent's belief base (i.e. the <code>waste</code> is neither in the environment, nor is it being carried by the agent, so in effect it has disappeared altogether).</p>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
 <pre><span></span><code>[agent3] Now travelling outbound
@@ -872,7 +919,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>We can see here that the agent collected one item of waste on its outbound traversal, and one item on its inbound traversal, but had to wait until its second outbound traversal until it could deposit the second item in the bin.</p>
 
-<h3 id="step-12-collect-multiple-items-at-a-time">Step 12 - Collect multiple items at a time</h3>
+<h3 id="step-15-collect-multiple-items-at-a-time">Step 15 - Collect multiple items at a time</h3>
 
 <p>Suppose the agent can carry multiple items at a time. Add the following initial base belief:</p>
 
@@ -905,7 +952,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>Notice that the initial base belief <code>carrying(robot, waste, 0)</code> serves to initialise <code>ItemCount</code> to <code>0</code> according to the logic of the new plans. The first plan then uses an arithmetic expression rather than negation (as failure) to determine whether the agent is carrying waste. Depositing waste has the effect of resetting <code>ItemCount</code> to <code>0</code>, while picking up waste has the effect of incrementing <code>ItemCount</code> by <code>1</code></p>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
 <pre><span></span><code>[agent3] Now travelling outbound
@@ -927,7 +974,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>The agent has collected both items of waste on its outbound traversal.</p>
 
-<h3 id="step-13-collect-items-of-a-given-type">Step 13 - Collect items of a given type</h3>
+<h3 id="step-16-collect-items-of-a-given-type">Step 16 - Collect items of a given type</h3>
 
 <p>Suppose the grid is also littered with dishes. Add the following initial base beliefs:</p>
 
@@ -971,7 +1018,8 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <span class="nc">+!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">)</span> <span class="p">:</span>
   <span class="nf">next_move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Direction</span> <span class="o">\==</span> <span class="s s-Atom">unknown</span> <span class="o">&lt;-</span>
     <span class="nc">!move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">);</span>
-    <span class="nc">?where_am_i</span><span class="p">;</span>
+    <span class="nc">?where_am_i</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span>
+    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Arrived at row &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, column &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span>
     <span class="nc">!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">).</span>
 
 <span class="nc">+!clean</span><span class="p">(_)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Stopping&quot;</span><span class="p">).</span>
@@ -982,7 +1030,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <p>According to the initial achievement goal <code>!clean(dishes)</code> the agent should collect <code>dishes</code> and deposit them in the <code>sink</code>, but should ignore any <code>waste</code>.</p>
 
-<p>With the project in focus, select <strong>Run Jason Application</strong> in the Eclipse toolbar.</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
 <pre><span></span><code>[agent3] Now travelling outbound
@@ -1041,201 +1089,6 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <p>In this tutorial we had a brief introduction to implementing AgentSpeak agents in Jason using two examples (family tree, grid world) to illustrate various Jason language features.</p>
 
 <p>In the next tutorial we will look at how to implement multi-agent systems in Jason, focusing on the Jason configuration file and agent communication actions.</p>
-
-<h3 id="complete-listing">Complete listing</h3>
-
-<h4 id="family-tree">Family tree</h4>
-
-<div class="codehilite">
-<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
-
-<span class="c1">// Initial base beliefs</span>
-
-<span class="nf">self_name</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">).</span>
-
-<span class="nf">birthday</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">birthday</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">birthday</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">).</span>
-
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">).</span>
-<span class="nf">female</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">).</span>
-
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">).</span>
-<span class="nf">male</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">).</span>
-
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="s s-Atom">alice</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="s s-Atom">bob</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="s s-Atom">alice</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="s s-Atom">bob</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="s s-Atom">carol</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="s s-Atom">dave</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="s s-Atom">carol</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="s s-Atom">dave</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="s s-Atom">frank</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="s s-Atom">eve</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="s s-Atom">frank</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="s s-Atom">grace</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="s s-Atom">grace</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="s s-Atom">ivan</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="s s-Atom">judy</span><span class="p">).</span>
-<span class="nf">parent</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="s s-Atom">oscar</span><span class="p">).</span>
-
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">alice</span><span class="p">,</span> <span class="mi">91</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">bob</span><span class="p">,</span> <span class="mi">92</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">carol</span><span class="p">,</span> <span class="mi">61</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">dave</span><span class="p">,</span> <span class="mi">62</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">eve</span><span class="p">,</span> <span class="mi">63</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">frank</span><span class="p">,</span> <span class="mi">64</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">grace</span><span class="p">,</span> <span class="mi">31</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ivan</span><span class="p">,</span> <span class="mi">32</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">heidi</span><span class="p">,</span> <span class="mi">33</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">mike</span><span class="p">,</span> <span class="mi">34</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">judy</span><span class="p">,</span> <span class="mi">35</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">oscar</span><span class="p">,</span> <span class="mi">36</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">peggy</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">rupert</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">ted</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">victor</span><span class="p">,</span> <span class="mi">4</span><span class="p">).</span>
-<span class="nf">age</span><span class="p">(</span><span class="s s-Atom">wendy</span><span class="p">,</span> <span class="mi">5</span><span class="p">).</span>
-
-<span class="c1">// Initial rules</span>
-
-<span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">X</span><span class="p">).</span>
-
-<span class="nf">mother</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">female</span><span class="p">(</span><span class="nv">Y</span><span class="p">).</span>
-
-<span class="nf">father</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">male</span><span class="p">(</span><span class="nv">Y</span><span class="p">).</span>
-
-<span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">\==</span> <span class="nv">Y</span><span class="p">.</span>
-
-<span class="nf">adult</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">age</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">.</span>
-
-<span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
-
-<span class="nf">cousin</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grandparent</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span><span class="p">(</span><span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">))</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">\==</span> <span class="nv">Y</span><span class="p">.</span>
-
-<span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">|</span> <span class="nf">child</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">|</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
-
-<span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
-<span class="nf">ancestor</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Z</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">parent</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">ancestor</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="nv">Z</span><span class="p">).</span>
-
-<span class="cm">/* Initial goals */</span>
-
-<span class="nc">!wish_happy_birthday</span><span class="p">.</span>
-
-<span class="cm">/* Plans */</span>
-
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">female</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;! You are my favourite sister&quot;</span><span class="p">).</span>
-
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">sibling</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">male</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;! You are my favourite brother&quot;</span><span class="p">).</span>
-
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="nf">self_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">birthday</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">immediate_family</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Happy birthday &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
-
-<span class="nc">+!wish_happy_birthday</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Hmm, no one&#39;s birthday today...&quot;</span><span class="p">).</span>
-</code></pre>
-</div>
-
-<h4 id="grid-world">Grid world</h4>
-
-<div class="codehilite">
-<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
-
-<span class="nf">grid</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
-
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">bin</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">waste</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">waste</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
-
-<span class="nf">carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">waste</span><span class="p">,</span> <span class="mi">0</span><span class="p">).</span>
-
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">sink</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">).</span>
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">dishes</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">).</span>
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">dishes</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
-<span class="nf">location</span><span class="p">(</span><span class="s s-Atom">dishes</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">).</span>
-
-<span class="nf">carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">dishes</span><span class="p">,</span> <span class="mi">0</span><span class="p">).</span>
-
-<span class="nf">destination</span><span class="p">(</span><span class="s s-Atom">waste</span><span class="p">,</span> <span class="s s-Atom">bin</span><span class="p">).</span>
-<span class="nf">destination</span><span class="p">(</span><span class="s s-Atom">dishes</span><span class="p">,</span> <span class="s s-Atom">sink</span><span class="p">).</span>
-
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">right</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grid</span><span class="p">(</span><span class="nv">Columns</span><span class="p">,</span> <span class="p">_)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="nv">Columns</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span><span class="p">.</span>
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">right</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="ow">not</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grid</span><span class="p">(</span><span class="nv">Columns</span><span class="p">,</span> <span class="p">_)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">&lt;</span> <span class="nv">Columns</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">.</span>
-
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">left</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">.</span>
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">left</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="ow">not</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span><span class="p">.</span>
-
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">up</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grid</span><span class="p">(_,</span> <span class="nv">Rows</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&lt;</span> <span class="nv">Rows</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">.</span>
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">up</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grid</span><span class="p">(</span><span class="nv">Columns</span><span class="p">,</span> <span class="nv">Rows</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Columns</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&lt;</span> <span class="nv">Rows</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span><span class="p">.</span>
-
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">down</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="ow">not</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grid</span><span class="p">(</span><span class="nv">Columns</span><span class="p">,</span> <span class="nv">Rows</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Columns</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">.</span>
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">down</span><span class="p">)</span> <span class="p">:</span><span class="o">-</span> <span class="ow">not</span> <span class="nf">route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">grid</span><span class="p">(_,</span> <span class="nv">Rows</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o o-Logical">&amp;</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span><span class="p">.</span>
-
-<span class="nf">next_move</span><span class="p">(</span><span class="s s-Atom">unknown</span><span class="p">).</span>
-
-<span class="cm">/* Initial goals */</span>
-
-<span class="nc">!clean</span><span class="p">(</span><span class="s s-Atom">dishes</span><span class="p">).</span>
-
-<span class="cm">/* Plans */</span>
-
-<span class="nc">+!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">)</span> <span class="p">:</span>
-  <span class="nf">destination</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">Target</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="nv">Target</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemCount</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">ItemCount</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">&lt;-</span> 
-    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Depositing &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="s2">&quot; (x&quot;</span><span class="p">,</span> <span class="nv">ItemCount</span><span class="p">,</span> <span class="s2">&quot;) in the &quot;</span><span class="p">,</span> <span class="nv">Target</span><span class="p">);</span>
-    <span class="nf">-carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemCount</span><span class="p">);</span>
-    <span class="nf">+carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="nc">!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">).</span>
-
-<span class="nc">+!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">)</span> <span class="p">:</span>
-  <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">location</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nf">carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemCount</span><span class="p">)</span> <span class="p">&lt;-</span>
-    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Picking up &quot;</span><span class="p">,</span> <span class="nv">Item</span><span class="p">);</span>
-    <span class="nf">-location</span><span class="p">(</span><span class="nv">Item</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span>
-    <span class="nf">-carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemCount</span><span class="p">);</span>
-    <span class="nf">+carrying</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">Item</span><span class="p">,</span> <span class="nv">ItemCount</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
-    <span class="nc">!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">).</span>
-
-<span class="nc">+!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">)</span> <span class="p">:</span>
-  <span class="nf">next_move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="nv">Direction</span> <span class="o">\==</span> <span class="s s-Atom">unknown</span> <span class="o">&lt;-</span>
-    <span class="nc">!move</span><span class="p">(</span><span class="nv">Direction</span><span class="p">);</span>
-    <span class="nc">?where_am_i</span><span class="p">;</span>
-    <span class="nc">!clean</span><span class="p">(</span><span class="nv">Item</span><span class="p">).</span>
-
-<span class="nc">+!clean</span><span class="p">(_)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Stopping&quot;</span><span class="p">).</span>
-
-<span class="o">+</span><span class="nc">?where_am_i</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Arrived at row &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, column &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.wait</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span>
-
-<span class="nc">+!move</span><span class="p">(</span><span class="s s-Atom">right</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span> <span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
-<span class="nc">+!move</span><span class="p">(</span><span class="s s-Atom">up</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span> <span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="o">+</span><span class="mi">1</span><span class="p">).</span>
-<span class="nc">+!move</span><span class="p">(</span><span class="s s-Atom">left</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span> <span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nv">Y</span><span class="p">).</span>
-<span class="nc">+!move</span><span class="p">(</span><span class="s s-Atom">down</span><span class="p">)</span> <span class="p">:</span> <span class="nf">location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">);</span> <span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="o">-</span><span class="mi">1</span><span class="p">).</span>
-
-<span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span> 
-  <span class="nf">grid</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="p">(</span> <span class="p">(</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">|</span> <span class="p">(</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="p">&lt;-</span>
-    <span class="nf">-route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">);</span>
-    <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Now travelling inbound&quot;</span><span class="p">).</span>
-
-<span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nf">+route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">);</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Now travelling outbound&quot;</span><span class="p">).</span>
-</code></pre>
-</div>
 
 </div>
 <footer class="p-6 mt-4">

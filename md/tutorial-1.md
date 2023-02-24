@@ -1,4 +1,4 @@
-# Tutorial 1a - Installing Jason
+# Tutorial 1 - Installing Jason
 
 This tutorial describes how to install everything needed for Jason development, including Java SE, Jason, Eclipse, and the Jason plugin for Eclipse.
 
@@ -147,6 +147,6 @@ Select **Stop** at the bottom of the window.
 
 ## Conclusion
 
-You should now have a working installation of Jason ready to use for the rest of this [tutorial series](index.html).
+You should now have a working installation of Jason ready to use for the rest of this tutorial series.
 
 If you encountered issues during the installation and have been unable to resolve them yourself, please contact Kevin McAreavey via email or speak to a teaching assistant during one of the lab sessions.

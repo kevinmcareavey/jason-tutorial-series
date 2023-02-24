@@ -11,14 +11,16 @@ All steps and screenshots are based on **macOS** but should work similarly for *
 
 <!-- TOC -->
 
-## Prerequisites
+## Getting started
 
 This section describes how to get started with Jason development and should be completed prior to the lab sessions.
 
-Where possible, students are strongly encouraged to use their own machines for Jason development. Students who are able bring a laptop to the lab sessions should follow Tutorial 1a and can safely ignore Tutorial 1b. Students who are unable to bring a laptop should follow Tutorial 1b to access Jason on a lab machine.
+<!-- Where possible, students are strongly encouraged to use their own machines for Jason development. Students who are able bring a laptop to the lab sessions should follow Tutorial 1a and can safely ignore Tutorial 1b. Students who are unable to bring a laptop should follow Tutorial 1b to access Jason on a lab machine. -->
 
-- [Tutorial 1a - Installing Jason](tutorial-1a.html)
-- Tutorial 1b - Jason on lab machines &#9940; &#128679;
+Students are requested to install Jason on their own laptops and to use them during the lab sessions. For students who are unable to do so, details will be provided separately on how to access Jason on the lab machines.
+
+- [Tutorial 1 - Installing Jason](tutorial-1.html)
+<!-- - Tutorial 1b - Jason on lab machines &#9940; &#128679; -->
 <!-- - [Tutorial 1b - Jason on lab machines](tutorial-1b.html) -->
 
 ## Lab sessions
@@ -43,8 +45,9 @@ This section provides a brief introduction to implementing `.asl` files.
 Multi-agent systems are configured in Jason using a Jason configuration file, denoted by the `.mas2j` extension.
 Jason also provides a family of actions, available when implementing `.asl` files, that allow agents to communicate with each other. This section provides a brief introduction to the `.mas2j` file and to Jason communication actions.
 
-- Tutorial 4 - Multi-agent systems &#9940; &#128679;
-<!-- - [Tutorial 4 - Multi-agent systems](tutorial-4.html) -->
+<!-- - Tutorial 4 - Multi-agent systems &#9940; &#128679; -->
+
+- [Tutorial 4 - Multi-agent systems](tutorial-4.html)
 
 ## Advanced material
 
