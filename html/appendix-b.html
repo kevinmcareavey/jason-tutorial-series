@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Appendix B - Interfacing with Jason</title>
+  <title>Appendix B - Graphical user interfaces</title>
   <link rel="stylesheet" href="primer.css">
   <link rel="stylesheet" href="pygments.css">
 </head>
@@ -9,439 +9,635 @@
 <div class="container-lg p-4">
 <div class="col-12">
 <div class="markdown-body border rounded-3 p-6">
-<h1 id="appendix-b-interfacing-with-jason">Appendix B - Interfacing with Jason</h1>
+<h1 id="appendix-b-graphical-user-interfaces">Appendix B - Graphical user interfaces</h1>
+
+<p>This appendix provides a brief introduction to implementing graphical user interfaces for Jason projects.</p>
+
+<p>Graphical user interfaces in Jason are typically spawned from a custom environment class, so you should complete <a href="appendix-a.html">Appendix A</a> before proceeding with this appendix.</p>
 
 <ul>
-<li><a href="#preliminarties">Preliminarties</a>
+<li><a href="#getting-started">Getting started</a>
 <ul>
-<li><a href="#step-x-update-the-agent-file-srcaslbuyer_agentasl">Step X -  Update the agent file <code>src/asl/buyer_agent.asl</code></a></li>
+<li><a href="#step-1-simple-jason-project">Step 1 - Simple Jason project</a></li>
 </ul></li>
-<li><a href="#desktop-interface-using-swing">Desktop Interface (using Swing)</a>
+<li><a href="#java-interfaces">Java interfaces</a>
 <ul>
-<li><a href="#step-x-update-the-environment-class-srcjavahello_worldmarketenvironmentjava">Step X -  Update the environment class <code>src/java/hello_world/MarketEnvironment.java</code></a></li>
-<li><a href="#step-x-save-your-changes-and-select-run-jason-application">Step X -  Save your changes and select <strong>Run Jason Application</strong></a></li>
-<li><a href="#step-x-select-stop-in-the-jason-console">Step X -  Select <strong>Stop</strong> in the Jason console</a></li>
+<li><a href="#step-2-swing-interface">Step 2 - Swing interface</a></li>
+<li><a href="#step-3-spawning-the-interface">Step 3 - Spawning the interface</a></li>
+<li><a href="#step-4-user-input">Step 4 - User input</a></li>
 </ul></li>
-<li><a href="#rest-api-eg-using-javalin">REST API (e.g. using Javalin)</a>
+<li><a href="#web-interfaces">Web interfaces</a>
 <ul>
-<li><a href="#step-x-download-maven">Step X -  Download Maven</a></li>
-<li><a href="#step-x-build-javalin-with-its-dependencies-using-maven">Step X -  Build Javalin with its dependencies using Maven</a></li>
-<li><a href="#step-x-add-javalin-to-the-build-path-of-your-jason-project">Step X -  Add Javalin to the build path of your Jason project</a></li>
-<li><a href="#step-x-update-your-jason-environment-file-to-listen-for-percepts-using-javalin">Step X -  Update your Jason environment file to listen for percepts using Javalin</a></li>
-<li><a href="#step-x-save-your-changes-and-select-run-jason-application-2">Step X -  Save your changes and select <strong>Run Jason Application</strong></a></li>
-<li><a href="#step-x-send-percept-deliveryitem1-to-bob">Step X -  Send percept <code>delivery(item1)</code> to <code>bob</code></a></li>
-<li><a href="#step-x-send-percept-deliveryitem1-to-dave">Step X -  Send percept <code>delivery(item1)</code> to <code>dave</code></a></li>
-<li><a href="#step-x-send-percept-needitem1-to-alice">Step X -  Send percept <code>need(item1)</code> to <code>alice</code></a></li>
-<li><a href="#step-x-send-percept-needitem1-to-carol">Step X -  Send percept <code>need(item1)</code> to <code>carol</code></a></li>
+<li><a href="#step-5-javalin-api-server">Step 5 - Javalin API server</a></li>
+<li><a href="#step-6-listen-for-api-requests">Step 6 - Listen for API requests</a></li>
+<li><a href="#step-7-submit-api-requests">Step 7 - Submit API requests</a></li>
 </ul></li>
 <li><a href="#conclusion">Conclusion</a></li>
-<li><a href="#further-resources">Further resources</a></li>
 </ul>
 
-<h2 id="preliminarties">Preliminarties</h2>
+<h2 id="getting-started">Getting started</h2>
 
-<p>In order to develop interesting applications in Jason, you will typically need to interact with (and/or visualise) the environment of your Jason project.
-We will briefly introduce two approaches to solving this problem.
-The first approach is to use standard Java libraries for developing graphical user interfaces (GUIs).
-This is the approach typically taken by existing Jason demos available online.
-The second approach is to implement a REST API in your Jason project to expose your Jason environment to external software.
-This approach may be preferable if you wish to implement part of your application (e.g. its GUI) in another programming language.</p>
+<p>Create a new Jason project in Eclipse called <code>appendix_b</code>.</p>
 
-<p>Let us start by updating the <code>buyer_agent</code> agent file to make them behave more dynamically.</p>
+<h3 id="step-1-simple-jason-project">Step 1 - Simple Jason project</h3>
 
-<h3 id="step-x-update-the-agent-file-srcaslbuyer_agentasl">Step X -  Update the agent file <code>src/asl/buyer_agent.asl</code></h3>
+<p>Create a new custom environment class file called <code>MyEnvironment.java</code>:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="c1">// src/asl/buyer_agent.asl</span>
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_b</span><span class="p">;</span>
 
-<span class="cm">/* Initial beliefs and rules */</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Create a new agent file called <code>interface_agent.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
 
 <span class="cm">/* Initial goals */</span>
 
 <span class="cm">/* Plans */</span>
 
-<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nf">seller</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I would like to buy &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">want</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
-<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;it looks like &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot; is unavailable&quot;</span><span class="p">).</span>
-<span class="nf">+recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, thank you for &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I have found what I wanted, goodbye everyone!&quot;</span><span class="p">);</span> <span class="s s-Atom">leave</span><span class="p">.</span>
-<span class="nf">+out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I will try to find &quot;</span><span class="p">,</span> <span class="nv">X</span> <span class="p">,</span> <span class="s2">&quot; elsewhere&quot;</span><span class="p">);</span> <span class="nc">!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+<span class="nf">+my_percept</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Belief added: &quot;</span><span class="p">,</span> <span class="nf">my_percept</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]).</span>
 
-<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.kill_agent</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;goodbye &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
-
-<span class="nf">+need</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nc">!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
+<span class="nf">-my_percept</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Belief deleted: &quot;</span><span class="p">,</span> <span class="nf">my_percept</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]).</span>
 </code></pre>
 </div>
 
-<p>The initial achievment goal <code>!buy(item1)</code> has been removed and a new plan has been added, telling the agent to adopt an achievement goal <code>!buy(X)</code> if it receives (e.g. from the environment) a new belief <code>need(X)</code>.</p>
+<p>According to this agent file the agent will print a message whenever a belief of the form <code>my_percept(X)</code> is added or deleted from its belief base.</p>
 
-<h2 id="desktop-interface-using-swing">Desktop Interface (using Swing)</h2>
-
-<h3 id="step-x-update-the-environment-class-srcjavahello_worldmarketenvironmentjava">Step X -  Update the environment class <code>src/java/hello_world/MarketEnvironment.java</code></h3>
-
-<p>Create a new (inner) class called <code>MyWindow</code> and initialise a single instance within the <code>init</code> method of the Jason environment.
-Also remove the initial <code>delivery(item1)</code> percepts.</p>
+<p>Edit the Jason configuration file as follows:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">hello_world</span><span class="p">;</span>
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">appendix_b</span> <span class="p">{</span>
+
+    <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+    <span class="s s-Atom">environment</span><span class="p">:</span> <span class="nb">appendix_b.MyEnvironment</span>
+
+    <span class="s s-Atom">agents</span><span class="p">:</span>
+        <span class="s s-Atom">alice</span> <span class="s s-Atom">interface_agent</span><span class="p">;</span>
+        <span class="s s-Atom">bob</span> <span class="s s-Atom">interface_agent</span><span class="p">;</span>
+
+    <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+        <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<p>The Jason console should launch but no message should appear. The reason is that agents <code>alice</code> and <code>bob</code> are purely reactive; if a belief of the form <code>my_percept(X)</code> is never added or deleted from their belief base then they will do nothing. We will thus seek to trigger this behaviour via a graphical user interface.</p>
+
+<h2 id="java-interfaces">Java interfaces</h2>
+
+<p>The most common approach to implementing graphical user interfaces in Jason is to use an existing Java widget toolkit, such as <a href="https://en.wikipedia.org/wiki/Swing_(Java)">Swing</a> or <a href="https://en.wikipedia.org/wiki/Standard_Widget_Toolkit">SWT</a>. This is the approach typically used by Jason example/demo implementations available online.</p>
+
+<h3 id="step-2-swing-interface">Step 2 - Swing interface</h3>
+
+<p>With the <code>src/java</code> directory in the Jason project highlighted in Eclipse select <strong>File &gt; New &gt; Class</strong>.</p>
+
+<p>Enter <code>MyWindow</code> in the <strong>Name</strong> field and select <strong>Finish</strong>.</p>
+
+<p>A new Java file should be automatically created at <code>src/java/appendix_b/MyWindow.java</code>. Edit the file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_b</span><span class="p">;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">java.awt.event.ActionEvent</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">java.awt.event.ActionListener</span><span class="p">;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.DefaultListModel</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JButton</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JComboBox</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JFrame</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JLabel</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JList</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JPanel</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JScrollPane</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">javax.swing.JTextField</span><span class="p">;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Literal</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MarketEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyWindow</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="nd">@Override</span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">MyWindow</span><span class="p">();</span>
+<span class="w">    </span><span class="n">MyEnvironment</span><span class="w"> </span><span class="n">myEnv</span><span class="p">;</span>
+<span class="w">    </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">myAgents</span><span class="p">;</span>
 
-<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(bob)&quot;</span><span class="p">));</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(dave)&quot;</span><span class="p">));</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">JComboBox</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">;</span>
+<span class="w">    </span><span class="n">DefaultListModel</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">perceptListModel</span><span class="p">;</span>
+<span class="w">    </span><span class="n">JList</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">perceptList</span><span class="p">;</span>
+<span class="w">    </span><span class="n">JTextField</span><span class="w"> </span><span class="n">addTextfield</span><span class="p">;</span>
 
-<span class="w">    </span><span class="nd">@Override</span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">act</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Structure</span><span class="w"> </span><span class="n">leave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseStructure</span><span class="p">(</span><span class="s">&quot;leave&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">act</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">leave</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;leaving(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MyWindow</span><span class="p">(</span><span class="n">MyEnvironment</span><span class="w"> </span><span class="n">env</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">agents</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">myEnv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">;</span>
+<span class="w">        </span><span class="n">myAgents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">agents</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">agentComboBox</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JComboBox</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">(</span><span class="n">myAgents</span><span class="p">);</span>
+<span class="w">        </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nd">@SuppressWarnings</span><span class="p">(</span><span class="s">&quot;unchecked&quot;</span><span class="p">)</span>
+<span class="w">                </span><span class="n">JComboBox</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="w"> </span><span class="n">eComboBox</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">JComboBox</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="na">getSource</span><span class="p">();</span>
+<span class="w">                </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">eComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">                </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span><span class="w">  </span><span class="c1">// Refresh the scroll pane whenever the user interacts with the combo box</span>
 <span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">perceptListModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DefaultListModel</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">        </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">perceptList</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JList</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="p">(</span><span class="n">perceptListModel</span><span class="p">);</span>
+<span class="w">        </span><span class="n">perceptList</span><span class="p">.</span><span class="na">setVisibleRowCount</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">addTextfield</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JTextField</span><span class="p">(</span><span class="s">&quot;my_percept(1)&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">JButton</span><span class="w"> </span><span class="n">addAgentButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Add (agent)&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">addAgentButton</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">                    </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">addTextfield</span><span class="p">.</span><span class="na">getText</span><span class="p">());</span>
+<span class="w">                    </span><span class="n">percept</span><span class="p">.</span><span class="na">addAnnot</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseTerm</span><span class="p">(</span><span class="s">&quot;scope(agent)&quot;</span><span class="p">));</span><span class="w">  </span><span class="c1">// Add custom annotation to explicitly identify percepts in the GUI</span>
+<span class="w">                    </span><span class="n">myEnv</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="w"> </span><span class="n">percept</span><span class="p">);</span><span class="w">  </span><span class="c1">// Add percept for the selected agent</span>
+<span class="w">                    </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">JButton</span><span class="w"> </span><span class="n">addSharedButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Add (shared)&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">addSharedButton</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">                    </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">addTextfield</span><span class="p">.</span><span class="na">getText</span><span class="p">());</span>
+<span class="w">                    </span><span class="n">percept</span><span class="p">.</span><span class="na">addAnnot</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseTerm</span><span class="p">(</span><span class="s">&quot;scope(shared)&quot;</span><span class="p">));</span><span class="w">  </span><span class="c1">// Add custom annotation to explicitly identify shared percepts in the GUI</span>
+<span class="w">                    </span><span class="n">myEnv</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">percept</span><span class="p">);</span><span class="w">  </span><span class="c1">// Add shared percept</span>
+<span class="w">                    </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">JButton</span><span class="w"> </span><span class="n">removeButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Remove&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">removeButton</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">perceptList</span><span class="p">.</span><span class="na">isSelectionEmpty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">                    </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Literal</span><span class="p">)</span><span class="w"> </span><span class="n">perceptList</span><span class="p">.</span><span class="na">getSelectedValue</span><span class="p">();</span>
+<span class="w">                    </span><span class="n">String</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">percept</span><span class="p">.</span><span class="na">getAnnot</span><span class="p">(</span><span class="s">&quot;scope&quot;</span><span class="p">).</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="na">toString</span><span class="p">();</span><span class="w">  </span><span class="c1">// Retrieve the custom annotation to determine what method to call</span>
+<span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">scope</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;agent&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">myEnv</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="w"> </span><span class="n">percept</span><span class="p">);</span><span class="w">  </span><span class="c1">// Remove percept for the selected agent</span>
+<span class="w">                    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="n">myEnv</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">percept</span><span class="p">);</span><span class="w">  </span><span class="c1">// Remove shared percept</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                    </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">JButton</span><span class="w"> </span><span class="n">clearAgentButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Clear (agent)&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">clearAgentButton</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">                </span><span class="n">myEnv</span><span class="p">.</span><span class="na">clearPercepts</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span><span class="w">  </span><span class="c1">// Clear percepts for the selected agent</span>
+<span class="w">                </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">JButton</span><span class="w"> </span><span class="n">clearSharedButton</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Clear (shared)&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">clearSharedButton</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="n">agentComboBox</span><span class="p">.</span><span class="na">getSelectedItem</span><span class="p">();</span>
+<span class="w">                </span><span class="n">myEnv</span><span class="p">.</span><span class="na">clearPercepts</span><span class="p">();</span><span class="w">  </span><span class="c1">// Clear shared percepts</span>
+<span class="w">                </span><span class="n">refreshPerceptList</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">JPanel</span><span class="w"> </span><span class="n">panel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JPanel</span><span class="p">();</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">JLabel</span><span class="p">(</span><span class="s">&quot;Agent&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">agentComboBox</span><span class="p">);</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">JLabel</span><span class="p">(</span><span class="s">&quot;Percept&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">addTextfield</span><span class="p">);</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">addAgentButton</span><span class="p">);</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">addSharedButton</span><span class="p">);</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">JScrollPane</span><span class="p">(</span><span class="n">perceptList</span><span class="p">));</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">removeButton</span><span class="p">);</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">clearAgentButton</span><span class="p">);</span>
+<span class="w">        </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">clearSharedButton</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">JFrame</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JFrame</span><span class="p">(</span><span class="s">&quot;Percept manager&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">frame</span><span class="p">.</span><span class="na">getContentPane</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">panel</span><span class="p">);</span>
+<span class="w">        </span><span class="n">frame</span><span class="p">.</span><span class="na">pack</span><span class="p">();</span>
+<span class="w">        </span><span class="n">frame</span><span class="p">.</span><span class="na">setVisible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">class</span> <span class="nc">MyWindow</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">        </span><span class="n">JTextField</span><span class="w"> </span><span class="n">agentTextfield</span><span class="p">;</span>
-<span class="w">        </span><span class="n">JTextField</span><span class="w"> </span><span class="n">perceptTextfield</span><span class="p">;</span>
-<span class="w">        </span><span class="n">JButton</span><span class="w"> </span><span class="n">button</span><span class="p">;</span>
-
-<span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="nf">MyWindow</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">agentTextfield</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JTextField</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
-<span class="w">            </span><span class="n">perceptTextfield</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JTextField</span><span class="p">(</span><span class="s">&quot;delivery(item1)&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
-
-<span class="w">            </span><span class="n">button</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JButton</span><span class="p">(</span><span class="s">&quot;Add&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">button</span><span class="p">.</span><span class="na">addActionListener</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActionListener</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">actionPerformed</span><span class="p">(</span><span class="n">ActionEvent</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">agentTextfield</span><span class="p">.</span><span class="na">getText</span><span class="p">();</span>
-<span class="w">                        </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">perceptTextfield</span><span class="p">.</span><span class="na">getText</span><span class="p">());</span>
-<span class="w">                        </span><span class="n">addPercept</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="w"> </span><span class="n">percept</span><span class="p">);</span>
-<span class="w">                    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                        </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
-<span class="w">                    </span><span class="p">}</span>
-<span class="w">                </span><span class="p">}</span>
-<span class="w">            </span><span class="p">});</span>
-
-<span class="w">            </span><span class="n">JPanel</span><span class="w"> </span><span class="n">panel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JPanel</span><span class="p">();</span>
-<span class="w">            </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">agentTextfield</span><span class="p">);</span>
-<span class="w">            </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">perceptTextfield</span><span class="p">);</span>
-<span class="w">            </span><span class="n">panel</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">button</span><span class="p">);</span>
-
-<span class="w">            </span><span class="n">JFrame</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">JFrame</span><span class="p">(</span><span class="s">&quot;Add percept&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="n">frame</span><span class="p">.</span><span class="na">getContentPane</span><span class="p">().</span><span class="na">add</span><span class="p">(</span><span class="n">panel</span><span class="p">);</span>
-<span class="w">            </span><span class="n">frame</span><span class="p">.</span><span class="na">pack</span><span class="p">();</span>
-<span class="w">            </span><span class="n">frame</span><span class="p">.</span><span class="na">setVisible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="w">    </span><span class="cm">/*</span>
+<span class="cm">     * Refresh contents of the scroll pane based on the selected agent</span>
+<span class="cm">     */</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">refreshPerceptList</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">perceptListModel</span><span class="p">.</span><span class="na">removeAllElements</span><span class="p">();</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">Literal</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">myEnv</span><span class="p">.</span><span class="na">consultPercepts</span><span class="p">(</span><span class="n">agent</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">perceptListModel</span><span class="p">.</span><span class="na">addElement</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
-
 <span class="w">    </span><span class="p">}</span>
 
 <span class="p">}</span>
 </code></pre>
 </div>
 
-<p>The main change here is the addition of a new class on Lines 45--79 called <code>MyWindow</code>, which is initialised on Line 21 when the Jason environment is first started.
-This <code>MyWindow</code> class provides a simple text input window, implemented using the Java Swing library, allowing users to simulate the addition of percepts to the Jason environment.
-Agents will dynamically respond to any simulated percepts as specified in their agent files.</p>
+<p>This class uses standard widgets from Swing to implement a desktop window that integrates with the Jason virtual environment via event listeners.</p>
 
-<h3 id="step-x-save-your-changes-and-select-run-jason-application">Step X -  Save your changes and select <strong>Run Jason Application</strong></h3>
+<p>According to the constructor, an instance of the class is initialised with an instance of our virtual environment and an array of agent names. The former allows us to conveniently access Jason functionality within the <code>MyWindow</code> class itself, while the latter allows us to automatically display the agents within the interface.</p>
 
-<p><img src="figures/run-swing-1.png" alt="Figure" /></p>
+<h3 id="step-3-spawning-the-interface">Step 3 - Spawning the interface</h3>
 
-<p><img src="figures/input-swing-1.png" alt="Figure" /></p>
+<p>The final step is to spawn the interface from within the <code>init</code> method of the virtual environment class.</p>
 
-<p>Notice that, in addition to the Jason console, a new text input window called <strong>Add percept</strong> has been created.
-The text fields are populated with some default text: the first text field specifies the relevant agent and the second text field specifies the percept.
-Notice also that the agents have not yet printed anything to the console.</p>
-
-<p>Select <strong>Add</strong>.</p>
-
-<p><img src="figures/run-swing-2.png" alt="Figure" /></p>
-
-<p>Notice that <code>bob</code> has immediately responded to the event <code>delivery(item1)</code>.</p>
-
-<p><img src="figures/input-swing-2.png" alt="Figure" /></p>
-
-<p>Update the first text field to <strong>dave</strong> and select <strong>Add</strong>.</p>
-
-<p><img src="figures/run-swing-3.png" alt="Figure" /></p>
-
-<p>Notice that <code>dave</code> has immediately responded to the event <code>delivery(item1)</code>.</p>
-
-<p><img src="figures/input-swing-3.png" alt="Figure" /></p>
-
-<p>Update the text fields to <strong>alice</strong> and <strong>need(item1)</strong>, respectively, and then select <strong>Add</strong>.</p>
-
-<p><img src="figures/run-swing-4.png" alt="Figure" /></p>
-
-<p>Notice that <code>alice</code> has immediately responded to the event <code>need(item1)</code>.</p>
-
-<p><img src="figures/input-swing-4.png" alt="Figure" /></p>
-
-<p>Update the first text field to <strong>carol</strong> and select <strong>Add</strong>.</p>
-
-<p><img src="figures/run-swing-5.png" alt="Figure" /></p>
-
-<p>Notice that <code>carol</code> has immediately responded to the event <code>need(item1)</code>.</p>
-
-<h3 id="step-x-select-stop-in-the-jason-console">Step X -  Select <strong>Stop</strong> in the Jason console</h3>
-
-<h2 id="rest-api-eg-using-javalin">REST API (e.g. using Javalin)</h2>
-
-<p>Implementing a REST API within your Jason project allows you to interact with the project's environment (e.g. to simulate new events) using standard HTTP requests (e.g. GET, POST).
-An example of a library that can be used to implement REST APIs in Java is <a href="https://javalin.io">Javalin</a>.</p>
-
-<p>Javalin's official installation instructions may not be compatible with the Jason plugin for Eclipse.
-As a workaround, you can instead build Javalin as a single <code>.jar</code> file with all its dependencies using a package called Maven, and then manually add that <code>.jar</code> file to the build path of your Jason project.</p>
-
-<h3 id="step-x-download-maven">Step X -  Download Maven</h3>
-
-<p>Download Maven from <a href="https://maven.apache.org/download.cgi">here</a>.</p>
-
-<p>Unzip <code>apache-maven-3.8.4-bin.zip</code> as a directory <code>apache-maven-3.8.4</code> and remember its location.</p>
-
-<h3 id="step-x-build-javalin-with-its-dependencies-using-maven">Step X -  Build Javalin with its dependencies using Maven</h3>
-
-<p>Create a directory called <code>javalin</code> and add the following file called <code>pom.xml</code>:</p>
+<p>Add the following lines to the <code>init</code> method of <code>MyEnvironment.java</code>:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="cm">&lt;!-- javalin/pom.xml --&gt;</span>
-<span class="nt">&lt;project</span><span class="w"> </span><span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span>
-<span class="w">         </span><span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-<span class="w">         </span><span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0</span>
-<span class="s">    http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="nt">&gt;</span>
-<span class="w">    </span><span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
-
-<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>io.javalin<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>javalin-latest<span class="nt">&lt;/artifactId&gt;</span>
-<span class="w">    </span><span class="nt">&lt;version&gt;</span>3.7.0<span class="nt">&lt;/version&gt;</span>
-<span class="w">    </span><span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
-
-<span class="w">    </span><span class="nt">&lt;name&gt;</span>Javalin<span class="nt">&lt;/name&gt;</span>
-
-<span class="w">    </span><span class="nt">&lt;dependencies&gt;</span>
-<span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
-<span class="w">            </span><span class="nt">&lt;groupId&gt;</span>io.javalin<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>javalin<span class="nt">&lt;/artifactId&gt;</span>
-<span class="w">            </span><span class="nt">&lt;version&gt;</span>3.7.0<span class="nt">&lt;/version&gt;</span>
-<span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
-<span class="w">        </span><span class="nt">&lt;dependency&gt;</span>
-<span class="w">            </span><span class="nt">&lt;groupId&gt;</span>org.slf4j<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>slf4j-simple<span class="nt">&lt;/artifactId&gt;</span>
-<span class="w">            </span><span class="nt">&lt;version&gt;</span>1.7.28<span class="nt">&lt;/version&gt;</span>
-<span class="w">        </span><span class="nt">&lt;/dependency&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/dependencies&gt;</span>
-
-<span class="w">    </span><span class="nt">&lt;build&gt;</span>
-<span class="w">        </span><span class="nt">&lt;finalName&gt;</span>javalin-latest<span class="nt">&lt;/finalName&gt;</span>
-<span class="w">        </span><span class="nt">&lt;plugins&gt;</span>
-
-<span class="w">            </span><span class="nt">&lt;plugin&gt;</span>
-<span class="w">                </span><span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">                </span><span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
-<span class="w">                </span><span class="nt">&lt;version&gt;</span>3.6.1<span class="nt">&lt;/version&gt;</span>
-<span class="w">                </span><span class="nt">&lt;configuration&gt;</span>
-<span class="w">                    </span><span class="nt">&lt;source&gt;</span>1.8<span class="nt">&lt;/source&gt;</span>
-<span class="w">                    </span><span class="nt">&lt;target&gt;</span>1.8<span class="nt">&lt;/target&gt;</span>
-<span class="w">                </span><span class="nt">&lt;/configuration&gt;</span>
-<span class="w">            </span><span class="nt">&lt;/plugin&gt;</span>
-
-<span class="w">            </span><span class="nt">&lt;plugin&gt;</span>
-<span class="w">                </span><span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">                </span><span class="nt">&lt;artifactId&gt;</span>maven-assembly-plugin<span class="nt">&lt;/artifactId&gt;</span>
-<span class="w">                </span><span class="nt">&lt;version&gt;</span>3.1.1<span class="nt">&lt;/version&gt;</span>
-
-<span class="w">                </span><span class="nt">&lt;configuration&gt;</span>
-<span class="w">                    </span><span class="nt">&lt;descriptorRefs&gt;</span>
-<span class="w">                        </span><span class="nt">&lt;descriptorRef&gt;</span>jar-with-dependencies<span class="nt">&lt;/descriptorRef&gt;</span>
-<span class="w">                    </span><span class="nt">&lt;/descriptorRefs&gt;</span>
-<span class="w">                </span><span class="nt">&lt;/configuration&gt;</span>
-
-<span class="w">                </span><span class="nt">&lt;executions&gt;</span>
-<span class="w">                    </span><span class="nt">&lt;execution&gt;</span>
-<span class="w">                        </span><span class="nt">&lt;id&gt;</span>make-assembly<span class="nt">&lt;/id&gt;</span>
-<span class="w">                        </span><span class="nt">&lt;phase&gt;</span>package<span class="nt">&lt;/phase&gt;</span>
-<span class="w">                        </span><span class="nt">&lt;goals&gt;</span>
-<span class="w">                            </span><span class="nt">&lt;goal&gt;</span>single<span class="nt">&lt;/goal&gt;</span>
-<span class="w">                        </span><span class="nt">&lt;/goals&gt;</span>
-<span class="w">                    </span><span class="nt">&lt;/execution&gt;</span>
-<span class="w">                </span><span class="nt">&lt;/executions&gt;</span>
-
-<span class="w">            </span><span class="nt">&lt;/plugin&gt;</span>
-<span class="w">        </span><span class="nt">&lt;/plugins&gt;</span>
-<span class="w">    </span><span class="nt">&lt;/build&gt;</span>
-<span class="nt">&lt;/project&gt;</span>
+<pre><span></span><code><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">agents</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;alice&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bob&quot;</span><span class="p">};</span>
+<span class="k">new</span><span class="w"> </span><span class="n">MyWindow</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">agents</span><span class="p">);</span>
 </code></pre>
 </div>
 
-<p>You do not need to understand this file.
-Inside your <code>javalin</code> directory, run the command:</p>
+<p>The line <code>new MyWindow(this, agents)</code> spawns the new interface by passing the current environment (<code>this</code>) along with an array of agents names (<code>agents</code>).</p>
+
+<blockquote>
+  <p><strong>Note:</strong> Details on how to access the list of agent names <strong>automatically</strong> can be found in the <a href="http://jason.sourceforge.net/doc/faq.html#_how_to_discover_the_name_of_the_agents_in_the_environment_initialisation">Jason FAQ</a>.</p>
+</blockquote>
+
+<h3 id="step-4-user-input">Step 4 - User input</h3>
+
+<p>Run the Jason project.</p>
+
+<p>The following window called <code>Percept manager</code> should appear:</p>
+
+<p><img src="figures/gui-1.png" alt="Figure" /></p>
+
+<p>The empty box in the centre displays a selectable list of percepts for the agent highlighted in the dropdown menu to the far left. Initially <code>alice</code> is highlighted and she has no percepts.</p>
+
+<p>The box displaying <code>my_percept(1)</code> is an editable text field that allows you to enter any arbitrary percept, which can then be added as a percept for the highlighted agent using the <code>Add (agent)</code> button, or as a shared percept using the <code>Add (shared)</code> button.</p>
+
+<p>Select the <code>Add (agent)</code> button. An annotated percept <code>my_percept(1)[scope(agent)]</code> should appear in the list, where <code>scope(agent)</code> is a custom annotation used by the interface to distinguish agent percepts from shared percepts.</p>
+
+<p><img src="figures/gui-2.png" alt="Figure" /></p>
+
+<p>The Jason console should also display the following message:</p>
 
 <div class="codehilite">
-<pre><span></span><code>&lt;path&gt;/&lt;to&gt;/apache-maven-3.8.4/bin/mvn<span class="w"> </span>package
+<pre><span></span><code>[alice] Belief added: my_percept(1)[source(percept)]
 </code></pre>
 </div>
 
-<p>Maven will create a file <code>target/javalin-latest-jar-with-dependencies.jar</code> which contains Javalin and all its dependencies.</p>
+<p>Edit the text field to <code>my_percept(2)</code> and select <code>Add (agent)</code>.  An annotated percept <code>my_percept(2)[scope(agent)]</code> should appear in the list.</p>
 
-<h3 id="step-x-add-javalin-to-the-build-path-of-your-jason-project">Step X -  Add Javalin to the build path of your Jason project</h3>
-
-<p>One option is to create a new directory called <code>lib</code> inside your Jason project, then copy <code>javalin-latest-jar-with-dependencies.jar</code> to the <code>lib</code> directory, and finally right-click on the <code>lib/javalin-latest-jar-with-dependencies.jar</code> file in Eclipse and select <strong>Add to Build Path</strong>.
-Javalin should now be available for use within your Jason project.</p>
-
-<h3 id="step-x-update-your-jason-environment-file-to-listen-for-percepts-using-javalin">Step X -  Update your Jason environment file to listen for percepts using Javalin</h3>
-
-<p>Update <code>src/java/hello_world/MarketEnvironment.java</code> as follows:</p>
+<p><img src="figures/gui-3.png" alt="Figure" /></p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="c1">// src/java/hello_world/MarketEnvironment.java</span>
+<pre><span></span><code>[alice] Belief added: my_percept(2)[source(percept)]
+</code></pre>
+</div>
 
-<span class="kn">package</span><span class="w"> </span><span class="nn">hello_world</span><span class="p">;</span>
+<p>Edit the text field to <code>my_percept(3)</code> and select <code>Add (shared)</code>.  An annotated percept <code>my_percept(3)[scope(shared)]</code> should appear in the list.</p>
+
+<p><img src="figures/gui-4.png" alt="Figure" /></p>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] Belief added: my_percept(3)[source(percept)]
+[alice] Belief added: my_percept(3)[source(percept)]
+</code></pre>
+</div>
+
+<p>Select <code>bob</code> from the dropdown menu. The list should only display the shared percept  <code>my_percept(3)[scope(shared)]</code>.</p>
+
+<p><img src="figures/gui-5.png" alt="Figure" /></p>
+
+<p>Edit the text field to <code>my_percept(4)</code> and select <code>Add (agent)</code>.  An annotated percept <code>my_percept(4)[scope(agent)]</code> should appear in the list.</p>
+
+<p><img src="figures/gui-6.png" alt="Figure" /></p>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] Belief added: my_percept(4)[source(percept)]
+</code></pre>
+</div>
+
+<p>Edit the text field to <code>my_percept(5)</code> and select <code>Add (shared)</code>.  An annotated percept <code>my_percept(5)[scope(shared)]</code> should appear in the list.</p>
+
+<p><img src="figures/gui-7.png" alt="Figure" /></p>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] Belief added: my_percept(5)[source(percept)]
+[alice] Belief added: my_percept(5)[source(percept)]
+</code></pre>
+</div>
+
+<p>Select <code>alice</code> from the dropdown menu. The list for <code>alice</code> should appear as before with the addition of the shared percept  <code>my_percept(5)[scope(shared)]</code>.</p>
+
+<p><img src="figures/gui-8.png" alt="Figure" /></p>
+
+<p>Select <code>my_percept(1)[scope(agent)]</code> from the list and select <code>Remove</code>. The percept should be removed from the list.</p>
+
+<p><img src="figures/gui-9.png" alt="Figure" /></p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Belief deleted: my_percept(1)[source(percept)]
+</code></pre>
+</div>
+
+<p>Select <code>Clear (agent)</code>. All percepts with <code>scope(agent)</code> should be removed from the list.</p>
+
+<p><img src="figures/gui-10.png" alt="Figure" /></p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Belief deleted: my_percept(2)[source(percept)]
+</code></pre>
+</div>
+
+<p>Select <code>bob</code> from the dropdown menu. The list should appear as before.</p>
+
+<p><img src="figures/gui-11.png" alt="Figure" /></p>
+
+<p>Select <code>Clear (shared)</code>. All percepts with <code>scope(shared)</code> should be removed from the list.</p>
+
+<p><img src="figures/gui-12.png" alt="Figure" /></p>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] Belief deleted: my_percept(3)[source(percept)]
+[bob] Belief deleted: my_percept(5)[source(percept)]
+[alice] Belief deleted: my_percept(3)[source(percept)]
+[alice] Belief deleted: my_percept(5)[source(percept)]
+</code></pre>
+</div>
+
+<p>Select <code>alice</code> from the dropdown menu. The list should now be empty.</p>
+
+<p><img src="figures/gui-13.png" alt="Figure" /></p>
+
+<p>All functionality in the interface appears to be working as expected.</p>
+
+<h2 id="web-interfaces">Web interfaces</h2>
+
+<p>An alternative approach to implementing graphical user interfaces in Jason is to implement a custom API that exposes the Jason environment to external software. This approach is significantly more flexible, since you can then implement the graphical user interface using any programming language that is able to send HTTP requests (e.g. Javascript).</p>
+
+<h3 id="step-5-javalin-api-server">Step 5 - Javalin API server</h3>
+
+<p><a href="https://javalin.io">Javalin</a> is a popular web framework for Java. It allows you run a web server that listens on specified endpoints for standard HTTP requests, such as GET and POST. In this way you can send and retrieve data to/from the Jason environment directly, providing data to populate your graphical user interface and allowing you to implement interactivity.</p>
+
+<p>A pre-built version of Javalin (including dependencies) is available to download <a href="javalin.jar">here</a>.</p>
+
+<p>With the Jason project highlighted in Eclipse select <strong>File &gt; New &gt; Folder</strong>.</p>
+
+<p>Enter <code>lib</code> in the <strong>Folder name</strong> field and select <strong>Finish</strong>.</p>
+
+<p>Drag the file <code>javalin.jar</code> to the new <code>lib</code> directory.</p>
+
+<p>Right-click on <code>lib/javalin.jar</code> in Eclipse and select <strong>Build Path &gt; Add to Build Path</strong>.</p>
+
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_b2</span><span class="p">;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">io.javalin.Javalin</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Literal</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MarketEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">    </span><span class="nd">@Override</span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">Javalin</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Javalin</span><span class="p">.</span><span class="na">create</span><span class="p">().</span><span class="na">start</span><span class="p">(</span><span class="mi">7000</span><span class="p">);</span>
-<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percept/:agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project. The Jason console should display the following:</p>
+
+<div class="codehilite">
+<pre><span></span><code>[main] INFO io.javalin.Javalin - 
+           __                      __ _
+          / /____ _ _   __ ____ _ / /(_)____
+     __  / // __ `/| | / // __ `// // // __ \
+    / /_/ // /_/ / | |/ // /_/ // // // / / /
+    \____/ \__,_/  |___/ \__,_//_//_//_/ /_/
+
+        https://javalin.io/documentation
+
+[main] INFO org.eclipse.jetty.util.log - Logging initialized @1576ms to org.eclipse.jetty.util.log.Slf4jLog
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO io.javalin.Javalin - Listening on http://localhost:7000/
+[main] INFO io.javalin.Javalin - Javalin started in 367ms \o/
+</code></pre>
+</div>
+
+<p>This confirms that Javalin is working correctly and listening on <a href="http://localhost:7000/">http://localhost:7000/</a>.</p>
+
+<h3 id="step-6-listen-for-api-requests">Step 6 - Listen for API requests</h3>
+
+<p>A custom API based on Javalin can be implemented within the <code>init</code> method of the custom environment class. This requires you to specify some API endpoints, included the expected HTTP method and how any data should be handled.</p>
+
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_b2</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.ArrayList</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Collection</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">io.javalin.Javalin</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Literal</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Javalin</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Javalin</span><span class="p">.</span><span class="na">create</span><span class="p">().</span><span class="na">start</span><span class="p">(</span><span class="mi">7000</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percepts/add/:agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">pathParam</span><span class="p">(</span><span class="s">&quot;agent&quot;</span><span class="p">);</span>
 <span class="w">            </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="na">body</span><span class="p">());</span>
 <span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="w"> </span><span class="n">percept</span><span class="p">);</span>
 <span class="w">        </span><span class="p">});</span>
 
-<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(bob)&quot;</span><span class="p">));</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(dave)&quot;</span><span class="p">));</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percepts/add&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="na">body</span><span class="p">());</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">percept</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
 
-<span class="w">    </span><span class="nd">@Override</span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">act</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Structure</span><span class="w"> </span><span class="n">leave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseStructure</span><span class="p">(</span><span class="s">&quot;leave&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">act</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">leave</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;leaving(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&quot;/percepts/:agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">pathParam</span><span class="p">(</span><span class="s">&quot;agent&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Collection</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="w"> </span><span class="n">percepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="na">consultPercepts</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">percepts</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">percepts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Literal</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">            </span><span class="n">ctx</span><span class="p">.</span><span class="na">result</span><span class="p">(</span><span class="n">percepts</span><span class="p">.</span><span class="na">toString</span><span class="p">());</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percepts/remove/:agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">pathParam</span><span class="p">(</span><span class="s">&quot;agent&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="na">body</span><span class="p">());</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span><span class="w"> </span><span class="n">percept</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percepts/remove&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Literal</span><span class="w"> </span><span class="n">percept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="na">body</span><span class="p">());</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">percept</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percepts/clear/:agent&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">agent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">pathParam</span><span class="p">(</span><span class="s">&quot;agent&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">clearPercepts</span><span class="p">(</span><span class="n">agent</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
+
+<span class="w">        </span><span class="n">app</span><span class="p">.</span><span class="na">post</span><span class="p">(</span><span class="s">&quot;/percepts/clear&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">clearPercepts</span><span class="p">();</span>
+<span class="w">        </span><span class="p">});</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="p">}</span>
 </code></pre>
 </div>
 
-<p>Line 14 creates a Javalin server that listens on port 7000.
-Lines 15--19 tell the Javalin server to accept POST requests on path <code>/percept/&lt;agent-name&gt;</code>.
-The body of these POST requests are expected to be Jason percepts, and Line 18 simply adds them to the Jason environment as percepts visible to agent <code>&lt;agent-name&gt;</code>.</p>
+<blockquote>
+  <p><strong>Note:</strong> If you see an Eclipse error for <code>ctx</code> you may need to hover your cursor over the error and select <code>Change project compliance and JRE to 1.8</code>.</p>
+</blockquote>
 
-<h3 id="step-x-save-your-changes-and-select-run-jason-application-2">Step X -  Save your changes and select <strong>Run Jason Application</strong></h3>
+<p>This code implements the following API specification:</p>
 
-<p><img src="figures/run-javalin-1.png" alt="Figure" /></p>
+<table>
+<thead>
+<tr>
+  <th>Method</th>
+  <th>Endpoint</th>
+  <th>Data</th>
+  <th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>POST</td>
+  <td><code>/percepts/add</code></td>
+  <td><code>{percept}</code></td>
+  <td>Add <code>{percept}</code> as a shared percept</td>
+</tr>
+<tr>
+  <td>POST</td>
+  <td><code>/percepts/add/{agent}</code></td>
+  <td><code>{percept}</code></td>
+  <td>Add <code>{percept}</code> as a percept for <code>{agent}</code></td>
+</tr>
+<tr>
+  <td>POST</td>
+  <td><code>/percepts/remove</code></td>
+  <td><code>{percept}</code></td>
+  <td>Remove <code>{percept}</code> as a shared percept</td>
+</tr>
+<tr>
+  <td>POST</td>
+  <td><code>/percepts/remove/{agent}</code></td>
+  <td><code>{percept}</code></td>
+  <td>Remove <code>{percept}</code> as a percept for <code>{agent}</code></td>
+</tr>
+<tr>
+  <td>GET</td>
+  <td><code>/percepts/{agent}</code></td>
+  <td>N/A</td>
+  <td>Get all percepts for <code>{agent}</code></td>
+</tr>
+</tbody>
+</table>
 
-<p>The Javalin banner in the Jason console indicates that Javalin is working correctly.
-Notice that the agents are running but have not provided any console messages.</p>
+<p>These endpoints thus provide access to most of the Jason features used by the previous Swing interface.</p>
 
-<h3 id="step-x-send-percept-deliveryitem1-to-bob">Step X -  Send percept <code>delivery(item1)</code> to <code>bob</code></h3>
-
-<p>In a terminal, run the following command:</p>
+<h3 id="step-7-submit-api-requests">Step 7 - Submit API requests</h3>
 
 <div class="codehilite">
-<pre><span></span><code>$<span class="w"> </span>curl<span class="w"> </span>localhost:7000/percept/bob<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;delivery(item1)&quot;</span>
-...
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add/alice<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(1)&quot;</span>
 </code></pre>
 </div>
 
-<p><img src="figures/run-javalin-2.png" alt="Figure" /></p>
-
-<p>Notice that <code>bob</code> responded to the event as before.</p>
-
-<h3 id="step-x-send-percept-deliveryitem1-to-dave">Step X -  Send percept <code>delivery(item1)</code> to <code>dave</code></h3>
-
-<p>In a terminal, run the following command:</p>
-
 <div class="codehilite">
-<pre><span></span><code>$<span class="w"> </span>curl<span class="w"> </span>localhost:7000/percept/dave<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;delivery(item1)&quot;</span>
-...
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add/alice<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(2)&quot;</span>
 </code></pre>
 </div>
 
-<p><img src="figures/run-javalin-3.png" alt="Figure" /></p>
-
-<p>Notice that <code>dave</code> responded to the event as before.</p>
-
-<h3 id="step-x-send-percept-needitem1-to-alice">Step X -  Send percept <code>need(item1)</code> to <code>alice</code></h3>
-
-<p>In a terminal, run the following command:</p>
-
 <div class="codehilite">
-<pre><span></span><code>$<span class="w"> </span>curl<span class="w"> </span>localhost:7000/percept/alice<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;need(item1)&quot;</span>
-...
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(3)&quot;</span>
 </code></pre>
 </div>
 
-<p><img src="figures/run-javalin-4.png" alt="Figure" /></p>
-
-<p>Notice that <code>alice</code> responded to the event as before.</p>
-
-<h3 id="step-x-send-percept-needitem1-to-carol">Step X -  Send percept <code>need(item1)</code> to <code>carol</code></h3>
-
-<p>In a terminal, run the following command:</p>
-
 <div class="codehilite">
-<pre><span></span><code>$<span class="w"> </span>curl<span class="w"> </span>localhost:7000/percept/carol<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;need(item1)&quot;</span>
-...
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/alice
+<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">1</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">2</span><span class="o">)]</span>
 </code></pre>
 </div>
 
-<p><img src="figures/run-javalin-5.png" alt="Figure" /></p>
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/bob
+<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)]</span>
+</code></pre>
+</div>
 
-<p>Notice that <code>carol</code> responded to the event as before.</p>
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add/bob<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(4)&quot;</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(5)&quot;</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/bob
+<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">4</span><span class="o">)]</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/bob
+<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">4</span><span class="o">)]</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/alice
+<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">1</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">2</span><span class="o">)]</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/remove/alice<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(1)&quot;</span>
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/alice
+<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">2</span><span class="o">)]</span>
+</code></pre>
+</div>
 
 <h2 id="conclusion">Conclusion</h2>
-
-<h2 id="further-resources">Further resources</h2>
-
-<ul>
-<li>Rafael H. Bordini, Jomi Fred Hübner, and Michael Wooldridge. <a href="http://home.mit.bme.hu/~eredics/AgentGame/Jason/Jason_konyv.pdf">Programming multi-agent systems in AgentSpeak using Jason</a>. John Wiley &amp; Sons, 2007.</li>
-</ul>
 
 </div>
 <footer class="p-6 mt-4">

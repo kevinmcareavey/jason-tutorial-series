@@ -20,14 +20,16 @@ This section describes how to get started with Jason development and should be c
 Students are requested to install Jason on their own laptops and to use them during the lab sessions. For students who are unable to do so, details will be provided separately on how to access Jason on the lab machines.
 
 - [Tutorial 1 - Installing Jason](tutorial-1.html)
+
 <!-- - Tutorial 1b - Jason on lab machines &#9940; &#128679; -->
-<!-- - [Tutorial 1b - Jason on lab machines](tutorial-1b.html) -->
 
 ## Lab sessions
 
 ### Tuesday 7 March 2023
 
 A basic understanding of logic programming is essential to Jason programming. This section provides a brief introduction to logic programming using the SWISH web interface for SWI-Prolog.
+
+<!-- - Tutorial 2 - Logic programming &#9940; &#128679; -->
 
 - [Tutorial 2 - Logic programming](tutorial-2.html)
 
@@ -55,12 +57,13 @@ Experience with Java programming is desirable but not essential to Jason program
 
 The material covered in this section is **not required** to achieve full marks in the assignment. However, experienced programmers (especially those with Java experience) should find them straightforward and they will allow you to implement more interesting applications in Jason.
 
-- Appendix A - Virtual environments, including environment actions &#9940; &#128679;
-<!-- - [Appendix A - Virtual environments, including environment actions](appendix-a.html) -->
-- Appendix B - Interfaces, including graphical user interfaces &#9940; &#128679;
-<!-- - [Appendix B - Interfaces, including graphical user interfaces](appendix-b.html) -->
-- Appendix C - Custom internal actions &#9940; &#128679;
-<!-- - [Appendix C - Custom internal actions](appendix-c.html) -->
+<!-- - Appendix A - Virtual environments &#9940; &#128679;
+- Appendix B - Graphical user interfaces &#9940; &#128679;
+- Appendix C - Custom internal actions &#9940; &#128679; -->
+
+- [Appendix A - Virtual environments](appendix-a.html)
+- [Appendix B - Graphical user interfaces](appendix-b.html)
+- [Appendix C - Custom internal actions](appendix-c.html)
 
 ## Further resources
 

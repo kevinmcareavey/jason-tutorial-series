@@ -1,397 +1,544 @@
-# Appendix B - Interfacing with Jason
+# Appendix B - Graphical user interfaces
+
+This appendix provides a brief introduction to implementing graphical user interfaces for Jason projects.
+
+Graphical user interfaces in Jason are typically spawned from a custom environment class, so you should complete [Appendix A](appendix-a.html) before proceeding with this appendix.
 
 <!-- TOC -->
 
-## Preliminarties
+## Getting started
 
-In order to develop interesting applications in Jason, you will typically need to interact with (and/or visualise) the environment of your Jason project.
-We will briefly introduce two approaches to solving this problem.
-The first approach is to use standard Java libraries for developing graphical user interfaces (GUIs).
-This is the approach typically taken by existing Jason demos available online.
-The second approach is to implement a REST API in your Jason project to expose your Jason environment to external software.
-This approach may be preferable if you wish to implement part of your application (e.g. its GUI) in another programming language.
+Create a new Jason project in Eclipse called `appendix_b`.
 
-Let us start by updating the `buyer_agent` agent file to make them behave more dynamically.
+### Step 1 - Simple Jason project
 
-### Step X -  Update the agent file `src/asl/buyer_agent.asl`
+Create a new custom environment class file called `MyEnvironment.java`:
+
+```java
+package appendix_b;
+
+import jason.environment.Environment;
+
+public class MyEnvironment extends Environment {
+    
+    @Override
+    public void init(String[] args) {
+
+    }
+
+}
+```
+
+Create a new agent file called `interface_agent.asl`:
 
 ```jason
-// src/asl/buyer_agent.asl
-
 /* Initial beliefs and rules */
 
 /* Initial goals */
 
 /* Plans */
 
-+!buy(X) : seller(Y) & not out_of_stock(X)[source(Y)] <- .print(Y, ", I would like to buy ", X); .send(Y, tell, want(X)).
-+!buy(X) : true <- .print("it looks like ", X, " is unavailable").
-+recieve(X)[source(Y)] : true <- .print(Y, ", thank you for ", X); .print("I have found what I wanted, goodbye everyone!"); leave.
-+out_of_stock(X)[source(Y)] : true <- .print("thank you ", Y, ", I will try to find ", X , " elsewhere"); !buy(X).
++my_percept(X)[source(Y)] : true <- .print("Belief added: ", my_percept(X)[source(Y)]).
 
-+leaving(X) : .my_name(X) <- .kill_agent(X).
-+leaving(X) : true <- .print("goodbye ", X, "!").
-
-+need(X) : true <- !buy(X).
+-my_percept(X)[source(Y)] : true <- .print("Belief deleted: ", my_percept(X)[source(Y)]).
 ```
 
-The initial achievment goal `!buy(item1)` has been removed and a new plan has been added, telling the agent to adopt an achievement goal `!buy(X)` if it receives (e.g. from the environment) a new belief `need(X)`.
+According to this agent file the agent will print a message whenever a belief of the form `my_percept(X)` is added or deleted from its belief base.
 
-## Desktop Interface (using Swing)
+Edit the Jason configuration file as follows:
 
-### Step X -  Update the environment class `src/java/hello_world/MarketEnvironment.java`
+```jason
+MAS appendix_b {
 
-Create a new (inner) class called `MyWindow` and initialise a single instance within the `init` method of the Jason environment.
-Also remove the initial `delivery(item1)` percepts.
+    infrastructure: Centralised
+    
+    environment: appendix_b.MyEnvironment
+
+    agents:
+        alice interface_agent;
+        bob interface_agent;
+
+    aslSourcePath:
+        "src/asl";
+}
+```
+
+Run the Jason project.
+
+The Jason console should launch but no message should appear. The reason is that agents `alice` and `bob` are purely reactive; if a belief of the form `my_percept(X)` is never added or deleted from their belief base then they will do nothing. We will thus seek to trigger this behaviour via a graphical user interface.
+
+## Java interfaces
+
+The most common approach to implementing graphical user interfaces in Jason is to use an existing Java widget toolkit, such as [Swing](https://en.wikipedia.org/wiki/Swing_(Java)) or [SWT](https://en.wikipedia.org/wiki/Standard_Widget_Toolkit). This is the approach typically used by Jason example/demo implementations available online.
+
+### Step 2 - Swing interface
+
+With the `src/java` directory in the Jason project highlighted in Eclipse select **File > New > Class**.
+
+Enter `MyWindow` in the **Name** field and select **Finish**.
+
+A new Java file should be automatically created at `src/java/appendix_b/MyWindow.java`. Edit the file as follows:
 
 ```java
-package hello_world;
+package appendix_b;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
-import jason.asSyntax.Structure;
 import jason.asSyntax.parser.ParseException;
+
+public class MyWindow {
+    
+    MyEnvironment myEnv;
+    String[] myAgents;
+    
+    JComboBox<String> agentComboBox;
+    DefaultListModel<Literal> perceptListModel;
+    JList<Literal> perceptList;
+    JTextField addTextfield;
+
+    public MyWindow(MyEnvironment env, String[] agents) {
+        myEnv = env;
+        myAgents = agents;
+        
+        agentComboBox = new JComboBox<String>(myAgents);
+        agentComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                @SuppressWarnings("unchecked")
+                JComboBox<String> eComboBox = (JComboBox<String>) e.getSource();
+                String agent = (String) eComboBox.getSelectedItem();
+                refreshPerceptList(agent);  // Refresh the scroll pane whenever the user interacts with the combo box
+            }
+        });
+
+        perceptListModel = new DefaultListModel<Literal>();
+        String agent = (String) agentComboBox.getSelectedItem();
+        refreshPerceptList(agent);
+        
+        perceptList = new JList<Literal>(perceptListModel);
+        perceptList.setVisibleRowCount(4);
+        
+        addTextfield = new JTextField("my_percept(1)", 15);
+
+        JButton addAgentButton = new JButton("Add (agent)");
+        addAgentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String agent = (String) agentComboBox.getSelectedItem();
+                    Literal percept = ASSyntax.parseLiteral(addTextfield.getText());
+                    percept.addAnnot(ASSyntax.parseTerm("scope(agent)"));  // Add custom annotation to explicitly identify percepts in the GUI
+                    myEnv.addPercept(agent, percept);  // Add percept for the selected agent
+                    refreshPerceptList(agent);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        
+        JButton addSharedButton = new JButton("Add (shared)");
+        addSharedButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String agent = (String) agentComboBox.getSelectedItem();
+                    Literal percept = ASSyntax.parseLiteral(addTextfield.getText());
+                    percept.addAnnot(ASSyntax.parseTerm("scope(shared)"));  // Add custom annotation to explicitly identify shared percepts in the GUI
+                    myEnv.addPercept(percept);  // Add shared percept
+                    refreshPerceptList(agent);
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        JButton removeButton = new JButton("Remove");
+        removeButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!perceptList.isSelectionEmpty()) {
+                    String agent = (String) agentComboBox.getSelectedItem();
+                    Literal percept = (Literal) perceptList.getSelectedValue();
+                    String scope = percept.getAnnot("scope").getTerm(0).toString();  // Retrieve the custom annotation to determine what method to call
+                    if (scope.equals("agent")) {
+                        myEnv.removePercept(agent, percept);  // Remove percept for the selected agent
+                    } else {
+                        myEnv.removePercept(percept);  // Remove shared percept
+                    }
+                    refreshPerceptList(agent);
+                }
+            }
+        });
+        
+        JButton clearAgentButton = new JButton("Clear (agent)");
+        clearAgentButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String agent = (String) agentComboBox.getSelectedItem();
+                myEnv.clearPercepts(agent);  // Clear percepts for the selected agent
+                refreshPerceptList(agent);
+            }
+        });
+        
+        JButton clearSharedButton = new JButton("Clear (shared)");
+        clearSharedButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String agent = (String) agentComboBox.getSelectedItem();
+                myEnv.clearPercepts();  // Clear shared percepts
+                refreshPerceptList(agent);
+            }
+        });
+        
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Agent"));
+        panel.add(agentComboBox);
+        panel.add(new JLabel("Percept"));
+        panel.add(addTextfield);
+        panel.add(addAgentButton);
+        panel.add(addSharedButton);
+        panel.add(new JScrollPane(perceptList));
+        panel.add(removeButton);
+        panel.add(clearAgentButton);
+        panel.add(clearSharedButton);
+
+        JFrame frame = new JFrame("Percept manager");
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
+    
+    /*
+     * Refresh contents of the scroll pane based on the selected agent
+     */
+    private void refreshPerceptList(String agent) {
+        perceptListModel.removeAllElements();
+        for (Literal p : myEnv.consultPercepts(agent)) {
+            perceptListModel.addElement(p);
+        }
+    }
+    
+}
+```
+
+This class uses standard widgets from Swing to implement a desktop window that integrates with the Jason virtual environment via event listeners.
+
+According to the constructor, an instance of the class is initialised with an instance of our virtual environment and an array of agent names. The former allows us to conveniently access Jason functionality within the `MyWindow` class itself, while the latter allows us to automatically display the agents within the interface.
+
+### Step 3 - Spawning the interface
+
+The final step is to spawn the interface from within the `init` method of the virtual environment class.
+
+Add the following lines to the `init` method of `MyEnvironment.java`:
+
+```java
+String[] agents = {"alice", "bob"};
+new MyWindow(this, agents);
+```
+
+The line `new MyWindow(this, agents)` spawns the new interface by passing the current environment (`this`) along with an array of agents names (`agents`).
+
+> **Note:** Details on how to access the list of agent names **automatically** can be found in the [Jason FAQ](http://jason.sourceforge.net/doc/faq.html#_how_to_discover_the_name_of_the_agents_in_the_environment_initialisation).
+
+### Step 4 - User input
+
+Run the Jason project.
+
+The following window called `Percept manager` should appear:
+
+![Figure](figures/gui-1.png)
+
+The empty box in the centre displays a selectable list of percepts for the agent highlighted in the dropdown menu to the far left. Initially `alice` is highlighted and she has no percepts.
+
+The box displaying `my_percept(1)` is an editable text field that allows you to enter any arbitrary percept, which can then be added as a percept for the highlighted agent using the `Add (agent)` button, or as a shared percept using the `Add (shared)` button.
+
+Select the `Add (agent)` button. An annotated percept `my_percept(1)[scope(agent)]` should appear in the list, where `scope(agent)` is a custom annotation used by the interface to distinguish agent percepts from shared percepts.
+
+![Figure](figures/gui-2.png)
+
+The Jason console should also display the following message:
+
+```text
+[alice] Belief added: my_percept(1)[source(percept)]
+```
+
+Edit the text field to `my_percept(2)` and select `Add (agent)`.  An annotated percept `my_percept(2)[scope(agent)]` should appear in the list.
+
+![Figure](figures/gui-3.png)
+
+```text
+[alice] Belief added: my_percept(2)[source(percept)]
+```
+
+Edit the text field to `my_percept(3)` and select `Add (shared)`.  An annotated percept `my_percept(3)[scope(shared)]` should appear in the list.
+
+![Figure](figures/gui-4.png)
+
+```text
+[bob] Belief added: my_percept(3)[source(percept)]
+[alice] Belief added: my_percept(3)[source(percept)]
+```
+
+Select `bob` from the dropdown menu. The list should only display the shared percept  `my_percept(3)[scope(shared)]`.
+
+![Figure](figures/gui-5.png)
+
+Edit the text field to `my_percept(4)` and select `Add (agent)`.  An annotated percept `my_percept(4)[scope(agent)]` should appear in the list.
+
+![Figure](figures/gui-6.png)
+
+```text
+[bob] Belief added: my_percept(4)[source(percept)]
+```
+
+Edit the text field to `my_percept(5)` and select `Add (shared)`.  An annotated percept `my_percept(5)[scope(shared)]` should appear in the list.
+
+![Figure](figures/gui-7.png)
+
+```text
+[bob] Belief added: my_percept(5)[source(percept)]
+[alice] Belief added: my_percept(5)[source(percept)]
+```
+
+Select `alice` from the dropdown menu. The list for `alice` should appear as before with the addition of the shared percept  `my_percept(5)[scope(shared)]`.
+
+![Figure](figures/gui-8.png)
+
+Select `my_percept(1)[scope(agent)]` from the list and select `Remove`. The percept should be removed from the list.
+
+![Figure](figures/gui-9.png)
+
+```text
+[alice] Belief deleted: my_percept(1)[source(percept)]
+```
+
+Select `Clear (agent)`. All percepts with `scope(agent)` should be removed from the list.
+
+![Figure](figures/gui-10.png)
+
+```text
+[alice] Belief deleted: my_percept(2)[source(percept)]
+```
+
+Select `bob` from the dropdown menu. The list should appear as before.
+
+![Figure](figures/gui-11.png)
+
+Select `Clear (shared)`. All percepts with `scope(shared)` should be removed from the list.
+
+![Figure](figures/gui-12.png)
+
+```text
+[bob] Belief deleted: my_percept(3)[source(percept)]
+[bob] Belief deleted: my_percept(5)[source(percept)]
+[alice] Belief deleted: my_percept(3)[source(percept)]
+[alice] Belief deleted: my_percept(5)[source(percept)]
+```
+
+Select `alice` from the dropdown menu. The list should now be empty.
+
+![Figure](figures/gui-13.png)
+
+All functionality in the interface appears to be working as expected.
+
+## Web interfaces
+
+An alternative approach to implementing graphical user interfaces in Jason is to implement a custom API that exposes the Jason environment to external software. This approach is significantly more flexible, since you can then implement the graphical user interface using any programming language that is able to send HTTP requests (e.g. Javascript).
+
+### Step 5 - Javalin API server
+
+[Javalin](https://javalin.io) is a popular web framework for Java. It allows you run a web server that listens on specified endpoints for standard HTTP requests, such as GET and POST. In this way you can send and retrieve data to/from the Jason environment directly, providing data to populate your graphical user interface and allowing you to implement interactivity.
+
+A pre-built version of Javalin (including dependencies) is available to download [here](javalin.jar).
+
+With the Jason project highlighted in Eclipse select **File > New > Folder**.
+
+Enter `lib` in the **Folder name** field and select **Finish**.
+
+Drag the file `javalin.jar` to the new `lib` directory.
+
+Right-click on `lib/javalin.jar` in Eclipse and select **Build Path > Add to Build Path**.
+
+Edit `MyEnvironment.java` as follows:
+
+```java
+package appendix_b2;
+
+import io.javalin.Javalin;
 import jason.environment.Environment;
 
-public class MarketEnvironment extends Environment {
-
-    @Override
+public class MyEnvironment extends Environment {
+	
+	@Override
     public void init(String[] args) {
-        new MyWindow();
-
-        try {
-            this.addPercept(ASSyntax.parseLiteral("seller(bob)"));
-            this.addPercept(ASSyntax.parseLiteral("seller(dave)"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean executeAction(String agName, Structure act) {
-        try {
-            Structure leave = ASSyntax.parseStructure("leave");
-            if(act.equals(leave)) {
-                this.addPercept(ASSyntax.parseLiteral("leaving(" + agName + ")"));
-                return true;
-            }
-        } catch (ParseException e1) {
-            e1.printStackTrace();
-        }
-        return false;
-    }
-
-    class MyWindow {
-
-        JTextField agentTextfield;
-        JTextField perceptTextfield;
-        JButton button;
-
-        public MyWindow() {
-            agentTextfield = new JTextField("bob", 15);
-            perceptTextfield = new JTextField("delivery(item1)", 15);
-
-            button = new JButton("Add");
-            button.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        String agent = agentTextfield.getText();
-                        Literal percept = ASSyntax.parseLiteral(perceptTextfield.getText());
-                        addPercept(agent, percept);
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            });
-
-            JPanel panel = new JPanel();
-            panel.add(agentTextfield);
-            panel.add(perceptTextfield);
-            panel.add(button);
-
-            JFrame frame = new JFrame("Add percept");
-            frame.getContentPane().add(panel);
-            frame.pack();
-            frame.setVisible(true);
-        }
-
+		Javalin app = Javalin.create().start(7000);
     }
 
 }
 ```
 
-The main change here is the addition of a new class on Lines 45--79 called `MyWindow`, which is initialised on Line 21 when the Jason environment is first started.
-This `MyWindow` class provides a simple text input window, implemented using the Java Swing library, allowing users to simulate the addition of percepts to the Jason environment.
-Agents will dynamically respond to any simulated percepts as specified in their agent files.
+Run the Jason project. The Jason console should display the following:
 
-### Step X -  Save your changes and select **Run Jason Application**
+```text
+[main] INFO io.javalin.Javalin - 
+           __                      __ _
+          / /____ _ _   __ ____ _ / /(_)____
+     __  / // __ `/| | / // __ `// // // __ \
+    / /_/ // /_/ / | |/ // /_/ // // // / / /
+    \____/ \__,_/  |___/ \__,_//_//_//_/ /_/
 
-![Figure](figures/run-swing-1.png)
+        https://javalin.io/documentation
 
-![Figure](figures/input-swing-1.png)
-
-Notice that, in addition to the Jason console, a new text input window called **Add percept** has been created.
-The text fields are populated with some default text: the first text field specifies the relevant agent and the second text field specifies the percept.
-Notice also that the agents have not yet printed anything to the console.
-
-Select **Add**.
-
-![Figure](figures/run-swing-2.png)
-
-Notice that `bob` has immediately responded to the event `delivery(item1)`.
-
-![Figure](figures/input-swing-2.png)
-
-Update the first text field to **dave** and select **Add**.
-
-![Figure](figures/run-swing-3.png)
-
-Notice that `dave` has immediately responded to the event `delivery(item1)`.
-
-![Figure](figures/input-swing-3.png)
-
-Update the text fields to **alice** and **need(item1)**, respectively, and then select **Add**.
-
-![Figure](figures/run-swing-4.png)
-
-Notice that `alice` has immediately responded to the event `need(item1)`.
-
-![Figure](figures/input-swing-4.png)
-
-Update the first text field to **carol** and select **Add**.
-
-![Figure](figures/run-swing-5.png)
-
-Notice that `carol` has immediately responded to the event `need(item1)`.
-
-### Step X -  Select **Stop** in the Jason console
-
-## REST API (e.g. using Javalin)
-
-Implementing a REST API within your Jason project allows you to interact with the project's environment (e.g. to simulate new events) using standard HTTP requests (e.g. GET, POST).
-An example of a library that can be used to implement REST APIs in Java is [Javalin](https://javalin.io).
-
-Javalin's official installation instructions may not be compatible with the Jason plugin for Eclipse.
-As a workaround, you can instead build Javalin as a single `.jar` file with all its dependencies using a package called Maven, and then manually add that `.jar` file to the build path of your Jason project.
-
-### Step X -  Download Maven
-
-Download Maven from [here](https://maven.apache.org/download.cgi).
-
-Unzip `apache-maven-3.8.4-bin.zip` as a directory `apache-maven-3.8.4` and remember its location.
-
-### Step X -  Build Javalin with its dependencies using Maven
-
-Create a directory called `javalin` and add the following file called `pom.xml`:
-
-```xml
-<!-- javalin/pom.xml -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-    http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>io.javalin</groupId>
-    <artifactId>javalin-latest</artifactId>
-    <version>3.7.0</version>
-    <packaging>jar</packaging>
-
-    <name>Javalin</name>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.javalin</groupId>
-            <artifactId>javalin</artifactId>
-            <version>3.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.28</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <finalName>javalin-latest</finalName>
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.1</version>
-
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-            </plugin>
-        </plugins>
-    </build>
-</project>
+[main] INFO org.eclipse.jetty.util.log - Logging initialized @1576ms to org.eclipse.jetty.util.log.Slf4jLog
+[main] INFO io.javalin.Javalin - Starting Javalin ...
+[main] INFO io.javalin.Javalin - Listening on http://localhost:7000/
+[main] INFO io.javalin.Javalin - Javalin started in 367ms \o/
 ```
 
-You do not need to understand this file.
-Inside your `javalin` directory, run the command:
+This confirms that Javalin is working correctly and listening on [http://localhost:7000/](http://localhost:7000/).
 
-```bash
-<path>/<to>/apache-maven-3.8.4/bin/mvn package
-```
+### Step 6 - Listen for API requests
 
-Maven will create a file `target/javalin-latest-jar-with-dependencies.jar` which contains Javalin and all its dependencies.
+A custom API based on Javalin can be implemented within the `init` method of the custom environment class. This requires you to specify some API endpoints, included the expected HTTP method and how any data should be handled.
 
-### Step X -  Add Javalin to the build path of your Jason project
-
-One option is to create a new directory called `lib` inside your Jason project, then copy `javalin-latest-jar-with-dependencies.jar` to the `lib` directory, and finally right-click on the `lib/javalin-latest-jar-with-dependencies.jar` file in Eclipse and select **Add to Build Path**.
-Javalin should now be available for use within your Jason project.
-
-### Step X -  Update your Jason environment file to listen for percepts using Javalin
-
-Update `src/java/hello_world/MarketEnvironment.java` as follows:
+Edit `MyEnvironment.java` as follows:
 
 ```java
-// src/java/hello_world/MarketEnvironment.java
+package appendix_b2;
 
-package hello_world;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import io.javalin.Javalin;
 import jason.asSyntax.ASSyntax;
 import jason.asSyntax.Literal;
-import jason.asSyntax.Structure;
-import jason.asSyntax.parser.ParseException;
 import jason.environment.Environment;
 
-public class MarketEnvironment extends Environment {
-
-    @Override
+public class MyEnvironment extends Environment {
+	
+	@Override
     public void init(String[] args) {
-        Javalin app = Javalin.create().start(7000);
-        app.post("/percept/:agent", ctx -> {
+		Javalin app = Javalin.create().start(7000);
+		
+        app.post("/percepts/add/:agent", ctx -> {
             String agent = ctx.pathParam("agent");
             Literal percept = ASSyntax.parseLiteral(ctx.body());
             this.addPercept(agent, percept);
         });
-
-        try {
-            this.addPercept(ASSyntax.parseLiteral("seller(bob)"));
-            this.addPercept(ASSyntax.parseLiteral("seller(dave)"));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public boolean executeAction(String agName, Structure act) {
-        try {
-            Structure leave = ASSyntax.parseStructure("leave");
-            if(act.equals(leave)) {
-                this.addPercept(ASSyntax.parseLiteral("leaving(" + agName + ")"));
-                return true;
+        
+        app.post("/percepts/add", ctx -> {
+            Literal percept = ASSyntax.parseLiteral(ctx.body());
+            this.addPercept(percept);
+        });
+        
+        app.get("/percepts/:agent", ctx -> {
+            String agent = ctx.pathParam("agent");
+            Collection<Literal> percepts = this.consultPercepts(agent);
+            if (percepts == null) {
+            	percepts = new ArrayList<Literal>();
             }
-        } catch (ParseException e1) {
-            e1.printStackTrace();
-        }
-        return false;
+            ctx.result(percepts.toString());
+        });
+        
+        app.post("/percepts/remove/:agent", ctx -> {
+            String agent = ctx.pathParam("agent");
+            Literal percept = ASSyntax.parseLiteral(ctx.body());
+            this.removePercept(agent, percept);
+        });
+        
+        app.post("/percepts/remove", ctx -> {
+            Literal percept = ASSyntax.parseLiteral(ctx.body());
+            this.removePercept(percept);
+        });
+        
+        app.post("/percepts/clear/:agent", ctx -> {
+            String agent = ctx.pathParam("agent");
+            this.clearPercepts(agent);
+        });
+        
+        app.post("/percepts/clear", ctx -> {
+            this.clearPercepts();
+        });
     }
 
 }
 ```
 
-Line 14 creates a Javalin server that listens on port 7000.
-Lines 15--19 tell the Javalin server to accept POST requests on path `/percept/<agent-name>`.
-The body of these POST requests are expected to be Jason percepts, and Line 18 simply adds them to the Jason environment as percepts visible to agent `<agent-name>`.
+> **Note:** If you see an Eclipse error for `ctx` you may need to hover your cursor over the error and select `Change project compliance and JRE to 1.8`.
 
-### Step X -  Save your changes and select **Run Jason Application**
+This code implements the following API specification:
 
-![Figure](figures/run-javalin-1.png)
+| Method | Endpoint | Data | Meaning |
+| --- | --- | --- | --- |
+| POST | `/percepts/add` | `{percept}` | Add `{percept}` as a shared percept |
+| POST | `/percepts/add/{agent}` | `{percept}` | Add `{percept}` as a percept for `{agent}` |
+| POST | `/percepts/remove` | `{percept}` | Remove `{percept}` as a shared percept |
+| POST | `/percepts/remove/{agent}` | `{percept}` | Remove `{percept}` as a percept for `{agent}` |
+| GET | `/percepts/{agent}` | N/A | Get all percepts for `{agent}` |
 
-The Javalin banner in the Jason console indicates that Javalin is working correctly.
-Notice that the agents are running but have not provided any console messages.
+These endpoints thus provide access to most of the Jason features used by the previous Swing interface.
 
-### Step X -  Send percept `delivery(item1)` to `bob`
-
-In a terminal, run the following command:
-
-```bash
-$ curl localhost:7000/percept/bob --request POST --data "delivery(item1)"
-...
-```
-
-![Figure](figures/run-javalin-2.png)
-
-Notice that `bob` responded to the event as before.
-
-### Step X -  Send percept `delivery(item1)` to `dave`
-
-In a terminal, run the following command:
+### Step 7 - Submit API requests
 
 ```bash
-$ curl localhost:7000/percept/dave --request POST --data "delivery(item1)"
-...
+curl --request POST http://localhost:7000/percepts/add/alice --data "my_percept(1)"
 ```
-
-![Figure](figures/run-javalin-3.png)
-
-Notice that `dave` responded to the event as before.
-
-### Step X -  Send percept `need(item1)` to `alice`
-
-In a terminal, run the following command:
 
 ```bash
-$ curl localhost:7000/percept/alice --request POST --data "need(item1)"
-...
+curl --request POST http://localhost:7000/percepts/add/alice --data "my_percept(2)"
 ```
-
-![Figure](figures/run-javalin-4.png)
-
-Notice that `alice` responded to the event as before.
-
-### Step X -  Send percept `need(item1)` to `carol`
-
-In a terminal, run the following command:
 
 ```bash
-$ curl localhost:7000/percept/carol --request POST --data "need(item1)"
-...
+curl --request POST http://localhost:7000/percepts/add --data "my_percept(3)"
 ```
 
-![Figure](figures/run-javalin-5.png)
+```bash
+curl --request GET http://localhost:7000/percepts/alice
+[my_percept(3), my_percept(1), my_percept(2)]
+```
 
-Notice that `carol` responded to the event as before.
+```bash
+curl --request GET http://localhost:7000/percepts/bob
+[my_percept(3)]
+```
+
+```bash
+curl --request POST http://localhost:7000/percepts/add/bob --data "my_percept(4)"
+```
+
+```bash
+curl --request POST http://localhost:7000/percepts/add --data "my_percept(5)"
+```
+
+```bash
+curl --request GET http://localhost:7000/percepts/bob
+[my_percept(3), my_percept(5), my_percept(4)]
+```
+
+```bash
+curl --request GET http://localhost:7000/percepts/bob
+[my_percept(3), my_percept(5), my_percept(4)]
+```
+
+```bash
+curl --request GET http://localhost:7000/percepts/alice
+[my_percept(3), my_percept(5), my_percept(1), my_percept(2)]
+```
+
+```bash
+curl --request POST http://localhost:7000/percepts/remove/alice --data "my_percept(1)"
+```
+
+```bash
+curl --request GET http://localhost:7000/percepts/alice
+[my_percept(3), my_percept(5), my_percept(2)]
+```
 
 ## Conclusion
-
-## Further resources
-
-- Rafael H. Bordini, Jomi Fred Hübner, and Michael Wooldridge. [Programming multi-agent systems in AgentSpeak using Jason](http://home.mit.bme.hu/~eredics/AgentGame/Jason/Jason_konyv.pdf). John Wiley & Sons, 2007.

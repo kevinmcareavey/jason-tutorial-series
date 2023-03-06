@@ -1,4 +1,4 @@
-# Appendix C - External files
+# Appendix C - Custom internal actions
 
 <!-- TOC -->
 

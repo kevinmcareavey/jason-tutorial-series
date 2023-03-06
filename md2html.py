@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 
 def translate(markdown_str):
-    html_body = markdown2.markdown(markdown_str, extras=["toc", "fenced-code-blocks", "tables", "code-friendly"])
+    html_body = markdown2.markdown(markdown_str, extras=["toc", "fenced-code-blocks", "tables", "code-friendly", "strike"])
     soup = BeautifulSoup(html_body.toc_html, "html.parser")
     title = soup.find("a").text
     html_toc = str(soup.find("ul").find("ul"))

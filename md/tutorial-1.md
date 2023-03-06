@@ -28,6 +28,8 @@ As of January 2023, the latest version is Jason 3.1. However, for this tutorial 
 
 Download and extract `jason-2.6.3.zip` as a directory called `jason-2.6.3` and remember its absolute path, e.g. `/path/to/jason-2.6.3/`.
 
+> **Note**: Do not install Jason in a protected directory, which includes `/Users/your_username/Downloads/` on macOS.
+
 ### Step 3 - Run the Jason configuration tool
 
 Run the file `jason-2.6.3/libs/jason-2.6.3.jar`.
@@ -53,17 +55,15 @@ Select **Save configuration and Exit**.
 
 Eclipse is available to download from [Eclipse Foundation](https://www.eclipse.org/downloads/packages/release/2021-12/r).
 
-As of January 2023, the latest version is Eclipse 2022-12. However, for this tutorial series we will use **Eclipse 2021-12**.
-
-> **Note:** The Jason plugin for Eclipse is not compatible with more recent versions of Eclipse due to a missing dependency, so you **must** use Eclipse 2021-12.
+As of January 2023, the latest version is Eclipse 2022-12. However, for this tutorial series we will use **Eclipse 2021-12**. The Jason plugin for Eclipse is not compatible with more recent versions of Eclipse due to a missing dependency, so you **must** use Eclipse 2021-12.
 
 Download the most appropriate package for your platform (e.g. **x86_64** for Windows and macOS) and then run the Eclipse installer.
 
 ![Figure](figures/eclipse-install-standard.png)
 
-When prompted, choose **Eclipse IDE for Eclipse Committers** and complete the installation.
+When prompted, choose **Eclipse IDE for Eclipse Committers** and complete the installation. The Jason plugin for Eclipse is not compatible with other variants of Eclipse 2021-12, including **Eclipse IDE for Java Developers** and **Eclipse IDE for Enterprise Java and Web Developers**.
 
-> **Note:** The Jason plugin for Eclipse is not compatible with other variants of Eclipse 2021-12, including **Eclipse IDE for Java Developers** and **Eclipse IDE for Enterprise Java and Web Developers**.
+> **Note**: Do not install Eclipse in a protected directory, which includes `/Users/your_username/Downloads/` on macOS.
 
 ### Step 5 - Install the Jason plugin for Eclipse
 

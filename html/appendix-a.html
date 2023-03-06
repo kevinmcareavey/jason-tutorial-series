@@ -11,159 +11,279 @@
 <div class="markdown-body border rounded-3 p-6">
 <h1 id="appendix-a-virtual-environments">Appendix A - Virtual environments</h1>
 
+<p>This appendix provides a brief introduction to implementing virtual environments in Jason, including environment actions.</p>
+
 <ul>
-<li><a href="#virtual-environments">Virtual environments</a>
+<li><a href="#getting-started">Getting started</a>
 <ul>
-<li><a href="#step-x-extend-the-environment-class-from-jason">Step X - Extend the Environment class from Jason</a></li>
-<li><a href="#step-x-update-the-agent-files">Step X - Update the agent files</a></li>
-<li><a href="#step-x-update-the-configuration-file">Step X - Update the configuration file</a></li>
-<li><a href="#step-x-save-and-run-the-jason-project">Step X - Save and run the Jason project</a></li>
-<li><a href="#step-x-terminate-the-jason-project">Step X - Terminate the Jason Project</a></li>
+<li><a href="#step-1-environment-class">Step 1 - Environment class</a></li>
+<li><a href="#step-2-source-percept-annotations">Step 2 - Source percept annotations</a></li>
+<li><a href="#step-3-jason-configuration-file">Step 3 - Jason configuration file</a></li>
+</ul></li>
+<li><a href="#initial-percepts">Initial percepts</a>
+<ul>
+<li><a href="#step-4-agent-percepts">Step 4 - Agent percepts</a></li>
+<li><a href="#step-5-shared-percepts">Step 5 - Shared percepts</a></li>
+</ul></li>
+<li><a href="#environment-actions">Environment actions</a>
+<ul>
+<li><a href="#step-6-execution">Step 6 - Execution</a></li>
+<li><a href="#step-7-effects">Step 7 - Effects</a></li>
+<li><a href="#step-8-consistency">Step 8 - Consistency</a></li>
+<li><a href="#step-9-environment-state">Step 9 - Environment state</a></li>
 </ul></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
 
-<h2 id="virtual-environments">Virtual environments</h2>
+<h2 id="getting-started">Getting started</h2>
 
-<p>To implement a virtual environment in Jason you must implement a Java class that extends the default <code>jason.environment.Environment</code> Java class included in Jason and then override some of its methods.</p>
+<p>Create a new Jason project in Eclipse called <code>appendix_a</code>.</p>
 
-<h3 id="step-x-extend-the-environment-class-from-jason">Step X - Extend the Environment class from Jason</h3>
+<h3 id="step-1-environment-class">Step 1 - Environment class</h3>
+
+<p>Every Jason project includes a <strong>virtual environment</strong> that is shared by all agents in the project. The default environment in Jason is empty and includes no <strong>environment actions</strong> so it plays no role in an execution of the project. To interact with the virtual environment from your agent files (e.g. using environment actions) you must extend the particular Java class in Jason that implements the default virtual environment. Extending this class gives you a custom virtual environment where you can implement shared environmental observations and environment actions.</p>
+
+<p>With the <code>src/java</code> directory in the Jason project highlighted in Eclipse select <strong>File &gt; New &gt; Class</strong>.</p>
+
+<p>Enter <code>MyEnvironment</code> in the <strong>Name</strong> field.</p>
+
+<p><img src="figures/new-class.png" alt="Figure" /></p>
+
+<p>Select <strong>Finish</strong>.</p>
+
+<p>A new Java file should be automatically created at <code>src/java/appendix_a/MyEnvironment.java</code>. Edit the file as follows:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="c1">// src/java/hello_world/MarketEnvironment.java</span>
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_a</span><span class="p">;</span>
 
-<span class="kn">package</span><span class="w"> </span><span class="nn">hello_world</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>This Java class is where we will later implement shared observations and environment actions.</p>
+
+<h3 id="step-2-source-percept-annotations">Step 2 - Source percept annotations</h3>
+
+<p>We have seen in <a href="tutorial-4.html">Tutorial 4</a> that Jason automatically annotates beliefs and goals with <code>source(self)</code> if they originate from the agent itself, or with <code>source(agent)</code>if they originate from another agent (called <code>agent</code>) following its execution of a Jason communication action. The third and final annotation applied automatically by Jason is <code>source(percept)</code>, which is applied to all beliefs that originate from the environment. Such beliefs may be referred to simply as <strong>percepts</strong>.</p>
+
+<p>Create a new agent file called <code>environment_agent.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+weather</span><span class="p">(</span><span class="nv">Attribute</span><span class="p">,</span> <span class="nv">Value</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I believe the &quot;</span><span class="p">,</span> <span class="nv">Attribute</span><span class="p">,</span> <span class="s2">&quot; is &quot;</span><span class="p">,</span> <span class="nv">Value</span><span class="p">).</span>
+
+<span class="nf">+weather</span><span class="p">(</span><span class="nv">Attribute</span><span class="p">,</span> <span class="nv">Value</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">percept</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I observe the &quot;</span><span class="p">,</span> <span class="nv">Attribute</span><span class="p">,</span> <span class="s2">&quot; is &quot;</span><span class="p">,</span> <span class="nv">Value</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Notice the important role of <code>source(X)</code> annotations when implementing agent files that integrate with a custom virtual environment. In this example both plans relate to belief addition events of the form <code>+weather(Attribute, Value)</code> but the first plan is only relevant when the event originates from the agent itself (<code>source(self)</code>) while the second plan is only relevant when the event originates from the environment (<code>source(percept)</code>). This demonstrates that Jason allows us to to implement agent files that distinguish between <strong>beliefs</strong> and <strong>observations</strong>.</p>
+
+<h3 id="step-3-jason-configuration-file">Step 3 - Jason configuration file</h3>
+
+<p>With a custom environment class implemented, the final step is to tell Jason to instantiate the virtual environment from this Java class by adding an <code>environment</code> option to the Jason configuration file that points to the new class.</p>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">appendix</span> <span class="p">{</span>
+
+  <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
+
+  <span class="s s-Atom">environment</span><span class="p">:</span> <span class="nb">appendix_a.MyEnvironment</span>
+
+  <span class="s s-Atom">agents</span><span class="p">:</span>
+    <span class="s s-Atom">alice</span> <span class="s s-Atom">environment_agent</span> <span class="p">[</span><span class="s s-Atom">beliefs</span><span class="o">=</span><span class="s2">&quot;weather(temperature, cold)&quot;</span><span class="p">];</span>
+    <span class="s s-Atom">bob</span> <span class="s s-Atom">environment_agent</span><span class="p">;</span>
+
+  <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
+    <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>The line <code>environment: appendix.MyEnvironment</code> tells Jason to instantiate the virtual environment from the new Java class <code>MyEnvironment</code> included in the <code>appendix_a</code> package of the Jason project.</p>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] I believe the temperature is cold
+</code></pre>
+</div>
+
+<p>The new custom environment is working but is currently no different from the default virtual environment. For a meaningful virtual environments we need to implement shared initial percepts and/or environment actions.</p>
+
+<h2 id="initial-percepts">Initial percepts</h2>
+
+<p>Initial percepts are implemented in Jason by overriding the <code>Environment.init(...)</code> method included in the default virtual environment. Jason provides lots of functionality that can be used within this new method but most commonly you will add percepts using the <code>Environment.addPercept(...)</code> method. In practice this is much like defining initial base beliefs in the agent file, except it is achieved using Java code.</p>
+
+<h3 id="step-4-agent-percepts">Step 4 - Agent percepts</h3>
+
+<p>Initial percepts can be defined individually for each agent using <code>Environment.addPercept(agentName, literal)</code> where <code>agentName</code> is a string representing the name of an agent in the Jason project and <code>literal</code> is a Jason <code>Literal</code> object representing the percept to be added.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> A Jason <code>Literal</code> object can be conveniently parsed from a string using <code>ASSyntax.parseLiteral(...)</code>. This method may throw a <code>ParseException</code> which you will need to catch yourself.</p>
+</blockquote>
+
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_a</span><span class="p">;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
 
-<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MarketEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">    </span><span class="nd">@Override</span>
 <span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(bob)&quot;</span><span class="p">));</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;seller(dave)&quot;</span><span class="p">));</span>
-
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;delivery(item1)&quot;</span><span class="p">));</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;dave&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;delivery(item1)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(temperature, cold)&quot;</span><span class="p">));</span>
 <span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
 <span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@Override</span>
-<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">act</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Structure</span><span class="w"> </span><span class="n">leave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseStructure</span><span class="p">(</span><span class="s">&quot;leave&quot;</span><span class="p">);</span>
-<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">act</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="n">leave</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;leaving(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">e1</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="p">}</span>
 </code></pre>
 </div>
 
-<p>The file <code>src/java/hello_world/MarketEnvironment.java</code> can be explained as follows:</p>
-
-<ul>
-<li>Lines 10-21 initialise the environment with some initial percepts <code>seller(bob)</code>, <code>seller(dave)</code>, and <code>delivery(item1)</code>.</li>
-<li>Lines 23-35 implement the behaviour of a single environment action <code>leave</code>.</li>
-</ul>
-
-<p>The percepts <code>seller(bob)</code> and <code>seller(dave)</code> are sensed by all agents whereas the percept <code>delivery(item1)</code> is sensed by <code>bob</code> and <code>dave</code> only.</p>
-
-<p>When executed by agent <code>X</code>, the environment action <code>leave</code> has the effect of adding a new percept <code>leaving(X)</code> to the environment.</p>
-
-<p>All percepts are automatically annotated by Jason with <code>source(percept)</code>, e.g.\ percept <code>delivery(item1)</code> also takes the form <code>delivery(item1)[source(percept)]</code>.</p>
-
-<p>Annotations can be freely omitted and ignored in agent files.</p>
-
-<h3 id="step-x-update-the-agent-files">Step X - Update the agent files</h3>
-
-<p>Remove the initial beliefs from <code>src/asl/buyer_agent.asl</code> and <code>src/asl/seller_agent.asl</code> and add two new plans to each file to handle the effect of environment action <code>leave</code>.</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="s s-Atom">#</span> <span class="s s-Atom">src</span><span class="o">/</span><span class="s s-Atom">asl</span><span class="o">/</span><span class="nb">buyer_agent.asl</span>
-
-<span class="cm">/* Initial beliefs and rules */</span>
-
-<span class="cm">/* Initial goals */</span>
-
-<span class="nc">!buy</span><span class="p">(</span><span class="s s-Atom">item1</span><span class="p">).</span>
-
-<span class="cm">/* Plans */</span>
-
-<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nf">seller</span><span class="p">(</span><span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I would like to buy &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">want</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
-<span class="nc">+!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;it looks like &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot; is unavailable&quot;</span><span class="p">).</span>
-<span class="nf">+recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, thank you for &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I have found what I wanted, goodbye everyone!&quot;</span><span class="p">);</span> <span class="s s-Atom">leave</span><span class="p">.</span>
-<span class="nf">+out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;thank you &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I will try to find &quot;</span><span class="p">,</span> <span class="nv">X</span> <span class="p">,</span> <span class="s2">&quot; elsewhere&quot;</span><span class="p">);</span> <span class="nc">!buy</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-
-<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.kill_agent</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;goodbye &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
+<pre><span></span><code>[alice] I believe the temperature is cold
+[bob] I observe the temperature is cold
 </code></pre>
 </div>
 
+<p>Referring back to the original agent file we can see that <code>bob</code> has selected the plan with triggering event <code>+weather(Attribute, Value)[source(percept)]</code> to respond to this initial percept. The percept was thus added to the belief base of <code>bob</code> and annotated with <code>source(percept)</code> but otherwise handled as a standard belief addition event.</p>
+
+<h3 id="step-5-shared-percepts">Step 5 - Shared percepts</h3>
+
+<p>Shared initial percepts can also be defined for all agents using <code>Environment.addPercept(literal)</code> where <code>literal</code> is as before and there is no <code>agentName</code> parameter.</p>
+
+<p>Add the following line to <code>MyEnvironment.java</code> below the existing <code>Environment.addPercept(...)</code> line:</p>
+
 <div class="codehilite">
-<pre><span></span><code><span class="s s-Atom">#</span> <span class="s s-Atom">src</span><span class="o">/</span><span class="s s-Atom">asl</span><span class="o">/</span><span class="nb">seller_agent.asl</span>
-
-<span class="cm">/* Initial beliefs and rules */</span>
-
-<span class="cm">/* Initial goals */</span>
-
-<span class="cm">/* Plans */</span>
-
-<span class="nf">+delivery</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">percept</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I have received a delivery of &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nf">+in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-
-<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nf">-in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">);</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;ok &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, here is &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">recieve</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
-<span class="nf">+want</span><span class="p">(</span><span class="nv">X</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="nv">Y</span><span class="p">)]</span> <span class="p">:</span> <span class="ow">not</span> <span class="nf">in_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;sorry &quot;</span><span class="p">,</span> <span class="nv">Y</span><span class="p">,</span> <span class="s2">&quot;, I do not have &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">);</span> <span class="nb">.send</span><span class="p">(</span><span class="nv">Y</span><span class="p">,</span> <span class="s s-Atom">tell</span><span class="p">,</span> <span class="nf">out_of_stock</span><span class="p">(</span><span class="nv">X</span><span class="p">)).</span>
-
-<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.kill_agent</span><span class="p">(</span><span class="nv">X</span><span class="p">).</span>
-<span class="nf">+leaving</span><span class="p">(</span><span class="nv">X</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;goodbye &quot;</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="s2">&quot;!&quot;</span><span class="p">).</span>
+<pre><span></span><code><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(cloud_cover, sunny)&quot;</span><span class="p">));</span>
 </code></pre>
 </div>
 
-<p>Lines 14-15 in <code>src/asl/buyer_agent.asl</code> and Lines 12-13 in <code>src/asl/seller_agent.asl</code> are identical.</p>
-
-<p>Semantically, the plans say that if the agent obtains a belief that some agent <code>X</code> is leaving the environment, then the agent should terminate its own run if <code>X</code> refers to itself, otherwise it should say goodbye to <code>X</code> (since <code>X</code> refers to some other agent).</p>
-
-<p>Notice that this implementation relies on the fact that plans are ordered in Jason according to the (top-to-bottom) order that they appear within the <code>.asl</code> file.</p>
-
-<p>Thus, the second plan is only selected if the context of the first plan does not hold.
-An alternative approach is to replace the context <code>true</code> with an independent check <code>.my_name(Y) &amp; X \== Y</code>.</p>
-
-<p>The latter approach is less efficient but is also less likely to introduce bugs into your implementation.</p>
-
-<blockquote>
-  <p><strong>Note:</strong> The token <code>.my_name(X)</code> is another example of a Jason internal action. For completeness, it is worth mentioning that internal actions may appear in contexts and plan bodies whereas environment actions may only appear in plan bodies. A list of available internal actions within Jason can be found <a href="http://jason.sourceforge.net/api/jason/stdlib/package-summary.html">here</a>.</p>
-</blockquote>
-
-<h3 id="step-x-update-the-configuration-file">Step X - Update the configuration file</h3>
-
-<p>Set the <code>MarketEnvironment</code> class as the agents' environment and create two new agents <code>carol</code> and <code>dave</code> as instances of <code>buyer_agent</code> and <code>seller_agent</code>, respectively.</p>
+<p>Run the Jason project.</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="c1">// hello_world.mas2j</span>
+<pre><span></span><code>[alice] I believe the temperature is cold
+[bob] I observe the temperature is cold
+[alice] I observe the cloud_cover is sunny
+[bob] I observe the cloud_cover is sunny
+</code></pre>
+</div>
 
-<span class="nv">MAS</span> <span class="s s-Atom">hello_world</span> <span class="p">{</span>
+<p>This method simply adds the percept to the belief base of every agent in the Jason project.</p>
+
+<h2 id="environment-actions">Environment actions</h2>
+
+<p>Environment actions are implemented in Jason by overriding <code>Environment.executeAction(agentName, environmentAction)</code> within the custom environment class. Environment actions can then be executed within plan bodies much like <a href="https://jason.sourceforge.net/api/jason/stdlib/package-summary.html">standard internal actions</a>, with the only syntactic difference being that they do not start with <code>.</code> (full stop).</p>
+
+<h3 id="step-6-execution">Step 6 - Execution</h3>
+
+<p>Edit <code>environment_agent.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="cm">/* Initial beliefs and rules */</span>
+
+<span class="cm">/* Initial goals */</span>
+
+<span class="nc">!go_to</span><span class="p">(</span><span class="s s-Atom">class</span><span class="p">).</span>
+
+<span class="cm">/* Plans */</span>
+
+<span class="nf">+weather</span><span class="p">(</span><span class="nv">Attribute</span><span class="p">,</span> <span class="nv">Value</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">self</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I believe the &quot;</span><span class="p">,</span> <span class="nv">Attribute</span><span class="p">,</span> <span class="s2">&quot; is &quot;</span><span class="p">,</span> <span class="nv">Value</span><span class="p">).</span>
+
+<span class="nf">+weather</span><span class="p">(</span><span class="nv">Attribute</span><span class="p">,</span> <span class="nv">Value</span><span class="p">)[</span><span class="nf">source</span><span class="p">(</span><span class="s s-Atom">percept</span><span class="p">)]</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I observe the &quot;</span><span class="p">,</span> <span class="nv">Attribute</span><span class="p">,</span> <span class="s2">&quot; is &quot;</span><span class="p">,</span> <span class="nv">Value</span><span class="p">).</span>
+
+<span class="nc">+!go_to</span><span class="p">(</span><span class="nv">Destination</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">weather</span><span class="p">(</span><span class="s s-Atom">cloud_cover</span><span class="p">,</span> <span class="s s-Atom">sunny</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">weather</span><span class="p">(</span><span class="s s-Atom">temperature</span><span class="p">,</span> <span class="s s-Atom">cold</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nc">?location</span><span class="p">(</span><span class="nv">Agent</span><span class="p">,</span> <span class="nv">Location</span><span class="p">);</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+    <span class="nf">walk</span><span class="p">(</span><span class="nv">Location</span><span class="p">,</span> <span class="nv">Destination</span><span class="p">).</span>
+
+<span class="nc">+!go_to</span><span class="p">(</span><span class="nv">Destination</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nb">.my_name</span><span class="p">(</span><span class="nv">Agent</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nc">?location</span><span class="p">(</span><span class="nv">Agent</span><span class="p">,</span> <span class="nv">Location</span><span class="p">);</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+    <span class="nf">drive</span><span class="p">(</span><span class="nv">Location</span><span class="p">,</span> <span class="nv">Destination</span><span class="p">).</span>
+
+<span class="nf">+location</span><span class="p">(</span><span class="nv">Agent</span><span class="p">,</span> <span class="nv">Location</span><span class="p">)</span> <span class="p">:</span> <span class="nb">.my_name</span><span class="p">(</span><span class="nv">Agent</span><span class="p">)</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;I am at &quot;</span><span class="p">,</span> <span class="nv">Location</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>In this example <code>walk(Location, Destination)</code> and <code>drive(Location, Destination)</code> are environment actions whereas <code>.wait(1000)</code> is a standard internal action. In each case variables <code>Location</code> and <code>Destination</code> must be instantiated <strong>before</strong> the action is executed.</p>
+
+<p>Suppose <code>alice</code> executes environment action <code>walk(home, class)</code>. Jason will automatically trigger <code>Environment.executeAction(agentName, environmentAction)</code> such that <code>agentName = "alice"</code> and <code>environmentAction</code> is a Jason <code>Structure</code> object representing <code>walk(home, class)</code>.</p>
+
+<p>Since the same method is called for all environment actions, it is necessary to inspect the <code>Structure</code> object within this method in order to determine what environment action has actually be executed. This can be achieved using the <code>Structure.getFunctor()</code> and <code>Structure.getTerms()</code> methods.</p>
+
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_a</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(temperature, cold)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(cloud_cover, sunny)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(alice, home)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(bob, work)&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is executing functor &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getFunctor</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; applied to terms &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerms</span><span class="p">());</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>If <code>Environment.executeAction(agentName, environmentAction)</code> is called such that <code>environmentAction</code> is a Jason <code>Structure</code> object representing <code>walk(home, class)</code>, then <code>environmentAction.getFunctor()</code> will return the string <code>walk</code> and <code>environmentAction.getTerms()</code> will return a list of <code>Term</code> objects containing <code>home</code> and <code>class</code>.</p>
+
+<p>Notice that the method <code>Environment.executeAction(...)</code> must return a Boolean value where <code>true</code> indicates that the environment action succeeded and <code>false</code> indicates that it failed. In this example the action always succeeds.</p>
+
+<p>Edit the Jason configuration file as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nv">MAS</span> <span class="s s-Atom">appendix_a</span> <span class="p">{</span>
 
     <span class="s s-Atom">infrastructure</span><span class="p">:</span> <span class="nv">Centralised</span>
 
-    <span class="s s-Atom">environment</span><span class="p">:</span> <span class="nb">hello_world.MarketEnvironment</span>
+    <span class="s s-Atom">environment</span><span class="p">:</span> <span class="nb">appendix_a.MyEnvironment</span>
 
     <span class="s s-Atom">agents</span><span class="p">:</span>
-        <span class="s s-Atom">alice</span> <span class="s s-Atom">buyer_agent</span><span class="p">;</span>
-        <span class="s s-Atom">bob</span> <span class="s s-Atom">seller_agent</span><span class="p">;</span>
-        <span class="s s-Atom">carol</span> <span class="s s-Atom">buyer_agent</span><span class="p">;</span>
-        <span class="s s-Atom">dave</span> <span class="s s-Atom">seller_agent</span><span class="p">;</span>
+        <span class="s s-Atom">alice</span> <span class="s s-Atom">environment_agent</span><span class="p">;</span>
+        <span class="s s-Atom">bob</span> <span class="s s-Atom">environment_agent</span><span class="p">;</span>
 
     <span class="s s-Atom">aslSourcePath</span><span class="p">:</span>
         <span class="s2">&quot;src/asl&quot;</span><span class="p">;</span>
@@ -171,23 +291,343 @@ An alternative approach is to replace the context <code>true</code> with an inde
 </code></pre>
 </div>
 
-<h3 id="step-x-save-and-run-the-jason-project">Step X - Save and run the Jason project</h3>
+<p>Run the Jason project.</p>
 
-<p><img src="figures/run-multi-buyer-seller-1.png" alt="Figure" /></p>
+<div class="codehilite">
+<pre><span></span><code>[alice] I am at home
+[bob] I am at work
+[bob] I observe the temperature is cold
+[bob] I observe the cloud_cover is sunny
+[alice] I observe the cloud_cover is sunny
+&gt; bob is executing functor drive applied to terms [work, class]
+&gt; alice is executing functor walk applied to terms [home, class]
+</code></pre>
+</div>
 
-<p><img src="figures/run-multi-buyer-seller-2.png" alt="Figure" /></p>
+<p>Here we see that <code>alice</code> executed environment action <code>walk(home, class)</code> because she observed she was at <code>home</code> and that it was <code>sunny</code>, but did not believe it was <code>cold</code>. Conversely, <code>bob</code> executed environment action <code>drive(work, class)</code> because he observed he was at <code>home</code> and that it was <code>cold</code>.</p>
 
-<p>These screenshots show two possible executions of the same Jason project.</p>
+<h3 id="step-7-effects">Step 7 - Effects</h3>
 
-<p>Notice that <code>bob</code> sells to <code>alice</code> in the first execution but sells to <code>carol</code> in the second execution.</p>
+<p>The significance of environment actions is that they affect changes to the environment, which is shared by all agents. This means that the execution of an environment action by one agent may affect other agents, not just itself.</p>
 
-<p>There are many reasons why the same Jason project may result in different executions, including the definition of selection functions, the ordering of belief bases, the ordering of plan libraries, and the scheduling of agents in each interpreter cycle.</p>
+<p>In Jason the effects of actions are implemented, for the most part, by adding and removing percepts from within the <code>Environment.executeAction(...)</code> method. Percepts can be added as before using <code>Environment.addPercept(...)</code>, and removed using its corresponding method <code>Environment.removePercept(...)</code>. Most of the implementation effort is to determine <strong>what</strong> percepts should be added or removed, and <strong>when</strong>.</p>
 
-<p>Most of these situations can be controlled and/or configured when necessary, but the topic is beyond the scope of this tutorial.</p>
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
 
-<h3 id="step-x-terminate-the-jason-project">Step X - Terminate the Jason Project</h3>
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_a</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(temperature, cold)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(cloud_cover, sunny)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(alice, home)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(bob, work)&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">functor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getFunctor</span><span class="p">();</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;walk&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;drive&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getArity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is executing environment action &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">);</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">err</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is attempting to execute unknown environment action &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">);</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>This example implements support for two environment actions <code>walk/2</code> and <code>drive/2</code>. In both cases the action effect is the same: if <code>walk(X, Y)</code> or <code>drive(X, Y)</code> is executed then <code>location(agent, X)</code> will be deleted as a shared percept and <code>location(agent, Y)</code> will be added, with <code>agent</code> the name of the agent who executed the action. If the method is called with any action other than <code>walk/2</code> or <code>drive/2</code> then the method will return <code>false</code> indicating that the action has failed (because no such action is defined).</p>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] I am at home
+[bob] I am at work
+[alice] I observe the cloud_cover is sunny
+[bob] I observe the temperature is cold
+[bob] I observe the cloud_cover is sunny
+&gt; bob is executing environment action drive(work,class)
+&gt; alice is executing environment action walk(home,class)
+[bob] I am at class
+[alice] I am at class
+</code></pre>
+</div>
+
+<p>Here we see that that the effects of <code>walk/2</code> and <code>drive/2</code> have been applied correctly. For example, <code>alice</code> was initially at <code>home</code>, she executed <code>walk(home, class)</code>, which caused her to arrive at <code>class</code>.</p>
+
+<h3 id="step-8-consistency">Step 8 - Consistency</h3>
+
+<p>According to the previous example if <code>alice</code> were to execute <code>walk(home, class)</code> while she was at <code>work</code> rather than at <code>home</code>, then <code>location(alice, class)</code> would still be added as a shared percept.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> An attempt would also be made to delete <code>location(alice, work)</code> as a shared percept, but this attempt would silently fail because that percept did not exist.</p>
+</blockquote>
+
+<p>It is your responsibility as Jason programmer to maintain consistency of your environment actions.</p>
+
+<p>Edit the first <code>+!go_to</code> plan in <code>environment_agent.asl</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nc">+!go_to</span><span class="p">(</span><span class="nv">Destination</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">weather</span><span class="p">(</span><span class="s s-Atom">cloud_cover</span><span class="p">,</span> <span class="s s-Atom">sunny</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">weather</span><span class="p">(</span><span class="s s-Atom">temperature</span><span class="p">,</span> <span class="s s-Atom">cold</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+    <span class="nf">walk</span><span class="p">(</span><span class="s s-Atom">work</span><span class="p">,</span> <span class="nv">Destination</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>According to this plan if it is <code>sunny</code> and not <code>cold</code> then the agent will attempt to <code>walk</code> from <code>work</code> to its destination, regardless whether it it currently at <code>work</code> or not.</p>
+
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_a</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Literal</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(temperature, cold)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(cloud_cover, sunny)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(alice, home)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(bob, work)&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="na">consultPercepts</span><span class="p">(</span><span class="n">agentName</span><span class="p">));</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">functor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getFunctor</span><span class="p">();</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;walk&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;drive&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getArity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is executing environment action &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">);</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="na">consultPercepts</span><span class="p">(</span><span class="n">agentName</span><span class="p">));</span>
+<span class="w">                </span><span class="n">Literal</span><span class="w"> </span><span class="n">locationBefore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="na">consultPercepts</span><span class="p">(</span><span class="n">agentName</span><span class="p">).</span><span class="na">contains</span><span class="p">(</span><span class="n">locationBefore</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">locationBefore</span><span class="p">);</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">err</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is attempting to execute unknown environment action &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">);</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>The method <code>Environment.consultPercepts(...)</code> returns the current list of percepts for an agent, which can then be used to implement preconditions for environment actions. According to this example if an agent called <code>agent</code> attempts to execute <code>walk(X, Y)</code> or <code>drive(X, Y)</code> but <code>location(agent, X)</code> is not in the current list of percepts, then the method will return <code>false</code> meaning that the action has failed.</p>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] I am at work
+[alice] I am at home
+[bob] I observe the temperature is cold
+[alice] I observe the cloud_cover is sunny
+[bob] I observe the cloud_cover is sunny
+&gt; bob is executing environment action drive(work,class)
+&gt; alice is executing environment action walk(work,class)
+[bob] I am at class
+[alice] No failure event was generated for +!go_to(class)[code(walk(work,class)),code_line(16),code_src(&quot;file:src/asl/environment_agent.asl&quot;),error(action_failed),error_msg(&quot;&quot;),source(self)]
+intention 1: 
+    +!go_to(class)[source(self)] &lt;- ... walk(work,Destination) / {Destination=class}
+</code></pre>
+</div>
+
+<p>Here we see that the plan failed because <code>alice</code> attempted to execute <code>walk(work, class)</code> when she was at <code>home</code>.</p>
+
+<p>Undo the change to the first <code>+!go_to</code> plan in <code>environment_agent.asl</code>, i.e.:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nc">+!go_to</span><span class="p">(</span><span class="nv">Destination</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">weather</span><span class="p">(</span><span class="s s-Atom">cloud_cover</span><span class="p">,</span> <span class="s s-Atom">sunny</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="ow">not</span> <span class="nf">weather</span><span class="p">(</span><span class="s s-Atom">temperature</span><span class="p">,</span> <span class="s s-Atom">cold</span><span class="p">)</span> <span class="p">&lt;-</span>
+    <span class="nc">?location</span><span class="p">(</span><span class="nv">Agent</span><span class="p">,</span> <span class="nv">Location</span><span class="p">);</span>
+    <span class="nb">.wait</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+    <span class="nf">walk</span><span class="p">(</span><span class="nv">Location</span><span class="p">,</span> <span class="nv">Destination</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] I am at home
+[bob] I am at work
+[alice] I observe the cloud_cover is sunny
+[bob] I observe the temperature is cold
+[bob] I observe the cloud_cover is sunny
+&gt; bob is executing environment action drive(work,class)
+&gt; alice is executing environment action walk(home,class)
+[bob] I am at class
+[alice] I am at class
+</code></pre>
+</div>
+
+<p>Here we see that the plans succeed as long as the executed environment actions satisfy the preconditions implemented in <code>Environment.executeAction(...)</code>.</p>
+
+<h3 id="step-9-environment-state">Step 9 - Environment state</h3>
+
+<p>In the previous examples all information needed to determine the effects on an environment action were embedded in the action itself (e.g. by the variables <code>Location</code> and <code>Destination</code>). However, <code>MyEnvironment</code> is just a standard Java class so you are free to use whatever internal data structures you wish.</p>
+
+<p>Suppose each agent has an energy level and the two environment actions <code>walk/2</code> and <code>drive/2</code> have secondary effects of consuming energy. We assume that <code>walk/2</code> consumes three units of energy and <code>drive/2</code> consumes one unit. All agents start with five units of energy.</p>
+
+<p>Edit <code>MyEnvironment.java</code> as follows:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">appendix_a</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.HashMap</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Map</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.ASSyntax</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Literal</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.Structure</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.asSyntax.parser.ParseException</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jason.environment.Environment</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyEnvironment</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Environment</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">DEFAULT_ENERGY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">energy</span><span class="p">;</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="s">&quot;bob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(temperature, cold)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;weather(cloud_cover, sunny)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(alice, home)&quot;</span><span class="p">));</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(bob, work)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;energy(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">DEFAULT_ENERGY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+
+<span class="w">            </span><span class="n">energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="p">,</span><span class="w"> </span><span class="n">Integer</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Override</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">executeAction</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">Structure</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">functor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getFunctor</span><span class="p">();</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;walk&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;drive&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getArity</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is executing environment action &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">);</span>
+
+<span class="w">                </span><span class="n">Literal</span><span class="w"> </span><span class="n">locationBefore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">);</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="na">consultPercepts</span><span class="p">(</span><span class="n">agentName</span><span class="p">).</span><span class="na">contains</span><span class="p">(</span><span class="n">locationBefore</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">energyBefore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">energy</span><span class="p">.</span><span class="na">getOrDefault</span><span class="p">(</span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">DEFAULT_ENERGY</span><span class="p">);</span>
+
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">locationBefore</span><span class="p">);</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">removePercept</span><span class="p">(</span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;energy(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">energyBefore</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">energyCost</span><span class="p">;</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">functor</span><span class="p">.</span><span class="na">equals</span><span class="p">(</span><span class="s">&quot;walk&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">energyCost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="n">energyCost</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span>
+<span class="w">                </span><span class="p">}</span>
+
+<span class="w">                </span><span class="kt">int</span><span class="w"> </span><span class="n">energyAfter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">energyBefore</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">energyCost</span><span class="p">;</span>
+<span class="w">                </span><span class="n">energy</span><span class="p">.</span><span class="na">put</span><span class="p">(</span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">energyAfter</span><span class="p">);</span>
+
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;location(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">.</span><span class="na">getTerm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+<span class="w">                </span><span class="k">this</span><span class="p">.</span><span class="na">addPercept</span><span class="p">(</span><span class="n">agentName</span><span class="p">,</span><span class="w"> </span><span class="n">ASSyntax</span><span class="p">.</span><span class="na">parseLiteral</span><span class="p">(</span><span class="s">&quot;energy(&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">energyAfter</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;)&quot;</span><span class="p">));</span>
+
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">err</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">agentName</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; is attempting to execute unknown environment action &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">environmentAction</span><span class="p">);</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ParseException</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>The internal data structure <code>energy</code> is just a mapping from agent names to energy levels that we use to track the energy level of each agent during execution of the Jason project. If an agent executes either environment action then <code>energy</code> is updated within the <code>Environment.executeAction(...)</code> method according to the new energy level.</p>
+
+<p>When either environment action is executed by an agent called <code>agent</code> in this example, then a percept of the form <code>energy(X)</code> is added to the belief base of <code>agent</code>. This means that each agent can observe its own energy level but not the energy level of other agents. We could likewise choose to hide this information from the agent itself (i.e. by not adding the percept) and the environment would still continue to track energy levels as before.</p>
+
+<p>Add the following plan to the bottom of <code>environment_agent.asl</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code><span class="nf">+energy</span><span class="p">(</span><span class="nv">Value</span><span class="p">)</span> <span class="p">:</span> <span class="k">true</span> <span class="p">&lt;-</span> <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;my energy is &quot;</span><span class="p">,</span> <span class="nv">Value</span><span class="p">).</span>
+</code></pre>
+</div>
+
+<p>Run the Jason project.</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] my energy is 5
+[bob] my energy is 5
+[alice] I am at home
+[bob] I am at work
+[alice] I observe the cloud_cover is sunny
+[bob] I observe the temperature is cold
+[bob] I observe the cloud_cover is sunny
+&gt; alice is executing environment action walk(home,class)
+&gt; bob is executing environment action drive(work,class)
+[alice] my energy is 2
+[alice] I am at class
+[bob] I am at class
+[bob] my energy is 4
+</code></pre>
+</div>
+
+<p>Here we see that the energy level for <code>alice</code> is 2 after she executes environment action <code>walk(home,class)</code>, while the energy level for <code>bob</code> is 4 after he executes environment action <code>drive(work,class)</code>.</p>
 
 <h2 id="conclusion">Conclusion</h2>
+
+<p>In this appendix we have seen how to implement virtual environments in Jason by extending the <code>Environment</code> Java class that implements the default virtual environment. In particular, the <code>Environment.init(...)</code> method is used to implement initial percepts and the <code>Environment.executeAction(...)</code> method is used to implement environment actions.</p>
 
 </div>
 <footer class="p-6 mt-4">
