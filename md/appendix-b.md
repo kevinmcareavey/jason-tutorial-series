@@ -1,8 +1,6 @@
 # Appendix B - Graphical user interfaces
 
-This appendix provides a brief introduction to implementing graphical user interfaces for Jason projects.
-
-Graphical user interfaces in Jason are typically spawned from a custom environment class, so you should complete [Appendix A](appendix-a.html) before proceeding with this appendix.
+This appendix provides a brief introduction to implementing graphical user interfaces for Jason projects. Such interfaces are typically spawned from a custom environment class, so you should complete [Appendix A](appendix-a.html) before proceeding.
 
 <!-- TOC -->
 
@@ -65,7 +63,7 @@ MAS appendix_b {
 
 Run the Jason project.
 
-The Jason console should launch but no message should appear. The reason is that agents `alice` and `bob` are purely reactive; if a belief of the form `my_percept(X)` is never added or deleted from their belief base then they will do nothing. We will thus seek to trigger this behaviour via a graphical user interface.
+The Jason console should launch but no message should appear. The reason is that agents `alice` and `bob` are purely reactive; if a belief of the form `my_percept(X)` is never added or deleted from their belief base then they will do nothing. Later we will seek to trigger this behaviour via a graphical user interface.
 
 ## Java interfaces
 
@@ -230,9 +228,9 @@ public class MyWindow {
 
 This class uses standard widgets from Swing to implement a desktop window that integrates with the Jason virtual environment via event listeners.
 
-According to the constructor, an instance of the class is initialised with an instance of our virtual environment and an array of agent names. The former allows us to conveniently access Jason functionality within the `MyWindow` class itself, while the latter allows us to automatically display the agents within the interface.
+According to the constructor, an instance of the class is initialised with an instance of our virtual environment and an array of agent names. The former allows us to conveniently access Jason functionality within the `MyWindow` class itself, while the latter allows us to make use of agent names within the interface.
 
-### Step 3 - Spawning the interface
+### Step 3 - Spawn the interface
 
 The final step is to spawn the interface from within the `init` method of the virtual environment class.
 
@@ -257,7 +255,7 @@ The following window called `Percept manager` should appear:
 
 The empty box in the centre displays a selectable list of percepts for the agent highlighted in the dropdown menu to the far left. Initially `alice` is highlighted and she has no percepts.
 
-The box displaying `my_percept(1)` is an editable text field that allows you to enter any arbitrary percept, which can then be added as a percept for the highlighted agent using the `Add (agent)` button, or as a shared percept using the `Add (shared)` button.
+The box displaying `my_percept(1)` is an editable text field that allows you to enter any arbitrary percept, which can then be added as a percept of the highlighted agent using the `Add (agent)` button, or as a shared percept for all agents using the `Add (shared)` button.
 
 Select the `Add (agent)` button. An annotated percept `my_percept(1)[scope(agent)]` should appear in the list, where `scope(agent)` is a custom annotation used by the interface to distinguish agent percepts from shared percepts.
 
@@ -404,9 +402,9 @@ Run the Jason project. The Jason console should display the following:
 
 This confirms that Javalin is working correctly and listening on [http://localhost:7000/](http://localhost:7000/).
 
-### Step 6 - Listen for API requests
+### Step 6 - API endpoints
 
-A custom API based on Javalin can be implemented within the `init` method of the custom environment class. This requires you to specify some API endpoints, included the expected HTTP method and how any data should be handled.
+A custom API based on Javalin can be implemented within the `init` method of the custom environment class. This requires you to specify some API endpoints, including how any data should be handled.
 
 Edit `MyEnvironment.java` as follows:
 
@@ -477,68 +475,137 @@ This code implements the following API specification:
 
 | Method | Endpoint | Data | Meaning |
 | --- | --- | --- | --- |
-| POST | `/percepts/add` | `{percept}` | Add `{percept}` as a shared percept |
 | POST | `/percepts/add/{agent}` | `{percept}` | Add `{percept}` as a percept for `{agent}` |
-| POST | `/percepts/remove` | `{percept}` | Remove `{percept}` as a shared percept |
-| POST | `/percepts/remove/{agent}` | `{percept}` | Remove `{percept}` as a percept for `{agent}` |
+| POST | `/percepts/add` | `{percept}` | Add `{percept}` as a shared percept |
 | GET | `/percepts/{agent}` | N/A | Get all percepts for `{agent}` |
+| POST | `/percepts/remove/{agent}` | `{percept}` | Remove `{percept}` as a percept for `{agent}` |
+| POST | `/percepts/remove` | `{percept}` | Remove `{percept}` as a shared percept |
+| POST | `/percepts/clear/{agent}` | N/A | Clear all percepts for `{agent}` |
+| POST | `/percepts/clear` | N/A | Clear all shared percepts |
 
-These endpoints thus provide access to most of the Jason features used by the previous Swing interface.
+These endpoints thus provide access to all Jason features used by the previous Swing interface.
 
 ### Step 7 - Submit API requests
+
+The new API can be tested using the command-line tool [cURL](https://en.wikipedia.org/wiki/CURL) to issue appropriate HTTP requests.
+
+In a terminal run the following command to add `my_percept(1)` as a percept for `alice`:
 
 ```bash
 curl --request POST http://localhost:7000/percepts/add/alice --data "my_percept(1)"
 ```
 
+The Jason console should display the following message:
+
+```text
+[alice] Belief added: my_percept(1)[source(percept)]
+```
+
+Add `my_percept(2)` as a percept for `alice`:
+
 ```bash
 curl --request POST http://localhost:7000/percepts/add/alice --data "my_percept(2)"
 ```
 
+```text
+[alice] Belief added: my_percept(2)[source(percept)]
+```
+
+Add `my_percept(3)` as a shared percept:
+
 ```bash
 curl --request POST http://localhost:7000/percepts/add --data "my_percept(3)"
 ```
+
+```text
+[alice] Belief added: my_percept(3)[source(percept)]
+[bob] Belief added: my_percept(3)[source(percept)]
+```
+
+Retrieve the percepts for `alice`:
 
 ```bash
 curl --request GET http://localhost:7000/percepts/alice
 [my_percept(3), my_percept(1), my_percept(2)]
 ```
 
+Retrieve the percepts for `bob`:
+
 ```bash
 curl --request GET http://localhost:7000/percepts/bob
 [my_percept(3)]
 ```
 
+Add `my_percept(4)` as a percept for `bob`:
+
 ```bash
 curl --request POST http://localhost:7000/percepts/add/bob --data "my_percept(4)"
 ```
+
+```text
+[bob] Belief added: my_percept(4)[source(percept)]
+```
+
+Add `my_percept(5)` as a shared percept:
 
 ```bash
 curl --request POST http://localhost:7000/percepts/add --data "my_percept(5)"
 ```
 
-```bash
-curl --request GET http://localhost:7000/percepts/bob
-[my_percept(3), my_percept(5), my_percept(4)]
+```text
+[bob] Belief added: my_percept(5)[source(percept)]
+[alice] Belief added: my_percept(5)[source(percept)]
 ```
+
+Retrieve the percepts for `bob`:
 
 ```bash
 curl --request GET http://localhost:7000/percepts/bob
 [my_percept(3), my_percept(5), my_percept(4)]
 ```
+
+Retrieve the percepts for `alice`:
 
 ```bash
 curl --request GET http://localhost:7000/percepts/alice
 [my_percept(3), my_percept(5), my_percept(1), my_percept(2)]
 ```
 
+Remove `my_percept(1)` as a percept for `alice`:
+
 ```bash
 curl --request POST http://localhost:7000/percepts/remove/alice --data "my_percept(1)"
 ```
 
-```bash
-curl --request GET http://localhost:7000/percepts/alice
-[my_percept(3), my_percept(5), my_percept(2)]
+```text
+[alice] Belief deleted: my_percept(1)[source(percept)]
 ```
 
+Clear the percepts for `alice`:
+
+```bash
+curl --request POST http://localhost:7000/percepts/clear/alice
+```
+
+```text
+[alice] Belief deleted: my_percept(2)[source(percept)]
+```
+
+Clear the shared percepts:
+
+```bash
+curl --request POST http://localhost:7000/percepts/clear
+```
+
+```text
+[bob] Belief deleted: my_percept(3)[source(percept)]
+[bob] Belief deleted: my_percept(5)[source(percept)]
+[alice] Belief deleted: my_percept(3)[source(percept)]
+[alice] Belief deleted: my_percept(5)[source(percept)]
+```
+
+At this stage a web interface can now be implemented using Javascript or your preferred web framework.
+
 ## Conclusion
+
+In this appendix we have seen two possible approaches to implementing graphical user interfaces for Jason projects. The first approach is to implement a desktop interface in Java using the Swing widget toolkit. The second is to embed a custom web API enabling a web interface to be implemented separately. The former is the most common approach taken by existing example/demo implementations available online, while the latter is more flexible and should be easier for those with web development experience.

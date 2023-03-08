@@ -11,9 +11,7 @@
 <div class="markdown-body border rounded-3 p-6">
 <h1 id="appendix-b-graphical-user-interfaces">Appendix B - Graphical user interfaces</h1>
 
-<p>This appendix provides a brief introduction to implementing graphical user interfaces for Jason projects.</p>
-
-<p>Graphical user interfaces in Jason are typically spawned from a custom environment class, so you should complete <a href="appendix-a.html">Appendix A</a> before proceeding with this appendix.</p>
+<p>This appendix provides a brief introduction to implementing graphical user interfaces for Jason projects. Such interfaces are typically spawned from a custom environment class, so you should complete <a href="appendix-a.html">Appendix A</a> before proceeding.</p>
 
 <ul>
 <li><a href="#getting-started">Getting started</a>
@@ -23,13 +21,13 @@
 <li><a href="#java-interfaces">Java interfaces</a>
 <ul>
 <li><a href="#step-2-swing-interface">Step 2 - Swing interface</a></li>
-<li><a href="#step-3-spawning-the-interface">Step 3 - Spawning the interface</a></li>
+<li><a href="#step-3-spawn-the-interface">Step 3 - Spawn the interface</a></li>
 <li><a href="#step-4-user-input">Step 4 - User input</a></li>
 </ul></li>
 <li><a href="#web-interfaces">Web interfaces</a>
 <ul>
 <li><a href="#step-5-javalin-api-server">Step 5 - Javalin API server</a></li>
-<li><a href="#step-6-listen-for-api-requests">Step 6 - Listen for API requests</a></li>
+<li><a href="#step-6-api-endpoints">Step 6 - API endpoints</a></li>
 <li><a href="#step-7-submit-api-requests">Step 7 - Submit API requests</a></li>
 </ul></li>
 <li><a href="#conclusion">Conclusion</a></li>
@@ -97,7 +95,7 @@
 
 <p>Run the Jason project.</p>
 
-<p>The Jason console should launch but no message should appear. The reason is that agents <code>alice</code> and <code>bob</code> are purely reactive; if a belief of the form <code>my_percept(X)</code> is never added or deleted from their belief base then they will do nothing. We will thus seek to trigger this behaviour via a graphical user interface.</p>
+<p>The Jason console should launch but no message should appear. The reason is that agents <code>alice</code> and <code>bob</code> are purely reactive; if a belief of the form <code>my_percept(X)</code> is never added or deleted from their belief base then they will do nothing. Later we will seek to trigger this behaviour via a graphical user interface.</p>
 
 <h2 id="java-interfaces">Java interfaces</h2>
 
@@ -263,9 +261,9 @@
 
 <p>This class uses standard widgets from Swing to implement a desktop window that integrates with the Jason virtual environment via event listeners.</p>
 
-<p>According to the constructor, an instance of the class is initialised with an instance of our virtual environment and an array of agent names. The former allows us to conveniently access Jason functionality within the <code>MyWindow</code> class itself, while the latter allows us to automatically display the agents within the interface.</p>
+<p>According to the constructor, an instance of the class is initialised with an instance of our virtual environment and an array of agent names. The former allows us to conveniently access Jason functionality within the <code>MyWindow</code> class itself, while the latter allows us to make use of agent names within the interface.</p>
 
-<h3 id="step-3-spawning-the-interface">Step 3 - Spawning the interface</h3>
+<h3 id="step-3-spawn-the-interface">Step 3 - Spawn the interface</h3>
 
 <p>The final step is to spawn the interface from within the <code>init</code> method of the virtual environment class.</p>
 
@@ -293,7 +291,7 @@
 
 <p>The empty box in the centre displays a selectable list of percepts for the agent highlighted in the dropdown menu to the far left. Initially <code>alice</code> is highlighted and she has no percepts.</p>
 
-<p>The box displaying <code>my_percept(1)</code> is an editable text field that allows you to enter any arbitrary percept, which can then be added as a percept for the highlighted agent using the <code>Add (agent)</code> button, or as a shared percept using the <code>Add (shared)</code> button.</p>
+<p>The box displaying <code>my_percept(1)</code> is an editable text field that allows you to enter any arbitrary percept, which can then be added as a percept of the highlighted agent using the <code>Add (agent)</code> button, or as a shared percept for all agents using the <code>Add (shared)</code> button.</p>
 
 <p>Select the <code>Add (agent)</code> button. An annotated percept <code>my_percept(1)[scope(agent)]</code> should appear in the list, where <code>scope(agent)</code> is a custom annotation used by the interface to distinguish agent percepts from shared percepts.</p>
 
@@ -450,9 +448,9 @@
 
 <p>This confirms that Javalin is working correctly and listening on <a href="http://localhost:7000/">http://localhost:7000/</a>.</p>
 
-<h3 id="step-6-listen-for-api-requests">Step 6 - Listen for API requests</h3>
+<h3 id="step-6-api-endpoints">Step 6 - API endpoints</h3>
 
-<p>A custom API based on Javalin can be implemented within the <code>init</code> method of the custom environment class. This requires you to specify some API endpoints, included the expected HTTP method and how any data should be handled.</p>
+<p>A custom API based on Javalin can be implemented within the <code>init</code> method of the custom environment class. This requires you to specify some API endpoints, including how any data should be handled.</p>
 
 <p>Edit <code>MyEnvironment.java</code> as follows:</p>
 
@@ -536,15 +534,27 @@
 <tbody>
 <tr>
   <td>POST</td>
+  <td><code>/percepts/add/{agent}</code></td>
+  <td><code>{percept}</code></td>
+  <td>Add <code>{percept}</code> as a percept for <code>{agent}</code></td>
+</tr>
+<tr>
+  <td>POST</td>
   <td><code>/percepts/add</code></td>
   <td><code>{percept}</code></td>
   <td>Add <code>{percept}</code> as a shared percept</td>
 </tr>
 <tr>
+  <td>GET</td>
+  <td><code>/percepts/{agent}</code></td>
+  <td>N/A</td>
+  <td>Get all percepts for <code>{agent}</code></td>
+</tr>
+<tr>
   <td>POST</td>
-  <td><code>/percepts/add/{agent}</code></td>
+  <td><code>/percepts/remove/{agent}</code></td>
   <td><code>{percept}</code></td>
-  <td>Add <code>{percept}</code> as a percept for <code>{agent}</code></td>
+  <td>Remove <code>{percept}</code> as a percept for <code>{agent}</code></td>
 </tr>
 <tr>
   <td>POST</td>
@@ -554,27 +564,40 @@
 </tr>
 <tr>
   <td>POST</td>
-  <td><code>/percepts/remove/{agent}</code></td>
-  <td><code>{percept}</code></td>
-  <td>Remove <code>{percept}</code> as a percept for <code>{agent}</code></td>
+  <td><code>/percepts/clear/{agent}</code></td>
+  <td>N/A</td>
+  <td>Clear all percepts for <code>{agent}</code></td>
 </tr>
 <tr>
-  <td>GET</td>
-  <td><code>/percepts/{agent}</code></td>
+  <td>POST</td>
+  <td><code>/percepts/clear</code></td>
   <td>N/A</td>
-  <td>Get all percepts for <code>{agent}</code></td>
+  <td>Clear all shared percepts</td>
 </tr>
 </tbody>
 </table>
 
-<p>These endpoints thus provide access to most of the Jason features used by the previous Swing interface.</p>
+<p>These endpoints thus provide access to all Jason features used by the previous Swing interface.</p>
 
 <h3 id="step-7-submit-api-requests">Step 7 - Submit API requests</h3>
+
+<p>The new API can be tested using the command-line tool <a href="https://en.wikipedia.org/wiki/CURL">cURL</a> to issue appropriate HTTP requests.</p>
+
+<p>In a terminal run the following command to add <code>my_percept(1)</code> as a percept for <code>alice</code>:</p>
 
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add/alice<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(1)&quot;</span>
 </code></pre>
 </div>
+
+<p>The Jason console should display the following message:</p>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Belief added: my_percept(1)[source(percept)]
+</code></pre>
+</div>
+
+<p>Add <code>my_percept(2)</code> as a percept for <code>alice</code>:</p>
 
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add/alice<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(2)&quot;</span>
@@ -582,9 +605,24 @@
 </div>
 
 <div class="codehilite">
+<pre><span></span><code>[alice] Belief added: my_percept(2)[source(percept)]
+</code></pre>
+</div>
+
+<p>Add <code>my_percept(3)</code> as a shared percept:</p>
+
+<div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(3)&quot;</span>
 </code></pre>
 </div>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Belief added: my_percept(3)[source(percept)]
+[bob] Belief added: my_percept(3)[source(percept)]
+</code></pre>
+</div>
+
+<p>Retrieve the percepts for <code>alice</code>:</p>
 
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/alice
@@ -592,11 +630,15 @@
 </code></pre>
 </div>
 
+<p>Retrieve the percepts for <code>bob</code>:</p>
+
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/bob
 <span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)]</span>
 </code></pre>
 </div>
+
+<p>Add <code>my_percept(4)</code> as a percept for <code>bob</code>:</p>
 
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add/bob<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(4)&quot;</span>
@@ -604,21 +646,32 @@
 </div>
 
 <div class="codehilite">
+<pre><span></span><code>[bob] Belief added: my_percept(4)[source(percept)]
+</code></pre>
+</div>
+
+<p>Add <code>my_percept(5)</code> as a shared percept:</p>
+
+<div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/add<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(5)&quot;</span>
 </code></pre>
 </div>
 
 <div class="codehilite">
-<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/bob
-<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">4</span><span class="o">)]</span>
+<pre><span></span><code>[bob] Belief added: my_percept(5)[source(percept)]
+[alice] Belief added: my_percept(5)[source(percept)]
 </code></pre>
 </div>
+
+<p>Retrieve the percepts for <code>bob</code>:</p>
 
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/bob
 <span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">4</span><span class="o">)]</span>
 </code></pre>
 </div>
+
+<p>Retrieve the percepts for <code>alice</code>:</p>
 
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/alice
@@ -626,18 +679,50 @@
 </code></pre>
 </div>
 
+<p>Remove <code>my_percept(1)</code> as a percept for <code>alice</code>:</p>
+
 <div class="codehilite">
 <pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/remove/alice<span class="w"> </span>--data<span class="w"> </span><span class="s2">&quot;my_percept(1)&quot;</span>
 </code></pre>
 </div>
 
 <div class="codehilite">
-<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>GET<span class="w"> </span>http://localhost:7000/percepts/alice
-<span class="o">[</span>my_percept<span class="o">(</span><span class="m">3</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">5</span><span class="o">)</span>,<span class="w"> </span>my_percept<span class="o">(</span><span class="m">2</span><span class="o">)]</span>
+<pre><span></span><code>[alice] Belief deleted: my_percept(1)[source(percept)]
 </code></pre>
 </div>
 
+<p>Clear the percepts for <code>alice</code>:</p>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/clear/alice
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>[alice] Belief deleted: my_percept(2)[source(percept)]
+</code></pre>
+</div>
+
+<p>Clear the shared percepts:</p>
+
+<div class="codehilite">
+<pre><span></span><code>curl<span class="w"> </span>--request<span class="w"> </span>POST<span class="w"> </span>http://localhost:7000/percepts/clear
+</code></pre>
+</div>
+
+<div class="codehilite">
+<pre><span></span><code>[bob] Belief deleted: my_percept(3)[source(percept)]
+[bob] Belief deleted: my_percept(5)[source(percept)]
+[alice] Belief deleted: my_percept(3)[source(percept)]
+[alice] Belief deleted: my_percept(5)[source(percept)]
+</code></pre>
+</div>
+
+<p>At this stage a web interface can now be implemented using Javascript or your preferred web framework.</p>
+
 <h2 id="conclusion">Conclusion</h2>
+
+<p>In this appendix we have seen two possible approaches to implementing graphical user interfaces for Jason projects. The first approach is to implement a desktop interface in Java using the Swing widget toolkit. The second is to embed a custom web API enabling a web interface to be implemented separately. The former is the most common approach taken by existing example/demo implementations available online, while the latter is more flexible and should be easier for those with web development experience.</p>
 
 </div>
 <footer class="p-6 mt-4">
