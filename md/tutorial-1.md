@@ -105,9 +105,11 @@ Select **Install anyway**.
 
 Select **Restart Now**.
 
-> **Note:** If you encountered issues installing the Jason plugin for Eclipse, please refer to the [official installation instructions](http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/).
+> **Note:** If you encountered an error `Public key not found for 70b824d9a6b4ae29` when attempting to install the Jason plugin for Eclipse then please try the following workaround. Navigate to **Help > Install New Software > Manage**. Remove `jasonide`. Disable all entries except `2021-12`. Select **Apply and Close**. Restart Eclipse and return to **Step 5**.
 
 Eclipse should now be open and ready for Jason development.
+
+> **Note:** More details can be found in the [official installation instructions](http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/).
 
 ## Test that it works
 
