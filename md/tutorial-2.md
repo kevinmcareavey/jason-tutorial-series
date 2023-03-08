@@ -138,7 +138,7 @@ The query `parent(dave, X)` can thus be read as: **who is a parent of Dave?**
 
 The query results `X = alice` and `X = bob` can then be read as: **Alice and Bob are parents of Dave.**
 
-> **Note:** `X = alice` is returned before `X = bob` because the positioning of facts and rules in a Prolog program is significant; it determines the order in which facts and rules are evaluated when answering queries. For example, if `male(bob)` were to appear above `female(alice)` then `X = bob` would be returned before `X = alice`.
+> **Note:** `X = alice` is returned before `X = bob` because the positioning of facts and rules in a Prolog program is significant; it determines the order in which facts and rules are evaluated when answering queries. For example, if ~~`male(bob)`~~ `parent(dave, bob)` were to appear above ~~`female(alice)`~~ `parent(dave, alice)` then `X = bob` would be returned before `X = alice`.
 
 Change the query to `parent(X, dave)` and select **Run!**. The query results should be `X = ivan` and `X = heidi`.
 
@@ -204,9 +204,9 @@ Add the following rule to the bottom of your Prolog program:
 sibling(X, Y) :- parent(X, Z), parent(Y, Z).
 ```
 
-In the query panel enter `sibling(dave, X)` and select **Run!**. The query result should be `true`.
+~~In the query panel enter `sibling(dave, X)` and select **Run!**. The query result should be `true`.~~
 
-Now enter `sibling(dave, dave)` and select **Run!**. The query result should again be `true`, which implies that Dave is a sibling of himself. This of course is not the result we want.
+Now enter `sibling(dave, dave)` and select **Run!**. The query result should again be `true`, which implies that Dave is a sibling of himself. This of course is not the result we want.~~
 
 The reason for the result is that, while Prolog prohibits **different instances of the same variable** within a rule (e.g. `Z`) from having **different instantiations**, it does not prohibit **different variables** (e.g. `X` and `Y`) from having the **same instantiation**.
 
