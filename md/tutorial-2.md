@@ -114,9 +114,19 @@ In the query panel enter `parent(dave, alice)` and select **Run!**.
 
 The query result `true` means it can be proved from your Prolog program that Alice is a parent of Dave.
 
-Change the query to `parent(alice, dave)` and select **Run!** again.
+According to the resolution scheme of Prolog there may in fact be multiple ways to prove (or resolve) a given Prolog query, which is why SWISH may display buttons labelled **Next**, ..., **Stop**.
+
+Select **Next** under the query result, which requests a new solution.
 
 ![Figure](figures/swish-6.png)
+
+If **Next** is selected repeatedly then eventually there will be no more results available. When this happens Prolog will return `false` and SWISH will disable the results buttons. In this example the first result `true` thus indicates indicates that a solutions exists proving that Alice is a parent of Dave, while the second (and final) result `false` indicates that no more solutions exist. If two solutions existed then the results would have been `true`, `true`, `false`.
+
+> **Note:** If you are submitting true/false queries then the fact that multiple solutions may exist is irrelevant, and there is no need to cycle through subsequent results.
+
+Change the query to `parent(alice, dave)` and select **Run!** again.
+
+![Figure](figures/swish-7.png)
 
 The query result `false` means it cannot be proved from your Prolog program that Dave is a parent of Alice.
 
@@ -128,7 +138,7 @@ Change the query to `parent(dave, X)` and select **Run!**.
 
 The first query result should be `X = alice`. Select **Next** under the query result to cycle through the remaining results.
 
-![Figure](figures/swish-7.png)
+![Figure](figures/swish-8.png)
 
 The term `X` is an example of a **variable**. A Prolog interpreter answers queries by **instantiating** variables with other terms (e.g. atoms) such that the instantiation can be proved from the Prolog program.
 
@@ -227,6 +237,14 @@ The expression `X \== Y` is an example of a **relational expression**. Prolog su
 - `X == Y` evaluates to true if terms `X` and `Y` are **equal**
 - `X \== Y` evaluates to true if terms `X` and `Y` are **not equal**
 - `X = Y` evaluates to true if terms `X` and `Y` **unify**
+
+> **Note:** The word **unify** refers to the topic of **unification**, which is covered in the lectures.
+
+In the query panel enter `parent(dave, X) == parent(Y, alice)` and select **Run!**. The query result should be `false`.
+
+In the query panel enter `parent(dave, X) \== parent(Y, alice)` and select **Run!**. The query result should be `true`.
+
+In the query panel enter `parent(dave, X) = parent(Y, alice)` and select **Run!**. The query result should be `X = alice` and `Y = dave`.
 
 ### Step 11 - Negation
 
