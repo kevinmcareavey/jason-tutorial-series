@@ -114,13 +114,13 @@ In the query panel enter `parent(dave, alice)` and select **Run!**.
 
 The query result `true` means it can be proved from your Prolog program that Alice is a parent of Dave.
 
-According to the resolution scheme of Prolog there may in fact be multiple ways to prove (or resolve) a given Prolog query, which is why SWISH may display buttons labelled **Next**, ..., **Stop**.
+According to the resolution scheme of Prolog there may in fact be **multiple** ways to prove (or resolve) a given Prolog query, which is why SWISH may display buttons labelled **Next**, ..., **Stop**.
 
 Select **Next** under the query result, which requests a new solution.
 
 ![Figure](figures/swish-6.png)
 
-If **Next** is selected repeatedly then eventually there will be no more results available. When this happens Prolog will return `false` and SWISH will disable the results buttons. In this example the first result `true` thus indicates indicates that a solutions exists proving that Alice is a parent of Dave, while the second (and final) result `false` indicates that no more solutions exist. If two solutions existed then the results would have been `true`, `true`, `false`.
+If **Next** is selected repeatedly then eventually there will be no more results available. When this happens Prolog will return `false` and SWISH will disable the result buttons. In this example the first result `true` thus indicates that a solution exists proving that Alice is a parent of Dave, while the second (and final) result `false` indicates that no more solutions exist. If two solutions had existed then the results would have been `true`, `true`, `false`.
 
 > **Note:** If you are submitting true/false queries then the fact that multiple solutions may exist is irrelevant, and there is no need to cycle through subsequent results.
 
