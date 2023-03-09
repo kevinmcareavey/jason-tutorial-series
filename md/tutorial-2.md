@@ -244,7 +244,7 @@ In the query panel enter `parent(dave, X) == parent(Y, alice)` and select **Run!
 
 In the query panel enter `parent(dave, X) \== parent(Y, alice)` and select **Run!**. The query result should be `true`.
 
-In the query panel enter `parent(dave, X) = parent(Y, alice)` and select **Run!**. The query result should be `X = alice` and `Y = dave`.
+In the query panel enter `parent(dave, X) = parent(Y, alice)` and select **Run!**. The query result should be `X = alice` and `Y = dave`. When included in a rule the expression would therefore evaluate to `true`, indicating that `parent(dave, X)` and `parent(Y, alice)` unify, with `X = alice` and `Y = dave` indicating **how** they unify.
 
 ### Step 11 - Negation
 
