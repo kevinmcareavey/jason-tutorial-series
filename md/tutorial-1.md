@@ -24,7 +24,7 @@ Jason is available to download from [SourceForge](https://sourceforge.net/projec
 
 As of January 2023, the latest version is Jason 3.1. However, for this tutorial series we will use **Jason 2.6.3**.
 
-> **Note:** Jason 3.0 introduced some changes to the language that are not well-documented and do not guarantee compatibility with this tutorial series so you **must** use Jason 2.6.3.
+> **Note:** Jason 3.0 introduced some changes to the language that do not guarantee compatibility with this tutorial series so you **must** use Jason 2.6.3.
 
 Download and extract `jason-2.6.3.zip` as a directory called `jason-2.6.3` and remember its absolute path, e.g. `/path/to/jason-2.6.3/`.
 

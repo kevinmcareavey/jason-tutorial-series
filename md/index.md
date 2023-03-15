@@ -47,9 +47,9 @@ This section provides a brief introduction to implementing `.asl` files.
 Multi-agent systems are configured in Jason using a Jason configuration file, denoted by the `.mas2j` extension.
 Jason also provides a family of actions, available when implementing `.asl` files, that allow agents to communicate with each other. This section provides a brief introduction to the `.mas2j` file and to Jason communication actions.
 
-<!-- - Tutorial 4 - Multi-agent systems &#9940; &#128679; -->
+- Tutorial 4 - Multi-agent systems &#9940; &#128679;
 
-- [Tutorial 4 - Multi-agent systems](tutorial-4.html)
+<!-- - [Tutorial 4 - Multi-agent systems](tutorial-4.html) -->
 
 ## Advanced material
 
@@ -57,13 +57,13 @@ Experience with Java programming is desirable but not essential to Jason program
 
 The material covered in this section is **not required** to achieve full marks in the assignment. However, experienced programmers (especially those with Java experience) should find them straightforward and they will allow you to implement more interesting applications in Jason.
 
-<!-- - Appendix A - Virtual environments &#9940; &#128679;
+- Appendix A - Virtual environments &#9940; &#128679;
 - Appendix B - Graphical user interfaces &#9940; &#128679;
-- Appendix C - Custom internal actions &#9940; &#128679; -->
+- Appendix C - Custom internal actions &#9940; &#128679;
 
-- [Appendix A - Virtual environments](appendix-a.html)
+<!-- - [Appendix A - Virtual environments](appendix-a.html)
 - [Appendix B - Graphical user interfaces](appendix-b.html)
-- [Appendix C - Custom internal actions](appendix-c.html)
+- [Appendix C - Custom internal actions](appendix-c.html) -->
 
 ## Further resources
 
