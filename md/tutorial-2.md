@@ -154,7 +154,7 @@ Change the query to `parent(X, dave)` and select **Run!**. The query results sho
 
 This example demonstrates that positioning of terms is significant and that consistent usage is required to correctly ascribe meaning to your Prolog program.
 
-The query `parent(dave, X)` should thus be read as: **who has Dave as a parent?**
+The query ~~`parent(dave, X)`~~ `parent(X, dave)` should thus be read as: **who has Dave as a parent?**
 
 The query results `X = ivan` and `X = heidi` can then be read as: **Ivan and Heidi have Dave as a parent.**
 
