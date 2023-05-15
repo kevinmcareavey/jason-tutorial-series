@@ -44,7 +44,7 @@
 
 <h2 id="getting-started">Getting started</h2>
 
-<p>When introducing a new programming language, it is customary to start with its <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">Hello, World! program</a>. This was already included in <a href="tutorial-1a.html">Tutorial 1a</a>, but we will now go through it in more detail.</p>
+<p>When introducing a new programming language, it is customary to start with its <a href="https://en.wikipedia.org/wiki/%22Hello,_World!%22_program">Hello, World! program</a>. This was already included in <a href="tutorial-1.html">Tutorial 1</a>, but we will now go through it in more detail.</p>
 
 <h3 id="step-1-create-a-new-jason-project">Step 1 - Create a new Jason project</h3>
 
@@ -766,8 +766,14 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 <p>Add the following plans to the bottom of the plan library:</p>
 
 <div class="codehilite">
-<pre><span></span><code><span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span> 
-  <span class="nf">grid</span><span class="p">(</span><span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="p">(</span> <span class="p">(</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">|</span> <span class="p">(</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="p">&lt;-</span>
+<pre><span></span><code><span class="c1">// This plan was incorrect in a previous version of this tutorial</span>
+<span class="c1">// +location(robot, X, Y) : </span>
+<span class="c1">// grid(X, Y) &amp; ( ( Y mod 2 \== 0 ) | ( Y mod 2 == 0 &amp; X == 1 ) ) &lt;-</span>
+<span class="c1">//     -route(robot, outbound);</span>
+<span class="c1">//     .print(&quot;Now travelling inbound&quot;).</span>
+
+<span class="nf">+location</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="nv">X</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="p">:</span>
+  <span class="nf">grid</span><span class="p">(</span><span class="nv">Columns</span><span class="p">,</span> <span class="nv">Y</span><span class="p">)</span> <span class="o o-Logical">&amp;</span> <span class="p">(</span> <span class="p">(</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">\==</span> <span class="mi">0</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">==</span> <span class="nv">Columns</span><span class="p">)</span> <span class="p">|</span> <span class="p">(</span> <span class="nv">Y</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o o-Logical">&amp;</span> <span class="nv">X</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="p">&lt;-</span>
     <span class="nf">-route</span><span class="p">(</span><span class="s s-Atom">robot</span><span class="p">,</span> <span class="s s-Atom">outbound</span><span class="p">);</span>
     <span class="nb">.print</span><span class="p">(</span><span class="s2">&quot;Now travelling inbound&quot;</span><span class="p">).</span>
 
@@ -1086,7 +1092,7 @@ For example, the line <code>[agent1] hello world.</code> means that agent <code>
 
 <h2 id="conclusion">Conclusion</h2>
 
-<p>In this tutorial we had a brief introduction to implementing AgentSpeak agents in Jason using two examples (family tree, grid world) to illustrate various Jason language features.</p>
+<p>In this tutorial we had a brief introduction to implementing AgentSpeak agents in Jason using two examples (happy birthday, grid world) to illustrate various Jason language features.</p>
 
 <p>In the next tutorial we will look at how to implement multi-agent systems in Jason, focusing on the Jason configuration file and agent communication actions.</p>
 

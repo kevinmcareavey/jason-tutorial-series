@@ -67,7 +67,7 @@ The material covered in this section is **not required** to achieve full marks i
 
 ## Further resources
 
-- [Jason textbook](http://home.mit.bme.hu/~eredics/AgentGame/Jason/Jason_konyv.pdf)
+- [Jason textbook](https://jason.sourceforge.net/jBook/jBook/Home.html)
 - [Solutions to exercises in Jason textbook](https://jason.sourceforge.net/jBook/jBook/Examples.html)
 - [Demos of selected Jason functionality](https://jason.sourceforge.net/wp/demos/) (in [Jason download](https://sourceforge.net/projects/jason/files/jason/))
 - [Examples of applications implemented in Jason](https://jason.sourceforge.net/wp/examples/) (in [Jason download](https://sourceforge.net/projects/jason/files/jason/))

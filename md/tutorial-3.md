@@ -596,8 +596,14 @@ Notice that four rules have been added (for the inbound traversal) and all rules
 Add the following plans to the bottom of the plan library:
 
 ```jason
-+location(robot, X, Y) : 
-  grid(X, Y) & ( ( Y mod 2 \== 0 ) | ( Y mod 2 == 0 & X == 1 ) ) <-
+// This plan was incorrect in a previous version of this tutorial
+// +location(robot, X, Y) : 
+// grid(X, Y) & ( ( Y mod 2 \== 0 ) | ( Y mod 2 == 0 & X == 1 ) ) <-
+//     -route(robot, outbound);
+//     .print("Now travelling inbound").
+
++location(robot, X, Y) :
+  grid(Columns, Y) & ( ( Y mod 2 \== 0 & X == Columns) | ( Y mod 2 == 0 & X == 1 ) ) <-
     -route(robot, outbound);
     .print("Now travelling inbound").
 
