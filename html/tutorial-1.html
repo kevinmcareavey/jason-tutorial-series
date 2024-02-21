@@ -43,9 +43,9 @@
 
 <p>Java Platform, Standard Edition (Java SE) is available to download from <a href="https://www.oracle.com/java/technologies/java-se-glance.html">Oracle</a>.</p>
 
-<p>As of January 2023, the latest version is <strong>Java SE 19</strong>.</p>
+<p>As of February 2024, the latest version is <strong>Java SE 21</strong>.</p>
 
-<p>Select <strong>Download</strong> and then choose the most appropriate package for your platform: typical options are <strong>x64 Installer</strong> for Windows and <strong>x64 DMG Installer</strong> for macOS.</p>
+<p>Select <strong>Download</strong> under this version and then identify the appropriate package for your platform (e.g. <strong>x64 Installer</strong> for Windows).</p>
 
 <p>Download and install the selected package.</p>
 
@@ -55,10 +55,10 @@
 
 <p>Jason is available to download from <a href="https://sourceforge.net/projects/jason/files/jason/">SourceForge</a>.</p>
 
-<p>As of January 2023, the latest version is Jason 3.1. However, for this tutorial series we will use <strong>Jason 2.6.3</strong>.</p>
+<p>As of February 2024, the latest version is Jason 3.2. However, for this tutorial series we will use <strong>Jason 2.6.3</strong>.</p>
 
 <blockquote>
-  <p><strong>Note:</strong> Jason 3.0 introduced some changes to the language that do not guarantee compatibility with this tutorial series so you <strong>must</strong> use Jason 2.6.3.</p>
+  <p><strong>Note:</strong> Jason 3.0 introduced some changes to the Jason language that do not guarantee compatibility with this tutorial series so you <strong>must</strong> use Jason 2.6.3.</p>
 </blockquote>
 
 <p>Download and extract <code>jason-2.6.3.zip</code> as a directory called <code>jason-2.6.3</code> and remember its absolute path, e.g. <code>/path/to/jason-2.6.3/</code>.</p>
@@ -94,18 +94,30 @@
 
 <h3 id="step-4-download-and-install-eclipse">Step 4 - Download and install Eclipse</h3>
 
-<p>Eclipse is available to download from <a href="https://www.eclipse.org/downloads/packages/release/2021-12/r">Eclipse Foundation</a>.</p>
+<p>Eclipse is available to download from <a href="https://www.eclipse.org/downloads/packages/">Eclipse Foundation</a>.</p>
 
-<p>As of January 2023, the latest version is Eclipse 2022-12. However, for this tutorial series we will use <strong>Eclipse 2021-12</strong>. The Jason plugin for Eclipse is not compatible with more recent versions of Eclipse due to a missing dependency, so you <strong>must</strong> use Eclipse 2021-12.</p>
+<p>As of February 2024, the latest version is <strong>Eclipse 2023-12</strong>.</p>
 
-<p>Download the most appropriate package for your platform (e.g. <strong>x86_64</strong> for Windows and macOS) and then run the Eclipse installer.</p>
+<p>Identify the appropriate <strong>Eclipse Installer</strong> package for your platform (e.g. <strong>x86_64</strong> on Windows).</p>
+
+<p>Download and run <strong>Eclipse Installer</strong>.</p>
 
 <p><img src="figures/eclipse-install-standard.png" alt="Figure" /></p>
 
-<p>When prompted, choose <strong>Eclipse IDE for Eclipse Committers</strong> and complete the installation. The Jason plugin for Eclipse is not compatible with other variants of Eclipse 2021-12, including <strong>Eclipse IDE for Java Developers</strong> and <strong>Eclipse IDE for Enterprise Java and Web Developers</strong>.</p>
+<p>When prompted, choose <strong>Eclipse IDE for Java Developers</strong>.</p>
+
+<p><img src="figures/eclipse-jdk.png" alt="Figure" />.</p>
+
+<p>Ensure that the newly installed version of Java SE is selected and choose an appropriate installation directory.</p>
 
 <blockquote>
   <p><strong>Note</strong>: Do not install Eclipse in a protected directory, which includes <code>/Users/your_username/Downloads/</code> on macOS.</p>
+</blockquote>
+
+<p>Select <strong>Install</strong> to complete the installation.</p>
+
+<blockquote>
+  <p><strong>Note:</strong> If you are asked during installation whether to trust unsigned content, choose <strong>Select All</strong> and then <strong>Trust Selected</strong>.</p>
 </blockquote>
 
 <h3 id="step-5-install-the-jason-plugin-for-eclipse">Step 5 - Install the Jason plugin for Eclipse</h3>
@@ -122,7 +134,9 @@
 
 <p>Select <strong>Add...</strong> in the new window.</p>
 
-<p>In the <strong>Name</strong> field enter <code>jasonide</code> and in the <strong>Location</strong> field enter <code>http://jason.sourceforge.net/eclipseplugin/20x/</code>.</p>
+<p>In the <strong>Name</strong> field enter <code>jasonide</code> and in the <strong>Location</strong> field enter the following URL:</p>
+
+<p><code>https://seis.bristol.ac.uk/~km17304/jasonide_feature/</code></p>
 
 <p><img src="figures/jason-plugin-install-1.png" alt="Figure" /></p>
 
@@ -130,7 +144,11 @@
 
 <p><img src="figures/jason-plugin-install-2.png" alt="Figure" /></p>
 
-<p>Mark the checkbox beside <strong>jasonide</strong> and select <strong>Next</strong>.</p>
+<p>Unmark the checkbox labelled <strong>Group items by category</strong>.</p>
+
+<p><img src="figures/jason-plugin-install-2b.png" alt="Figure" /></p>
+
+<p>Mark the checkbox beside <strong>Jasonide_feature</strong> and select <strong>Next</strong>.</p>
 
 <p><img src="figures/jason-plugin-install-3.png" alt="Figure" /></p>
 
@@ -140,23 +158,15 @@
 
 <p>Accept the terms and select <strong>Finish</strong>.</p>
 
-<p><img src="figures/jason-plugin-install-5.png" alt="Figure" /></p>
-
-<p>Select <strong>Install anyway</strong>.</p>
+<blockquote>
+  <p><strong>Note:</strong> If you are asked during installation whether to trust unsigned content, choose <strong>Select All</strong> and then <strong>Trust Selected</strong>.</p>
+</blockquote>
 
 <p><img src="figures/jason-plugin-install-6.png" alt="Figure" /></p>
 
 <p>Select <strong>Restart Now</strong>.</p>
 
-<blockquote>
-  <p><strong>Note:</strong> If you encountered an error <code>Public key not found for 70b824d9a6b4ae29</code> when attempting to install the Jason plugin for Eclipse then please try the following workaround. Navigate to <strong>Help &gt; Install New Software &gt; Manage</strong>. Remove <code>jasonide</code>. Disable all entries except <code>2021-12</code>. Select <strong>Apply and Close</strong>. Restart Eclipse and return to <strong>Step 5</strong>.</p>
-</blockquote>
-
 <p>Eclipse should now be open and ready for Jason development.</p>
-
-<blockquote>
-  <p><strong>Note:</strong> More details can be found in the <a href="http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/">official installation instructions</a>.</p>
-</blockquote>
 
 <h2 id="test-that-it-works">Test that it works</h2>
 
@@ -206,7 +216,7 @@
 
 </div>
 <footer class="p-6 mt-4">
-<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2024</p>
 </footer>
 </div>
 </div>

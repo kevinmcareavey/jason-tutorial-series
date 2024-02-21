@@ -28,7 +28,7 @@ def translate(markdown_str):
 {html_body}
 </div>
 <footer class="p-6 mt-4">
-<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2023</p>
+<p class="text-center">Copyright &copy; <strong>Kevin McAreavey</strong> 2024</p>
 </footer>
 </div>
 </div>

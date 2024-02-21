@@ -10,9 +10,9 @@ This tutorial describes how to install everything needed for Jason development, 
 
 Java Platform, Standard Edition (Java SE) is available to download from [Oracle](https://www.oracle.com/java/technologies/java-se-glance.html).
 
-As of January 2023, the latest version is **Java SE 19**.
+As of February 2024, the latest version is **Java SE 21**.
 
-Select **Download** and then choose the most appropriate package for your platform: typical options are **x64 Installer** for Windows and **x64 DMG Installer** for macOS.
+Select **Download** under this version and then identify the appropriate package for your platform (e.g. **x64 Installer** for Windows).
 
 Download and install the selected package.
 
@@ -22,9 +22,9 @@ Download and install the selected package.
 
 Jason is available to download from [SourceForge](https://sourceforge.net/projects/jason/files/jason/).
 
-As of January 2023, the latest version is Jason 3.1. However, for this tutorial series we will use **Jason 2.6.3**.
+As of February 2024, the latest version is Jason 3.2. However, for this tutorial series we will use **Jason 2.6.3**.
 
-> **Note:** Jason 3.0 introduced some changes to the language that do not guarantee compatibility with this tutorial series so you **must** use Jason 2.6.3.
+> **Note:** Jason 3.0 introduced some changes to the Jason language that do not guarantee compatibility with this tutorial series so you **must** use Jason 2.6.3.
 
 Download and extract `jason-2.6.3.zip` as a directory called `jason-2.6.3` and remember its absolute path, e.g. `/path/to/jason-2.6.3/`.
 
@@ -53,17 +53,27 @@ Select **Save configuration and Exit**.
 
 ### Step 4 - Download and install Eclipse
 
-Eclipse is available to download from [Eclipse Foundation](https://www.eclipse.org/downloads/packages/release/2021-12/r).
+Eclipse is available to download from [Eclipse Foundation](https://www.eclipse.org/downloads/packages/).
 
-As of January 2023, the latest version is Eclipse 2022-12. However, for this tutorial series we will use **Eclipse 2021-12**. The Jason plugin for Eclipse is not compatible with more recent versions of Eclipse due to a missing dependency, so you **must** use Eclipse 2021-12.
+As of February 2024, the latest version is **Eclipse 2023-12**.
 
-Download the most appropriate package for your platform (e.g. **x86_64** for Windows and macOS) and then run the Eclipse installer.
+Identify the appropriate **Eclipse Installer** package for your platform (e.g. **x86_64** on Windows).
+
+Download and run **Eclipse Installer**.
 
 ![Figure](figures/eclipse-install-standard.png)
 
-When prompted, choose **Eclipse IDE for Eclipse Committers** and complete the installation. The Jason plugin for Eclipse is not compatible with other variants of Eclipse 2021-12, including **Eclipse IDE for Java Developers** and **Eclipse IDE for Enterprise Java and Web Developers**.
+When prompted, choose **Eclipse IDE for Java Developers**.
+
+![Figure](figures/eclipse-jdk.png).
+
+Ensure that the newly installed version of Java SE is selected and choose an appropriate installation directory.
 
 > **Note**: Do not install Eclipse in a protected directory, which includes `/Users/your_username/Downloads/` on macOS.
+
+Select **Install** to complete the installation.
+
+> **Note:** If you are asked during installation whether to trust unsigned content, choose **Select All** and then **Trust Selected**.
 
 ### Step 5 - Install the Jason plugin for Eclipse
 
@@ -79,7 +89,9 @@ Select **Help > Install New Software > Add**.
 
 Select **Add...** in the new window.
 
-In the **Name** field enter `jasonide` and in the **Location** field enter `http://jason.sourceforge.net/eclipseplugin/20x/`.
+In the **Name** field enter `jasonide` and in the **Location** field enter the following URL:
+
+`https://seis.bristol.ac.uk/~km17304/jasonide_feature/`
 
 ![Figure](figures/jason-plugin-install-1.png)
 
@@ -87,7 +99,11 @@ Select **Add**.
 
 ![Figure](figures/jason-plugin-install-2.png)
 
-Mark the checkbox beside **jasonide** and select **Next**.
+Unmark the checkbox labelled **Group items by category**.
+
+![Figure](figures/jason-plugin-install-2b.png)
+
+Mark the checkbox beside **Jasonide_feature** and select **Next**.
 
 ![Figure](figures/jason-plugin-install-3.png)
 
@@ -97,19 +113,13 @@ Select **Next** again.
 
 Accept the terms and select **Finish**.
 
-![Figure](figures/jason-plugin-install-5.png)
-
-Select **Install anyway**.
+> **Note:** If you are asked during installation whether to trust unsigned content, choose **Select All** and then **Trust Selected**.
 
 ![Figure](figures/jason-plugin-install-6.png)
 
 Select **Restart Now**.
 
-> **Note:** If you encountered an error `Public key not found for 70b824d9a6b4ae29` when attempting to install the Jason plugin for Eclipse then please try the following workaround. Navigate to **Help > Install New Software > Manage**. Remove `jasonide`. Disable all entries except `2021-12`. Select **Apply and Close**. Restart Eclipse and return to **Step 5**.
-
 Eclipse should now be open and ready for Jason development.
-
-> **Note:** More details can be found in the [official installation instructions](http://jason.sourceforge.net/mini-tutorial/eclipse-plugin/).
 
 ## Test that it works
 
