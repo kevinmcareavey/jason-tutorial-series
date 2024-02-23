@@ -61,15 +61,15 @@ Identify the appropriate **Eclipse Installer** package for your platform (e.g. *
 
 Download and run **Eclipse Installer**.
 
-![Figure](figures/eclipse-install-standard.png)
-
 When prompted, choose **Eclipse IDE for Java Developers**.
 
-![Figure](figures/eclipse-jdk.png).
+![Figure](figures/eclipse-install-standard.png)
 
-Ensure that the newly installed version of Java SE is selected and choose an appropriate installation directory.
+Ensure that the newly installed version of Java SE is selected as the **Java VM** and choose an appropriate **Installation Folder**.
 
 > **Note**: Do not install Eclipse in a protected directory, which includes `/Users/your_username/Downloads/` on macOS.
+
+![Figure](figures/eclipse-jdk.png).
 
 Select **Install** to complete the installation.
 
