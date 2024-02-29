@@ -29,9 +29,9 @@ Students are requested to install Jason on their own laptops and to use them dur
 
 A basic understanding of logic programming is essential to Jason programming. This section provides a brief introduction to logic programming using the SWISH web interface for SWI-Prolog.
 
-- Tutorial 2 - Logic programming &#9940; &#128679;
+<!-- - Tutorial 2 - Logic programming &#9940; &#128679; -->
 
-<!-- - [Tutorial 2 - Logic programming](tutorial-2.html) -->
+- [Tutorial 2 - Logic programming](tutorial-2.html)
 
 ### Tuesday 12 March 2024
 
