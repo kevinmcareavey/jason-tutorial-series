@@ -38,9 +38,9 @@ A basic understanding of logic programming is essential to Jason programming. Th
 Agents are implemented in Jason using a variant of the AgentSpeak language, denoted by files with the `.asl` extension.
 This section provides a brief introduction to implementing `.asl` files.
 
-- Tutorial 3 - Agents &#9940; &#128679;
+<!-- - Tutorial 3 - Agents &#9940; &#128679; -->
 
-<!-- - [Tutorial 3 - Agents](tutorial-3.html) -->
+- [Tutorial 3 - Agents](tutorial-3.html)
 
 ### Tuesday 19 March 2024
 

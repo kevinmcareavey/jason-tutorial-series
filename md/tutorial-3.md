@@ -345,7 +345,7 @@ This code makes use of a range of Jason language features, e.g.:
 | Goal addition triggering events | `+!wish_happy_birthday` |
 | Achievement (sub)goals | `!wish_happy_birthday` |
 | Recursion | `+!wish_happy_birthday : ... <- ...; !wish_happy_birthday.` |
-| [Standard internal actions](https://jason.sourceforge.net/api/jason/stdlib/package-summary.html) | `.print("Happy birthday ", Y, "!")` |
+| [Standard internal actions](https://jason-lang.github.io/api/jason/stdlib/package-summary.html) | `.print("Happy birthday ", Y, "!")` |
 | Belief change actions | `+acknowledged(Y)` (belief addition) |
 
 According to the code the agent thinks he is `dave`, that `eve`, `ivan`, and `wendy` all have their birthdays today, that `eve` and `ivan` are immediate family members (with `eve` a sibling), and that `wendy` is not an immediate family member. The agent has the initial achievement goal `!wish_happy_birthday`, which according to the plans mean he wants to wish someone in his immediate family happy birthday if their birthday is today and he has not already wished them happy birthday. Moreover, if that person is his brother or sister then he wants to tell them they are his favourite brother or sister. After having wished someone happy birthday, the agent records in his belief base that he has done so.
@@ -427,7 +427,7 @@ This code makes use of a range of Jason language features, e.g.:
 | Achievement (sub)goals | `!explore`, `!move(Direction)` |
 | Test (sub)goals | `?location(robot, X, Y)` |
 | Recursion | `+!explore : ... <- ...; !explore.` |
-| [Standard internal actions](https://jason.sourceforge.net/api/jason/stdlib/package-summary.html) | `.print("Stopping")`, `.wait(500)` |
+| [Standard internal actions](https://jason-lang.github.io/api/jason/stdlib/package-summary.html) | `.print("Stopping")`, `.wait(500)` |
 | Belief change actions | `+location(robot, X+1, Y)` (addition), `-location(robot, X, Y)` (deletion) |
 
 Roughly speaking, the code can be understood as follows:
@@ -469,7 +469,7 @@ Run the Jason project.
 
 This matches the original traversal logic.
 
-> **Note**: Remember that the agent is moving in its own mind only, since it is executing **belief change actions** rather than **environment actions**. Implementing environment actions in Jason is covered in [Appendix A](tutorial-appendix-a).
+> **Note**: Remember that the agent is moving in its own mind only, since it is executing **belief change actions** rather than **environment actions**. Implementing environment actions in Jason will be covered in [Appendix A](index.html).
 
 ### Step 11 - Test (sub)goals
 
