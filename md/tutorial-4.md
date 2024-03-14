@@ -307,7 +307,7 @@ Jason annotations can be used in single-agent systems as demonstrated here. Howe
 
 ## Agent communication
 
-Jason implements support for agent communication via its library of [standard internal actions](https://jason.sourceforge.net/api/jason/stdlib/package-summary.html).
+Jason implements support for agent communication via its library of [standard internal actions](https://jason-lang.github.io/api/jason/stdlib/package-summary.html).
 
 ### Step 7 - Broadcast communication actions
 
@@ -400,7 +400,7 @@ Edit `follower.asl` as follows:
 +welcomed : true <- .print("thank you, glad to be here").
 ```
 
-> **Note:** `.my_name(X)` is a [standard internal action](https://jason.sourceforge.net/api/jason/stdlib/package-summary.html) that, when executed, instantiates `X` with the agent's own name.
+> **Note:** `.my_name(X)` is a [standard internal action](https://jason-lang.github.io/api/jason/stdlib/package-summary.html) that, when executed, instantiates `X` with the agent's own name.
 
 Run the Jason project.
 
@@ -539,7 +539,7 @@ Create a new agent file called `trader.asl`:
     -target(Item, ItemHave).
 ```
 
-> **Note:** `.random(X)` is a [standard internal action](https://jason.sourceforge.net/api/jason/stdlib/package-summary.html) that, when executed, instantiates `X` with a random number between 0 and 1. Similarly, `.min(List, X)` is a standard internal action that, when executed, instantiates `X` with the minimum element in `List` according to **natural order**.
+> **Note:** `.random(X)` is a [standard internal action](https://jason-lang.github.io/api/jason/stdlib/package-summary.html) that, when executed, instantiates `X` with a random number between 0 and 1. Similarly, `.min(List, X)` is a standard internal action that, when executed, instantiates `X` with the minimum element in `List` according to **natural order**.
 
 This agent file uses several language features related to multi-agent systems, e.g.:
 
@@ -730,7 +730,7 @@ cost(task2, 4).
     .print("Completed ", Task).
 ```
 
-> **Note:** `math.round(X)` is a [function](https://jason.sourceforge.net/doc/api/jason/functions/package-summary.html) that returns the nearest integer to number `X`. The fact that it is a **function** rather than a **standard internal action** (as seen previously) is why we have the form `Y = math.round(X)` rather than e.g. `math.round(X, Y)`.
+> **Note:** `math.round(X)` is an [arithmetic function](https://jason-lang.github.io/api/jason/asSemantics/ArithFunction.html) that returns the nearest integer to number `X`. The fact that it is a **function** rather than a **standard internal action** (as seen previously) is why we have the form `Y = math.round(X)` rather than e.g. `math.round(X, Y)`.
 
 These agent files uses several language features related to multi-agent systems, e.g.:
 

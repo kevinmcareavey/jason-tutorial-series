@@ -243,7 +243,7 @@ new MyWindow(this, agents);
 
 The line `new MyWindow(this, agents)` spawns the new interface by passing the current environment (`this`) along with an array of agents names (`agents`).
 
-> **Note:** Details on how to access the list of agent names **automatically** can be found in the [Jason FAQ](http://jason.sourceforge.net/doc/faq.html#_how_to_discover_the_name_of_the_agents_in_the_environment_initialisation).
+> **Note:** Details on how to access the list of agent names **automatically** can be found in the [Jason FAQ](https://jason-lang.github.io/doc/faq#_how_to_discover_the_name_of_the_agents_in_the_environment_initialisation).
 
 ### Step 4 - User input
 

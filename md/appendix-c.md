@@ -58,7 +58,7 @@ Custom internal actions are implemented by extending the base class `DefaultInte
 
 An important feature of internal actions is that arguments need not be fully ground when the action is executed. In our case the code assumes that `P1` and `P2` are fully ground literals of the form `point(X, Y)`, while `Q` is a variable that is instantiated by the action itself.
 
-> **Note:** Details on how to implement the `execute` method can be found in Section 7.1 of the [Jason textbook](http://home.mit.bme.hu/~eredics/AgentGame/Jason/Jason_konyv.pdf).
+> **Note:** Details on how to implement the `execute` method can be found in Section 7.1 of the [Jason textbook](https://jason.sourceforge.net/jBook/jBook/Home.html).
 
 Edit `sample_agent.asl` as follows:
 

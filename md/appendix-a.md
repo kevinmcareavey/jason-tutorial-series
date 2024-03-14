@@ -151,7 +151,7 @@ This method simply adds the percept to the belief base of every agent in the Jas
 
 ## Environment actions
 
-Environment actions are implemented in Jason by overriding `Environment.executeAction(agentName, environmentAction)` within the custom environment class. Environment actions can then be executed within plan bodies much like [standard internal actions](https://jason.sourceforge.net/api/jason/stdlib/package-summary.html), with the only syntactic difference being that they do not start with `.` (full stop).
+Environment actions are implemented in Jason by overriding `Environment.executeAction(agentName, environmentAction)` within the custom environment class. Environment actions can then be executed within plan bodies much like [standard internal actions](https://jason-lang.github.io/api/jason/stdlib/package-summary.html), with the only syntactic difference being that they do not start with `.` (full stop).
 
 ### Step 6 - Execution
 
